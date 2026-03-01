@@ -1,0 +1,7 @@
+.env
+.venv/
+data/raw/
+data/chroma_langchain/
+__pycache__/
+*.pyc
+.DS_Store.env

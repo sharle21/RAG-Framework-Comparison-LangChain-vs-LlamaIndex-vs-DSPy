@@ -1,0 +1,1543 @@
+{
+  "langchain": {
+    "build_time_s": 6.33,
+    "latency": {
+      "mean_ms": 2364.6,
+      "min_ms": 693.6,
+      "max_ms": 8048.1,
+      "p95_ms": 4917.5
+    },
+    "eval": {
+      "string_overlap": {
+        "answer_f1": 0.5355449067499732,
+        "context_coverage": 0.561389065937717
+      },
+      "llm_judge": {
+        "correctness": 0.643888888888889,
+        "faithfulness": 0.9622222222222222,
+        "completeness": 0.5811111111111111,
+        "errors": 0,
+        "judge_model": "mistral-large-latest"
+      },
+      "ragas": {
+        "faithfulness": 0.7619891528224861,
+        "answer_relevancy": 0.569182205399941,
+        "context_precision": 0.6833333332799999,
+        "context_recall": 0.4691778591778592
+      },
+      "failure_modes": {
+        "counts": {
+          "wrong_context": 19,
+          "hallucination": 2,
+          "too_vague": 3,
+          "incomplete": 42,
+          "correct": 24
+        },
+        "percentages": {
+          "wrong_context": 21.1,
+          "hallucination": 2.2,
+          "too_vague": 3.3,
+          "incomplete": 46.7,
+          "correct": 26.7
+        },
+        "sample_size": 90,
+        "detailed": [
+          {
+            "question": "Which viruses may not cause prolonged inflammation due to strong induction of an",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not mention murine norovirus, human astrovirus, or murine cytomegalovirus, which are the viruses specified in the ground truth."
+          },
+          {
+            "question": "When was the first case of COVID-19 identified?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the initial cluster in Wuhan but omits the specific timeline of the first cases in the WHO European Region as mentioned in the ground truth and retrieved context."
+          },
+          {
+            "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+            "category": "correct",
+            "reasoning": "The generated answer matches the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "What is the structure of Hantaan virus?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses important details about the virus's composition, genome structure, and stability present in the retrieved context."
+          },
+          {
+            "question": "How many people did SARS-CoV infect?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context refers to SARS-CoV-2 (COVID-19) or 2019-nCoV, not the original SARS-CoV, making the answer irrelevant to the question."
+          },
+          {
+            "question": "What was the focus of the study?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but omits key details about the study's focus on specific target groups and its broader goal of providing evidence-based practical guidance."
+          },
+          {
+            "question": "What contributed to a large part of mammalian genomic sequence?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct in mentioning sequence comparison but misses the specific contribution of the MULTIZ program and syntenic whole-genome alignments."
+          },
+          {
+            "question": "What is severe MARS noted for?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not mention 'severe MARS' but instead discusses unrelated topics like ARDS and MERS, making the context irrelevant to the question."
+          },
+          {
+            "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context without omissions, additions, or vagueness."
+          },
+          {
+            "question": "What does Clade A contain?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of explicit mention of 'Clade A' but fails to recognize that the '1A swine lineage' in the context is likely synonymous with or refers to 'Clade A' in the question."
+          },
+          {
+            "question": "What is  an example of anti-viral defense in bats?",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses the important detail about bats' anti-inflammatory adaptations that protect them from harm caused by the perpetually active interferon pathway."
+          },
+          {
+            "question": "What could be novel candidates as potent inhibitors of papain like cysteine prot",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and provides a precise, supported response to the question."
+          },
+          {
+            "question": "What are exhibited in the two phases?",
+            "category": "too_vague",
+            "reasoning": "The answer acknowledges the lack of specific information but fails to identify or infer the relevant details present in the retrieved context about the RNA in the two phases."
+          },
+          {
+            "question": "How was HFRS  first brought to the attention of western medicine ?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include any information about how HFRS was first brought to the attention of western medicine, making the generated answer accurate in its admission of missing relevant details."
+          },
+          {
+            "question": "What has been the application of phage display technology?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the key detail about modifying the filamentous phage genome to display polypeptides as fusions to coat proteins."
+          },
+          {
+            "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the relationship but omits the nuanced discussion about the 19th-century circulation of a 1918-like virus and the unresolved questions in the context."
+          },
+          {
+            "question": "In how many cases the symptoms at diagnosis were consistent with the case defini",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the total number of cases (323) but fails to account for the 2% that did not meet the symptom-based case definition, making it partially correct but missing critical detail."
+          },
+          {
+            "question": "Which may be an occupational group with significantly higher incidence of seropo",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but unnecessarily adds the condition 'when animals have active MERS-CoV infections,' which is not part of the ground truth and slightly narrows the scope without clear justification from the context."
+          },
+          {
+            "question": "Is there an Influenza vaccine?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the LAIV but fails to mention the broader existence of other influenza vaccines and ongoing improvements, as highlighted in the ground truth."
+          },
+          {
+            "question": "What is a future potential of filamentous phage?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the key future potential of filamentous phage as a component in combination therapeutics against drug-resistant infections, focusing instead on broader applications."
+          },
+          {
+            "question": "What is the treatment for MERS-COV?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states the lack of proven treatments but omits critical supportive care details from the ground truth, such as respiratory support and infection control measures."
+          },
+          {
+            "question": "What does LAIV rely on?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly describes LAIV's attenuated backbone and replication mechanism but omits the critical reliance on antigenic match and HA/NA antigen replacement mentioned in the ground truth."
+          },
+          {
+            "question": "What percentage of population was affected?",
+            "category": "incomplete",
+            "reasoning": "The answer omits the additional 36.6% figure from the last passage, which is part of the ground truth."
+          },
+          {
+            "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly cites the context about oral swabs but omits the critical detail that they are insufficient alone and should be supplemented with serological tests."
+          },
+          {
+            "question": "How many people have persistent hepatitis C virus?",
+            "category": "incomplete",
+            "reasoning": "The generated answer provides a narrower range (92-149 million) than the ground truth (144-230 million), missing the broader or more recent estimates supported by other sources."
+          },
+          {
+            "question": "What was the main finding in the study?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer discusses dropout rates, which are mentioned in the retrieved context but are not the main finding of the study."
+          },
+          {
+            "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the specific mention of ependymal ciliary function, which is an important detail from the ground truth and retrieved context."
+          },
+          {
+            "question": "What statistical tests were used to compare categorical variables?",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses the specific context (e.g., 'with powder contamination' from the Trojan Chicken Study) that could refine the response."
+          },
+          {
+            "question": "What is this disease  characterized by ?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer describes Still's disease, while the ground truth and question refer to a different disease (likely dermatomyositis or polymyositis, given the symmetric proximal weakness and rashes)."
+          },
+          {
+            "question": "How do these exact processes ultimately restrict viral infectivity?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses key aspects from the ground truth, such as the activation of innate and adaptive immunity and broader antiviral systems beyond interferons and TRIM79a."
+          },
+          {
+            "question": "what is the rate of return in cadence design systems inc . of an investment from",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the rate of return using the provided context without errors or omissions."
+          },
+          {
+            "question": "what is the ratio of the total american personnel to us airways personnel",
+            "category": "incomplete",
+            "reasoning": "The answer correctly calculates the decimal ratio but fails to simplify it to the exact fractional form (77:41) as required by the ground truth."
+          },
+          {
+            "question": "what portion of total assets acquired of anios are intangible assets?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of explicit intangible asset values but fails to recognize that the ground truth value ($324.8 million) could be derived from the context (total consideration minus tangible assets, liabilities, and goodwill)."
+          },
+          {
+            "question": "what is the five year total return on the goldman sachs group inc.?",
+            "category": "too_vague",
+            "reasoning": "The answer acknowledges the lack of specific numerical values in the context but fails to extract or infer the available data (e.g., the 5-year return from Dec 2008 to Dec 2013) to provide a useful response."
+          },
+          {
+            "question": "what is the percentage change in the total carrying amount of goodwill from 2016",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the specific numerical values for the carrying amount of goodwill in 2016 or 2017, making it impossible to calculate the percentage change."
+          },
+          {
+            "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states that the exact net change isn't explicitly provided, but it fails to infer or calculate the net change from the revenue figures mentioned in the ground truth, which are derivable from the context."
+          },
+          {
+            "question": "what was the 2015 total return for the peer group?",
+            "category": "correct",
+            "reasoning": "The generated answer exactly matches the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "what was the profit margin of printing papers in 2005",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context contains the necessary financial figures (net sales and operating profit) for 2005, but the generated answer incorrectly claims the information is missing."
+          },
+          {
+            "question": "what was the percent change in the aggregate net asset values of the direct lend",
+            "category": "incomplete",
+            "reasoning": "The answer correctly calculates the percent change but omits the critical note about the exclusion of SSGA lending funds from the 2007 direct lending collateral pool balance."
+          },
+          {
+            "question": "what was the percentage cumulative total shareholder return on disca common stoc",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states that the context does not explicitly provide the percentage, but it fails to infer or calculate the 124.65% return from the $100 to $224.65 growth mentioned in the graph's assumptions."
+          },
+          {
+            "question": "what was the percentage change in the cash dividends paid per common share from ",
+            "category": "correct",
+            "reasoning": "The answer accurately calculates and presents the percentage change in cash dividends per common share from 2006 to 2007 using the correct values from the retrieved context."
+          },
+          {
+            "question": "what is the after-tax share-based compensation cost in 2010?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and states the after-tax share-based compensation cost using the provided context without errors or omissions."
+          },
+          {
+            "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates the average using the correct values from the retrieved context and matches the ground truth."
+          },
+          {
+            "question": "what is the percentage change in total financial liabilities at fair value in 20",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percentage change using the correct values from the retrieved context."
+          },
+          {
+            "question": "what are the net revenues in investment management in 2016 , in billions?",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly assumes a 7% increase from 2016 to 2017, which is not supported by the retrieved context."
+          },
+          {
+            "question": "was was the total amount spent on stock repurchases in december 2012?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the exact figure provided in the retrieved context without any unsupported claims or omissions."
+          },
+          {
+            "question": "what was the net change in tax positions in 2014",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the calculation and values from the retrieved context, matching the ground truth exactly."
+          },
+          {
+            "question": "what portion of the total noncancelable future lease commitments are due in fisc",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and correctly calculates the total portion due in fiscal year 2019."
+          },
+          {
+            "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and matches the ground truth without any unsupported claims or omissions."
+          },
+          {
+            "question": "what portion of the total restricted units will vest in 2011?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context, which explicitly states that 8,000 restricted stock units will vest in 2011."
+          },
+          {
+            "question": "what was the percent change in number of shares purchased by employees between 2",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percent change using the correct values from the retrieved context."
+          },
+          {
+            "question": "what was the percent of the total gains that was from the sales of land",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context contains the necessary numerical values for gains from land sales and total gains, but the generated answer incorrectly claims the information is missing."
+          },
+          {
+            "question": "what was the percentual decrease observed in the liabilities for accrued interes",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include data for 2012 or 2013, making it impossible to answer the question."
+          },
+          {
+            "question": "what portion of the total estimated purchase price is paid in cash?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the cash portion of the total estimated purchase price as stated in the retrieved context."
+          },
+          {
+            "question": "as a result of the sales of certain non-core towers and other assets what was th",
+            "category": "incomplete",
+            "reasoning": "The answer uses incorrect values from the retrieved context ($7.1M and $10.5M instead of $7.8M and $10.7M) and misses the offset gains, leading to an inaccurate percentage change."
+          },
+          {
+            "question": "what was the percentage rent increase between 2007 and 2008?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include any information about rent expenses for 2007 or 2008, making the answer correct in stating the lack of relevant data."
+          },
+          {
+            "question": "what was the percentage change in the the research and development costs from 20",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percentage change in R&D costs from 2014 to 2015 using the correct values from the retrieved context."
+          },
+          {
+            "question": "what was the lowest effective tax rate in the three year period?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the lowest effective tax rate of 27% in 2005 as stated in the retrieved context."
+          },
+          {
+            "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the specific dividend yield values for 2007 and 2008 needed to calculate the percentage growth."
+          },
+          {
+            "question": "in 2018 what was the percent of the cib markets net interest income as part of t",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percentage using the correct values from the retrieved context."
+          },
+          {
+            "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the issue with PL/1 style comments but fails to address the specific format requirements for COBOL copybooks in WTX as implied by the ground truth."
+          },
+          {
+            "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context only references WTX version 8.4.0.2 and earlier, which does not include information about WTX support for IBM Integration Bus V10."
+          },
+          {
+            "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Micro",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly adds unsupported details about Exchange 2016 support starting from Fix Pack 3, which is not mentioned in the context for Microsoft Edge."
+          },
+          {
+            "question": "What IBM Business Process Manager version is affected by the Apache Commons File",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the absence of IBM Business Process Manager in the retrieved context and correctly identifies the affected products mentioned."
+          },
+          {
+            "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS mod",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and provides a complete, actionable solution without unsupported claims."
+          },
+          {
+            "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more in",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context only contains information about WebSphere Application Server fix packs, not WebSphere Message Broker (WMB) Fix Pack 8.0.0.5."
+          },
+          {
+            "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I s",
+            "category": "incomplete",
+            "reasoning": "The answer includes some relevant suggestions (e.g., connection testing) but misses the critical 'Validate on Reserve' solution from the ground truth and focuses on less relevant advice like bind variables."
+          },
+          {
+            "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adap",
+            "category": "incomplete",
+            "reasoning": "The answer provides general troubleshooting steps but misses the specific solution from the ground truth about tuning the WebSphere MQ Resource Adapter thread pool size."
+          },
+          {
+            "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SP",
+            "category": "incomplete",
+            "reasoning": "The answer correctly suggests deactivating the license and contacting IBM support but misses the critical step of explicitly directing the user to IBM SPSS support for license transfer assistance, as outlined in the ground truth."
+          },
+          {
+            "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I exp",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects all key details from the retrieved context without omissions or unsupported claims."
+          },
+          {
+            "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ versio",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but incorrectly emphasizes mixed message sizes as the primary use case and omits the three specific negotiated value cases outlined in the ground truth and context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses mentioning the official IBM Security Bulletin as the primary source for detailed information, as highlighted in the ground truth."
+          },
+          {
+            "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability (",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not mention IBM Integration Bus or the specified CVEs (CVE-2017-1000381 and CVE-2017-11499), making the generated answer accurate in stating the lack of relevant information."
+          },
+          {
+            "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the CVE-2015-0410 link but fails to mention the bulletin details and CVE-2014-6593, which are explicitly present in the retrieved context."
+          },
+          {
+            "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one co",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the need to contact IBM but misses the key issue (exhausted authorizations) and includes irrelevant steps (e.g., checking base module or expiration) not supported by the error message."
+          },
+          {
+            "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How ",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context explicitly mentions 'DOWNLOADABLE FILES' and provides details for version 3.9, but the answer incorrectly claims no information is available for ITNM 4.2.0.1 GA."
+          },
+          {
+            "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabil",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the remediation action but omits the specific CVE details from the first retrieved context (only CVE-2017-16546) while including CVEs from the second context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalat",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the lack of relevant information in the retrieved context and correctly identifies the unrelated CVE discussed."
+          },
+          {
+            "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX ",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context focuses on installation and security bulletins, not user management procedures, making it irrelevant to the question."
+          },
+          {
+            "question": "What things are important to consider when installing a fix pack for IIB running",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses key details from the retrieved context, such as specific APAR references (IT03599, IT16735) and the requirement to upgrade to at least 8.0.0.7."
+          },
+          {
+            "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter",
+            "category": "incomplete",
+            "reasoning": "The answer provides a correct workaround but misses the critical APAR reference (JR46703) and the specific affected version (8.0.1.0) mentioned in the ground truth."
+          },
+          {
+            "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication Syste",
+            "category": "incomplete",
+            "reasoning": "The answer provides correct details about the CVE but fails to include the direct link to the official IBM security bulletin, which is the primary requested information."
+          },
+          {
+            "question": "Launching IBM Rational Software Architect application results in Error: Java was",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies potential causes like Java installation and video drivers but misses the specific ground truth about the Intel Graphic Card driver bug for Windows XP SP3 and the primary solution of updating the video driver."
+          },
+          {
+            "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just ",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the retrieved context and provides a comprehensive solution to the problem without adding unsupported claims."
+          },
+          {
+            "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How",
+            "category": "incomplete",
+            "reasoning": "The answer correctly addresses the SSL certificate issue but misses the specific context about the problematic global SSLSocketFactory setting mentioned in the retrieved context."
+          },
+          {
+            "question": "How to install Packaging utility? How to install Packaging utility?",
+            "category": "incomplete",
+            "reasoning": "The answer provides some correct steps but omits critical details like downloading the fix pack, extracting it, and adding the repository location in IBM Installation Manager."
+          },
+          {
+            "question": "Is there a support's guide to the CORBA Probes? Where can I download the support",
+            "category": "incomplete",
+            "reasoning": "The answer provides the correct link but misses the specific filename (GENERIC_CORBA_SupportsGuide_20.pdf) mentioned in the ground truth."
+          },
+          {
+            "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS usin",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context pertains to Tivoli Workload Scheduler (TWS) and Oracle 12c, not WebSphere Application Server (WSAS), making it irrelevant to the question."
+          },
+          {
+            "question": "TEP to TEPS communication issues with different Java versions Recent Java update",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context focuses on Windows 7 upgrade issues and Java cache troubleshooting, not Java version compatibility problems as asked in the question."
+          },
+          {
+            "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to conf",
+            "category": "too_vague",
+            "reasoning": "The answer acknowledges the lack of specific information but fails to explicitly state that the configuration is unsupported, which is the key ground truth detail."
+          }
+        ],
+        "judge_model": "mistral-large-latest"
+      }
+    }
+  },
+  "llamaindex": {
+    "build_time_s": 3.89,
+    "latency": {
+      "mean_ms": 2089.9,
+      "min_ms": 717.1,
+      "max_ms": 5444.5,
+      "p95_ms": 4392.4
+    },
+    "eval": {
+      "string_overlap": {
+        "answer_f1": 0.5719451118397055,
+        "context_coverage": 0.7407809696222822
+      },
+      "llm_judge": {
+        "correctness": 0.6977777777777777,
+        "faithfulness": 0.8416666666666667,
+        "completeness": 0.6416666666666667,
+        "errors": 0,
+        "judge_model": "mistral-large-latest"
+      },
+      "ragas": {
+        "faithfulness": 0.7662909621242956,
+        "answer_relevancy": 0.6836348521805568,
+        "context_precision": 0.7101851851412654,
+        "context_recall": 0.6328815628815628
+      },
+      "failure_modes": {
+        "counts": {
+          "wrong_context": 16,
+          "hallucination": 11,
+          "too_vague": 1,
+          "incomplete": 45,
+          "correct": 17
+        },
+        "percentages": {
+          "wrong_context": 17.8,
+          "hallucination": 12.2,
+          "too_vague": 1.1,
+          "incomplete": 50.0,
+          "correct": 18.9
+        },
+        "sample_size": 90,
+        "detailed": [
+          {
+            "question": "Which viruses may not cause prolonged inflammation due to strong induction of an",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies TBFV as a virus with strong antiviral clearance but misses the specific viruses (murine norovirus, human astrovirus, murine cytomegalovirus) mentioned in the ground truth."
+          },
+          {
+            "question": "When was the first case of COVID-19 identified?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the initial cluster in December 2019 but omits the specific timeline of the first cases in the WHO European Region as mentioned in the ground truth."
+          },
+          {
+            "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+            "category": "correct",
+            "reasoning": "The generated answer matches the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "What is the structure of Hantaan virus?",
+            "category": "incomplete",
+            "reasoning": "The answer omits the specific details about the three RNA segments (small, medium, and large) and their respective encoded proteins (nucleoprotein, envelope glycoproteins, and viral RNA-dependent RNA polymerase)."
+          },
+          {
+            "question": "How many people did SARS-CoV infect?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but omits the number of deaths and the geographic scope mentioned in the ground truth and retrieved context."
+          },
+          {
+            "question": "What was the focus of the study?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the study's focus on community responses to H1N1 communication campaigns but omits key details about target groups and the practical guidance purpose."
+          },
+          {
+            "question": "What contributed to a large part of mammalian genomic sequence?",
+            "category": "incomplete",
+            "reasoning": "The answer focuses on positively selected genes, which is relevant but misses the key contribution of syntenic whole-genome alignments (MULTIZ) mentioned in the ground truth."
+          },
+          {
+            "question": "What is severe MARS noted for?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer discusses MERS (Middle East Respiratory Syndrome) while the ground truth and question refer to ARDS (Acute Respiratory Distress Syndrome), indicating the retrieved context was irrelevant."
+          },
+          {
+            "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context without omissions or unsupported claims."
+          },
+          {
+            "question": "What does Clade A contain?",
+            "category": "correct",
+            "reasoning": "The generated answer is factually accurate and directly matches the retrieved context without omissions or additions."
+          },
+          {
+            "question": "What is  an example of anti-viral defense in bats?",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses the key detail about bats' anti-inflammatory adaptations that prevent harm from the perpetually activated interferon pathway."
+          },
+          {
+            "question": "What could be novel candidates as potent inhibitors of papain like cysteine prot",
+            "category": "hallucination",
+            "reasoning": "The generated answer incorrectly specifies 'pyridylimidazo[1,5-a]pyridine' instead of the correct 'pyridylimidazopyridine' from the retrieved context, introducing an unsupported structural detail."
+          },
+          {
+            "question": "What are exhibited in the two phases?",
+            "category": "too_vague",
+            "reasoning": "The answer acknowledges the lack of specific details about the two phases despite the relevant context being available in the first passage."
+          },
+          {
+            "question": "How was HFRS  first brought to the attention of western medicine ?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context focuses on treatment and pathogenesis of HFRS but does not contain any information about how it was first brought to the attention of western medicine."
+          },
+          {
+            "question": "What has been the application of phage display technology?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly describes protein libraries and biopanning but omits the key detail about modifying the filamentous phage genome to display polypeptides as fusions to coat proteins."
+          },
+          {
+            "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies a relationship but omits key details about the 19th-century circulation and the uncertainty around the virus's evolution."
+          },
+          {
+            "question": "In how many cases the symptoms at diagnosis were consistent with the case defini",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the total cases (323) but omits the critical detail that 98% of them had symptoms consistent with the case definition, as highlighted in the ground truth."
+          },
+          {
+            "question": "Which may be an occupational group with significantly higher incidence of seropo",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly expands 'DCs' to 'donkey caretakers' instead of 'dromedary camels,' which is explicitly stated in the retrieved context."
+          },
+          {
+            "question": "Is there an Influenza vaccine?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the existence of influenza vaccines and mentions LAIV but omits broader vaccine types (e.g., virus-vectored vaccines) and critical limitations discussed in the context."
+          },
+          {
+            "question": "What is a future potential of filamentous phage?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies some potential uses of filamentous phage but misses the key future potential mentioned in the ground truth (combination therapeutics against drug-resistant infections)."
+          },
+          {
+            "question": "What is the treatment for MERS-COV?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly mentions the lack of proven therapy and experimental agents but omits key supportive care details and preventive measures present in the ground truth."
+          },
+          {
+            "question": "What does LAIV rely on?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the key detail that LAIV's reliance on antigenic match is tied to the replacement of HA and NA antigens on the same schedule as TIV, without explaining the broader immune response mechanisms mentioned in the context."
+          },
+          {
+            "question": "What percentage of population was affected?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly cites the 1.88% to 11.43% range but omits the 36.6% figure from the last passage, which is also relevant to the question."
+          },
+          {
+            "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies oral swabs as a key detection method but fails to mention the shift to anal swabs in late infection or the need for serological tests (IgM/IgG) for confirmation, which are critical details in the context."
+          },
+          {
+            "question": "How many people have persistent hepatitis C virus?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the broader range of the ground truth (144-230 million) and relies on a single estimate (180 million infected) without accounting for variability in chronic infection rates."
+          },
+          {
+            "question": "What was the main finding in the study?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer discusses dropout rates, which are mentioned in the retrieved context but are not the main finding of the study."
+          },
+          {
+            "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the specific mention of ependymal ciliary function, which is an important detail from the ground truth and retrieved context."
+          },
+          {
+            "question": "What statistical tests were used to compare categorical variables?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the statistical tests mentioned in the retrieved context for comparing categorical variables."
+          },
+          {
+            "question": "What is this disease  characterized by ?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer describes characteristics of Still's disease, while the retrieved context and ground truth pertain to juvenile idiopathic inflammatory myopathies (e.g., dermatomyositis)."
+          },
+          {
+            "question": "How do these exact processes ultimately restrict viral infectivity?",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses key details from the ground truth, such as the activation of innate and adaptive immunity and direct antiviral activity targeting essential viral structures."
+          },
+          {
+            "question": "what is the rate of return in cadence design systems inc . of an investment from",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the rate of return using the provided context and matches the ground truth."
+          },
+          {
+            "question": "what is the ratio of the total american personnel to us airways personnel",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states the numbers and a simplified decimal ratio but fails to provide the fully simplified fractional ratio (77:41) as in the ground truth."
+          },
+          {
+            "question": "what portion of total assets acquired of anios are intangible assets?",
+            "category": "hallucination",
+            "reasoning": "The generated answer incorrectly calculates the total intangible assets as $333.8 million (summing $252.0M + $65.7M + $16.1M) when the ground truth states the correct total is $324.8 million, and it also misrepresents the total assets acquired as $473.6 million, which is not supported by the retrieved context."
+          },
+          {
+            "question": "what is the five year total return on the goldman sachs group inc.?",
+            "category": "hallucination",
+            "reasoning": "The generated answer claims a five-year total return of $248.36, which is not supported by the retrieved context or the ground truth ($148.36)."
+          },
+          {
+            "question": "what is the percentage change in the total carrying amount of goodwill from 2016",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of the 2016 figure but fails to acknowledge or use the ground truth values provided, which are necessary for a complete response."
+          },
+          {
+            "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+            "category": "hallucination",
+            "reasoning": "The generated answer incorrectly states an increase of $94 million, while the context and ground truth confirm a decrease of $6 million."
+          },
+          {
+            "question": "what was the 2015 total return for the peer group?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately matches the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "what was the profit margin of printing papers in 2005",
+            "category": "incomplete",
+            "reasoning": "The answer acknowledges the lack of explicit profit margin data but fails to calculate it despite the necessary figures being present in the retrieved context."
+          },
+          {
+            "question": "what was the percent change in the aggregate net asset values of the direct lend",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not contain any information about the aggregate net asset values of direct lending collateral pools or their changes between 2007 and 2008."
+          },
+          {
+            "question": "what was the percentage cumulative total shareholder return on disca common stoc",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context mentions a stock performance graph with cumulative total shareholder return but does not explicitly provide the numerical value for Disca common stock."
+          },
+          {
+            "question": "what was the percentage change in the cash dividends paid per common share from ",
+            "category": "correct",
+            "reasoning": "The answer accurately calculates and presents the percentage change in cash dividends per common share from 2006 to 2007 using the correct values from the retrieved context."
+          },
+          {
+            "question": "what is the after-tax share-based compensation cost in 2010?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not contain any information about the after-tax share-based compensation cost for 2010, only details about share repurchase programs and general share-based compensation plans."
+          },
+          {
+            "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses residential mortgage-backed securities and does not contain any information about 'other' loans for 2011 or 2012."
+          },
+          {
+            "question": "what is the percentage change in total financial liabilities at fair value in 20",
+            "category": "incomplete",
+            "reasoning": "The answer correctly calculates the percentage change but fails to include the negative sign, indicating a decrease rather than just a change."
+          },
+          {
+            "question": "what are the net revenues in investment management in 2016 , in billions?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context provides information about net revenues for 2017 and 2018 but does not contain any data about 2016."
+          },
+          {
+            "question": "was was the total amount spent on stock repurchases in december 2012?",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly includes 'including commissions and fees' when the retrieved context specifies that the average price per share excludes commissions and fees, implying the $46.0 million figure does not include them."
+          },
+          {
+            "question": "what was the net change in tax positions in 2014",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but incorrectly rounds the net change to $17,000 and includes unnecessary calculations while omitting the clear breakdown provided in the ground truth."
+          },
+          {
+            "question": "what portion of the total noncancelable future lease commitments are due in fisc",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the amounts for operating and capital leases but fails to provide the total sum of $137.7 million as required by the question."
+          },
+          {
+            "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and matches the ground truth for both years."
+          },
+          {
+            "question": "what portion of the total restricted units will vest in 2011?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context, which explicitly states that 8,000 restricted stock units will vest in 2011."
+          },
+          {
+            "question": "what was the percent change in number of shares purchased by employees between 2",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percent change using the correct values and formula, matching the ground truth."
+          },
+          {
+            "question": "what was the percent of the total gains that was from the sales of land",
+            "category": "hallucination",
+            "reasoning": "The generated answer incorrectly scales the dollar amounts (e.g., $5,080 to $5,080,000) and misstates the total gains, which are not supported by the retrieved context or ground truth."
+          },
+          {
+            "question": "what was the percentual decrease observed in the liabilities for accrued interes",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include any information about liabilities for accrued interest and penalties for 2012 and 2013, making the answer accurate but based on irrelevant data."
+          },
+          {
+            "question": "what portion of the total estimated purchase price is paid in cash?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the cash portion but fails to specify that it is a portion of the total estimated purchase price, as explicitly asked in the question."
+          },
+          {
+            "question": "as a result of the sales of certain non-core towers and other assets what was th",
+            "category": "hallucination",
+            "reasoning": "The generated answer uses incorrect net loss values ($7.1M and $10.5M) that are not supported by the retrieved context or ground truth."
+          },
+          {
+            "question": "what was the percentage rent increase between 2007 and 2008?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide rent expense data for 2007 and 2008, making it impossible to calculate the requested percentage increase."
+          },
+          {
+            "question": "what was the percentage change in the the research and development costs from 20",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percentage change in R&D costs using the correct values and methodology."
+          },
+          {
+            "question": "what was the lowest effective tax rate in the three year period?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lowest effective tax rate as 27% but omits the year (2005) when it occurred, which is part of the ground truth."
+          },
+          {
+            "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+            "category": "hallucination",
+            "reasoning": "The generated answer incorrectly uses a 2007 dividend yield of 1.5%, which is not supported by the ground truth or the retrieved context (which shows 2.7% for 2007 is implied by the ground truth)."
+          },
+          {
+            "question": "in 2018 what was the percent of the cib markets net interest income as part of t",
+            "category": "correct",
+            "reasoning": "The generated answer accurately calculates and presents the percentage using the provided figures from the retrieved context."
+          },
+          {
+            "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies formatting considerations but misses the key issue from the context about the COBOL Copybook importer being missing after an upgrade, which is the primary problem described."
+          },
+          {
+            "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide any information about WTX support for IBM Integration Bus V10, making the generated answer's claim of 'no specific information' accurate but the context irrelevant."
+          },
+          {
+            "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Micro",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly includes support for Microsoft Edge with Microsoft Exchange Server 2016, which is not mentioned in the retrieved context."
+          },
+          {
+            "question": "What IBM Business Process Manager version is affected by the Apache Commons File",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the absence of IBM Business Process Manager in the retrieved context and correctly identifies the affected products mentioned."
+          },
+          {
+            "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS mod",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and provides a complete, actionable solution without unsupported claims."
+          },
+          {
+            "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more in",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the specific link or exact details about WMB Fix Pack 8.0.0.5, which are available in the ground truth."
+          },
+          {
+            "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I s",
+            "category": "incomplete",
+            "reasoning": "The answer provides general advice but misses the critical 'Validate on Reserve' setting explicitly mentioned in the ground truth as the primary solution."
+          },
+          {
+            "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adap",
+            "category": "incomplete",
+            "reasoning": "The answer correctly suggests tuning the thread pool size but misses the critical deadlock issue highlighted in the retrieved context, which is the root cause of the hung thread."
+          },
+          {
+            "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SP",
+            "category": "incomplete",
+            "reasoning": "The answer correctly suggests contacting IBM SPSS support but misses the critical step of deactivating the license on the defective computer or providing specific guidance on how to proceed with the transfer process."
+          },
+          {
+            "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I exp",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and includes all necessary conditions for exporting a private key from DataPower Gateway Appliance."
+          },
+          {
+            "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ versio",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the third use case (value of 2 or more) and some details about negotiation behavior from the retrieved context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses key details like CVSS scores, affected versions, and remediation steps present in the retrieved context."
+          },
+          {
+            "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability (",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses a different vulnerability (CVE-2017-1151) and product (IBM Integrated Information Core/WebSphere Application Server) rather than the Node.js vulnerabilities (CVE-2017-1000381 and CVE-2017-11499) affecting IBM Integration Bus."
+          },
+          {
+            "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses key details like affected products, specific remediation steps, and direct references to the bulletin mentioned in the context."
+          },
+          {
+            "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one co",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the issue but fails to address the user's specific scenario of reinstalling after a system crash, which might require additional steps or context from IBM support."
+          },
+          {
+            "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How ",
+            "category": "incomplete",
+            "reasoning": "The answer correctly outlines the general process for downloading from Passport Advantage but fails to specify the exact part numbers or the ITNM 4.2.0.1 GA version details as mentioned in the ground truth."
+          },
+          {
+            "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabil",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the need to contact Red Hat for fixes but omits the specific CVEs mentioned in the retrieved context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalat",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the absence of information about CVE-2017-1612 in the retrieved context and correctly identifies the focus on WebSphere Application Server vulnerabilities."
+          },
+          {
+            "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX ",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context only provides instructions for downloading Cognos Disclosure Management, not user management procedures like dropping a user."
+          },
+          {
+            "question": "What things are important to consider when installing a fix pack for IIB running",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses key IIB-specific details (e.g., multi-instance synchronization, shared file system considerations, or IBM's recommended rollback procedures for IIB fix packs)."
+          },
+          {
+            "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses an unrelated issue with the Health Dashboard and Internet Explorer, not the Japanese filter problem in the Event Dashboard."
+          },
+          {
+            "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication Syste",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the relevant security bulletin but fails to provide the specific link to the IBM PureApplication System bulletin (swg21957952) and instead links to a WebSphere Application Server bulletin."
+          },
+          {
+            "question": "Launching IBM Rational Software Architect application results in Error: Java was",
+            "category": "incomplete",
+            "reasoning": "The answer acknowledges the error but fails to mention the specific solution (updating video drivers) or the potential Intel Graphic Card driver bug from the retrieved context."
+          },
+          {
+            "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just ",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the retrieved context and provides actionable troubleshooting steps without adding unsupported claims."
+          },
+          {
+            "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses specific WebSphere Operational Decision Management (ODM) configuration details and the exact keystore path or SSL configuration steps for ODM modules."
+          },
+          {
+            "question": "How to install Packaging utility? How to install Packaging utility?",
+            "category": "incomplete",
+            "reasoning": "The answer provides a general procedure but misses key steps from the ground truth, such as adding the fix pack's repository location in IBM Installation Manager explicitly."
+          },
+          {
+            "question": "Is there a support's guide to the CORBA Probes? Where can I download the support",
+            "category": "incomplete",
+            "reasoning": "The answer provides the correct link but misses the exact filename (GENERIC_CORBA_SupportsGuide_20.pdf) and the direct attachment reference from the context."
+          },
+          {
+            "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS usin",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context pertains to Tivoli Workload Scheduler (TWS) and Oracle 12c compatibility, not WebSphere Application Server (WSAS) as asked in the question."
+          },
+          {
+            "question": "TEP to TEPS communication issues with different Java versions Recent Java update",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies some Java version issues but misses the specific Windows 7-related context and troubleshooting steps from the retrieved material."
+          },
+          {
+            "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to conf",
+            "category": "hallucination",
+            "reasoning": "The answer suggests steps for configuring Tomcat as a Windows Service, which is not supported by the retrieved context or ground truth for ITCAM J2EE v7.1.1."
+          }
+        ],
+        "judge_model": "mistral-large-latest"
+      }
+    }
+  },
+  "dspy": {
+    "build_time_s": 0.89,
+    "latency": {
+      "mean_ms": 19.7,
+      "min_ms": 1.8,
+      "max_ms": 819.0,
+      "p95_ms": 3.3
+    },
+    "eval": {
+      "string_overlap": {
+        "answer_f1": 0.5370880043959267,
+        "context_coverage": 0.7511518452245478
+      },
+      "llm_judge": {
+        "correctness": 0.6105555555555556,
+        "faithfulness": 0.8322222222222223,
+        "completeness": 0.5333333333333333,
+        "errors": 0,
+        "judge_model": "mistral-large-latest"
+      },
+      "ragas": {
+        "faithfulness": 0.6216020553520554,
+        "answer_relevancy": 0.5998700270349958,
+        "context_precision": 0.6987654320514609,
+        "context_recall": 0.6177248677248677
+      },
+      "failure_modes": {
+        "counts": {
+          "wrong_context": 24,
+          "hallucination": 5,
+          "too_vague": 0,
+          "incomplete": 48,
+          "correct": 13
+        },
+        "percentages": {
+          "wrong_context": 26.7,
+          "hallucination": 5.6,
+          "too_vague": 0.0,
+          "incomplete": 53.3,
+          "correct": 14.4
+        },
+        "sample_size": 90,
+        "detailed": [
+          {
+            "question": "Which viruses may not cause prolonged inflammation due to strong induction of an",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of explicit information in the context but fails to infer the viruses (murine norovirus, human astrovirus) that may not cause prolonged inflammation based on indirect evidence."
+          },
+          {
+            "question": "When was the first case of COVID-19 identified?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the initial cluster in December 2019 but omits the specific timeline of the first cases in the WHO European Region as mentioned in the ground truth."
+          },
+          {
+            "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+            "category": "correct",
+            "reasoning": "The generated answer matches the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "What is the structure of Hantaan virus?",
+            "category": "incomplete",
+            "reasoning": "The answer omits critical details about the genome structure (three negative-sense RNA segments) and their encoded proteins, which are present in the retrieved context."
+          },
+          {
+            "question": "How many people did SARS-CoV infect?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states the number of infected people but omits the number of deaths and the geographic scope mentioned in the ground truth."
+          },
+          {
+            "question": "What was the focus of the study?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the study's focus on community responses to H1N1 communication campaigns but omits key details about target groups and the practical guidance aim."
+          },
+          {
+            "question": "What contributed to a large part of mammalian genomic sequence?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly mentions syntenic whole-genome alignments but omits the specific contribution of the MULTIZ program, which is the key detail in the ground truth."
+          },
+          {
+            "question": "What is severe MARS noted for?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses MERS-CoV (Middle East Respiratory Syndrome) and measles, not severe ARDS (the intended topic for 'severe MARS'), leading to an incorrect association."
+          },
+          {
+            "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the animal models but fails to mention that both animals can carry both viruses asymptomatically, implying a one-to-one relationship instead of a shared capability."
+          },
+          {
+            "question": "What does Clade A contain?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of direct mention of 'Clade A' but fails to recognize that the '1A lineage' in the context is synonymous with 'Clade A' in the question, thus missing the key information."
+          },
+          {
+            "question": "What is  an example of anti-viral defense in bats?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the key information from the retrieved context about the perpetually activated interferon pathway in bats."
+          },
+          {
+            "question": "What could be novel candidates as potent inhibitors of papain like cysteine prot",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context and provides a precise, supported response to the question."
+          },
+          {
+            "question": "What are exhibited in the two phases?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the lack of explicit details in the context but fails to infer the specific ground truth about RNA being exhibited in the bottom phase."
+          },
+          {
+            "question": "How was HFRS  first brought to the attention of western medicine ?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not contain any information about how HFRS was first brought to the attention of western medicine, making the answer accurate but based on irrelevant passages."
+          },
+          {
+            "question": "What has been the application of phage display technology?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly describes biopanning and protein library production but omits the key application of modifying the filamentous phage genome to display polypeptides as fusions to coat proteins."
+          },
+          {
+            "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the relationship but misses the nuanced discussion in the context about the potential 19th-century circulation of a 1918-like virus and the uncertainty around its re-emergence."
+          },
+          {
+            "question": "In how many cases the symptoms at diagnosis were consistent with the case defini",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the total number of cases (323) but fails to specify that only 98% of them (317 cases) had symptoms consistent with the case definition, excluding the 2% with only a physician's diagnosis."
+          },
+          {
+            "question": "Which may be an occupational group with significantly higher incidence of seropo",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies animal workers as a high-risk group but fails to specify dromedary camels (DCs), which is the key occupational group highlighted in the ground truth."
+          },
+          {
+            "question": "Is there an Influenza vaccine?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the existence of influenza vaccines and their types but misses the broader context about ongoing improvements and considerations for human vaccination mentioned in the ground truth."
+          },
+          {
+            "question": "What is a future potential of filamentous phage?",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the key future potential of filamentous phage as combination therapeutics against drug-resistant infections, focusing instead on vaccine carriers and affinity maturation."
+          },
+          {
+            "question": "What is the treatment for MERS-COV?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly states the lack of proven treatments and mentions supportive care but omits key details like infection control measures and preventative actions (e.g., hand hygiene) present in the ground truth."
+          },
+          {
+            "question": "What does LAIV rely on?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly mentions LAIV's reliance on antigenic match and attenuated virus strains but omits the critical detail about HA and NA antigen replacement on the same schedule as TIV."
+          },
+          {
+            "question": "What percentage of population was affected?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly cites the 1.88% to 11.43% range but omits the 36.6% figure from another relevant passage."
+          },
+          {
+            "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+            "category": "incomplete",
+            "reasoning": "The answer acknowledges the use of oral swabs but fails to mention the critical limitations (e.g., shift to anal swabs in late infection) and the need for serological tests as emphasized in the ground truth."
+          },
+          {
+            "question": "How many people have persistent hepatitis C virus?",
+            "category": "incomplete",
+            "reasoning": "The answer provides a single value (144 million) but omits the upper bound (230 million) from the ground truth, which is partially supported by the retrieved context."
+          },
+          {
+            "question": "What was the main finding in the study?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer discusses dropout rates, which are unrelated to the main findings about mask compliance in the ground truth."
+          },
+          {
+            "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the specific mention of ependymal ciliary function and behavioral deficits in reaction to anxiogenic situations as highlighted in the ground truth."
+          },
+          {
+            "question": "What statistical tests were used to compare categorical variables?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the statistical tests mentioned in the retrieved context for comparing categorical variables."
+          },
+          {
+            "question": "What is this disease  characterized by ?",
+            "category": "wrong_context",
+            "reasoning": "The generated answer describes Still's disease, but the ground truth and retrieved context suggest the question was about a different disease (likely juvenile idiopathic inflammatory myopathies, given the symmetric proximal weakness and rashes)."
+          },
+          {
+            "question": "How do these exact processes ultimately restrict viral infectivity?",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies key mechanisms (e.g., interferons, TRIM79a) but omits critical details from the ground truth, such as the activation of innate/adaptive immunity and direct antiviral targeting of viral replication pathways."
+          },
+          {
+            "question": "what is the rate of return in cadence design systems inc . of an investment from",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the specific stock values for Cadence Design Systems Inc. in 2010 and 2011 needed to calculate the rate of return."
+          },
+          {
+            "question": "what is the ratio of the total american personnel to us airways personnel",
+            "category": "hallucination",
+            "reasoning": "The generated answer provides a numerical ratio (1.875) that is not supported by any information in the retrieved context, which contains no personnel data."
+          },
+          {
+            "question": "what portion of total assets acquired of anios are intangible assets?",
+            "category": "hallucination",
+            "reasoning": "The answer incorrectly states that intangible assets include at least $511.7 million in goodwill, which is not mentioned or supported by the retrieved context."
+          },
+          {
+            "question": "what is the five year total return on the goldman sachs group inc.?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context provides data for a different time period (2008-2013) and does not include the five-year total return for the requested timeframe."
+          },
+          {
+            "question": "what is the percentage change in the total carrying amount of goodwill from 2016",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the carrying amounts of goodwill for 2016 or 2017, making it impossible to calculate the percentage change."
+          },
+          {
+            "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the net revenue figures for 2014 or 2015 needed to calculate the net change, making the answer correctly identify the lack of relevant information."
+          },
+          {
+            "question": "what was the 2015 total return for the peer group?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include the 2015 total return for the peer group, making the generated answer accurate in stating the lack of information."
+          },
+          {
+            "question": "what was the profit margin of printing papers in 2005",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the specific net sales and operating profit figures for printing papers in 2005, which are required to calculate the profit margin."
+          },
+          {
+            "question": "what was the percent change in the aggregate net asset values of the direct lend",
+            "category": "incomplete",
+            "reasoning": "The answer correctly calculates the percent change but fails to address the critical detail from the context that the 2007 value excludes SSGA lending funds, which may affect the interpretation of the aggregate net asset values."
+          },
+          {
+            "question": "what was the percentage cumulative total shareholder return on disca common stoc",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses Cadence Design Systems, Inc. and unrelated indices, not Discovery Communications (disca) or its shareholder return."
+          },
+          {
+            "question": "what was the percentage change in the cash dividends paid per common share from ",
+            "category": "correct",
+            "reasoning": "The answer accurately calculates and states the percentage change in cash dividends per common share from 2006 to 2007 using the correct values from the retrieved context."
+          },
+          {
+            "question": "what is the after-tax share-based compensation cost in 2010?",
+            "category": "hallucination",
+            "reasoning": "The generated answer of $24.4 million is not supported by any information in the retrieved context, which instead provides the ground truth values of $18.1 million pre-tax cost and $6.3 million tax benefit."
+          },
+          {
+            "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not contain any information about 'other' loans or their values in 2011 or 2012, making it irrelevant to the question."
+          },
+          {
+            "question": "what is the percentage change in total financial liabilities at fair value in 20",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses residential mortgage-backed securities and their details, but does not provide the total financial liabilities at fair value for 2011 or 2012 needed to calculate the percentage change."
+          },
+          {
+            "question": "what are the net revenues in investment management in 2016 , in billions?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide any information about net revenues in investment management for 2016, only for 2017 and 2018."
+          },
+          {
+            "question": "was was the total amount spent on stock repurchases in december 2012?",
+            "category": "correct",
+            "reasoning": "The generated answer matches the ground truth exactly, despite the retrieved context not explicitly stating the December 2012 amount, suggesting the system likely inferred or had access to the correct data."
+          },
+          {
+            "question": "what was the net change in tax positions in 2014",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include any information about the net change in tax positions for 2014, making the generated answer accurate in its assessment of missing data."
+          },
+          {
+            "question": "what portion of the total noncancelable future lease commitments are due in fisc",
+            "category": "incomplete",
+            "reasoning": "The answer provides a percentage (24.6%) but fails to include the exact dollar amounts ($137.7 million) as required by the question and supported by the context."
+          },
+          {
+            "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the tier 2 capital values from the retrieved context for both 2012 and 2011."
+          },
+          {
+            "question": "what portion of the total restricted units will vest in 2011?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the retrieved context, stating the exact number of restricted units vesting in 2011."
+          },
+          {
+            "question": "what was the percent change in number of shares purchased by employees between 2",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the number of shares purchased by employees in 2010 or 2011, making it irrelevant for calculating the percent change."
+          },
+          {
+            "question": "what was the percent of the total gains that was from the sales of land",
+            "category": "correct",
+            "reasoning": "The generated answer matches the ground truth calculation and provides an accurate percentage of the total gains from land sales."
+          },
+          {
+            "question": "what was the percentual decrease observed in the liabilities for accrued interes",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not include any information about liabilities for accrued interest and penalties for 2012 and 2013, making the answer accurate in its inability to provide the requested calculation."
+          },
+          {
+            "question": "what portion of the total estimated purchase price is paid in cash?",
+            "category": "incomplete",
+            "reasoning": "The answer provides a percentage (34.0%) which is correct based on the context, but it fails to include the exact cash amount ($2,094,800) as requested in the question."
+          },
+          {
+            "question": "as a result of the sales of certain non-core towers and other assets what was th",
+            "category": "hallucination",
+            "reasoning": "The generated answer claims a 47.89% change, which is not supported by the retrieved context or the ground truth (4.5%)."
+          },
+          {
+            "question": "what was the percentage rent increase between 2007 and 2008?",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the rent expenses for 2007 and 2008, making it impossible to calculate the percentage increase."
+          },
+          {
+            "question": "what was the percentage change in the the research and development costs from 20",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not contain any information about research and development costs for 2014 or 2015."
+          },
+          {
+            "question": "what was the lowest effective tax rate in the three year period?",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not provide the dividend yield values for 2007 or 2008, making it impossible to calculate the percentage growth."
+          },
+          {
+            "question": "in 2018 what was the percent of the cib markets net interest income as part of t",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the calculation and percentage provided in the ground truth and is fully supported by the retrieved context."
+          },
+          {
+            "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree",
+            "category": "incomplete",
+            "reasoning": "The answer acknowledges standard COBOL formatting but fails to mention the specific WTX-related issue (missing importer) or the corrective action (installing in an empty directory) from the context."
+          },
+          {
+            "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context does not address the support of WebSphere Transformation Extender (WTX) for IBM Integration Bus V10, focusing instead on WTX V8.4.1.4."
+          },
+          {
+            "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Micro",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses IBM Cognos and Microsoft Office 365 support, not Microsoft Edge or IBM Content Collector (ICC)."
+          },
+          {
+            "question": "What IBM Business Process Manager version is affected by the Apache Commons File",
+            "category": "correct",
+            "reasoning": "The generated answer accurately reflects the absence of information about IBM Business Process Manager in the retrieved context."
+          },
+          {
+            "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS mod",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the explicit solution of transferring the files again, which is the primary resolution mentioned in the context."
+          },
+          {
+            "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more in",
+            "category": "incomplete",
+            "reasoning": "The answer correctly suggests IBM support sources but fails to provide the specific link or exact details about WMB Fix Pack 8.0.0.5, which are available in the ground truth."
+          },
+          {
+            "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I s",
+            "category": "incomplete",
+            "reasoning": "The answer provides general suggestions but misses the critical 'Validate on Reserve' setting, which is the primary solution for StaleConnectionException in WebSphere."
+          },
+          {
+            "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adap",
+            "category": "incomplete",
+            "reasoning": "The answer provides general troubleshooting steps but misses the specific solution of tuning the WebSphere MQ Resource Adapter thread pool size as mentioned in the ground truth."
+          },
+          {
+            "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SP",
+            "category": "incomplete",
+            "reasoning": "The answer provides correct contact information for IBM support but misses the step-by-step process (e.g., deactivation request) and vendor-specific support options mentioned in the ground truth."
+          },
+          {
+            "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I exp",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but omits the critical detail that the `hsm-clone-kwk` command must be executed four times (as specified in the context) and does not clarify when this step is unnecessary (e.g., same appliance)."
+          },
+          {
+            "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ versio",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses key details about the three use cases and incorrectly states firmware version recommendations not supported by the context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses important details like the CVSS score, affected versions beyond the remediation levels, and the lack of workarounds."
+          },
+          {
+            "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability (",
+            "category": "incomplete",
+            "reasoning": "The answer correctly directs to IBM Security Bulletins but fails to mention the specific bulletins or context provided (e.g., the Java SDK vulnerabilities in the retrieved context) that are relevant to the question."
+          },
+          {
+            "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM",
+            "category": "incomplete",
+            "reasoning": "The answer provides correct links to CVE details but misses critical information from the context such as affected products, remediation steps, and IBM-specific bulletin references."
+          },
+          {
+            "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one co",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the cause of the error but fails to mention the specific action (contacting IBM with purchase details) explicitly stated in the ground truth as necessary for resolution."
+          },
+          {
+            "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How ",
+            "category": "incomplete",
+            "reasoning": "The answer is partially correct but misses the specific version (4.2.0.1 GA) and part number details explicitly mentioned in the ground truth."
+          },
+          {
+            "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabil",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the need to contact Red Hat for fixes but omits the specific CVEs mentioned in the retrieved context."
+          },
+          {
+            "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalat",
+            "category": "correct",
+            "reasoning": "The answer accurately reflects the lack of relevant information in the retrieved context and directs the user to official sources for further details."
+          },
+          {
+            "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX ",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context provides instructions for downloading Cognos Disclosure Management, not for dropping a user, making it irrelevant to the question."
+          },
+          {
+            "question": "What things are important to consider when installing a fix pack for IIB running",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses key IBM-recommended steps for multi-instance fix pack installation, such as synchronization of instances and specific verification tasks."
+          },
+          {
+            "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter",
+            "category": "incomplete",
+            "reasoning": "The answer provides a workaround but misses the critical APAR (JR46703) and fix information from the ground truth."
+          },
+          {
+            "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication Syste",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies the relevant security bulletin but fails to specify that it pertains to IBM PureApplication System (the bulletin linked is for WebSphere Application Server, not the exact product in the question)."
+          },
+          {
+            "question": "Launching IBM Rational Software Architect application results in Error: Java was",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies video driver updates as a solution but omits the specific mention of Intel Graphic Card driver bugs for Windows XP SP3 and the diagnostic steps from the ground truth."
+          },
+          {
+            "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just ",
+            "category": "incomplete",
+            "reasoning": "The answer correctly identifies key issues (permissions, image location, SSL) but omits the diagnostic steps (e.g., Process Monitor usage) and specific troubleshooting actions mentioned in the context."
+          },
+          {
+            "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How",
+            "category": "incomplete",
+            "reasoning": "The answer is correct but misses specific WebSphere Operational Decision Management (ODM) configuration details like truststore setup for the RES (Rule Execution Server) module."
+          },
+          {
+            "question": "How to install Packaging utility? How to install Packaging utility?",
+            "category": "incomplete",
+            "reasoning": "The answer is mostly correct but misses the critical detail that the specific fix pack (v1005) is no longer available and fails to emphasize checking for the most recent version as strongly as the context does."
+          },
+          {
+            "question": "Is there a support's guide to the CORBA Probes? Where can I download the support",
+            "category": "incomplete",
+            "reasoning": "The answer provides the correct link but misses the specific filename (GENERIC_CORBA_SupportsGuide_20.pdf) and the exact document reference from the ground truth."
+          },
+          {
+            "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS usin",
+            "category": "wrong_context",
+            "reasoning": "The retrieved context discusses Tivoli Workload Scheduler (TWS) and Rational Insight compatibility with Oracle 12c, not WebSphere Application Server (WSAS)."
+          },
+          {
+            "question": "TEP to TEPS communication issues with different Java versions Recent Java update",
+            "category": "incomplete",
+            "reasoning": "The answer includes some correct details from the ground truth but omits key specifics (e.g., Java 8 64-bit vs. 32-bit workaround) and incorrectly mixes unrelated context (Windows 7/JNLP issue) from the retrieved passage."
+          },
+          {
+            "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to conf",
+            "category": "hallucination",
+            "reasoning": "The answer claims the configuration is generally supported, but the retrieved context explicitly states it is not supported for ITCAM J2EE v7.1.1."
+          }
+        ],
+        "judge_model": "mistral-large-latest"
+      }
+    }
+  },
+  "_ranking_table": {
+    "answer_f1 (string)": {
+      "langchain": 3,
+      "llamaindex": 1,
+      "dspy": 2
+    },
+    "correctness (llm_judge)": {
+      "langchain": 2,
+      "llamaindex": 1,
+      "dspy": 3
+    },
+    "faithfulness (ragas)": {
+      "langchain": 2,
+      "llamaindex": 1,
+      "dspy": 3
+    },
+    "answer_relevancy (ragas)": {
+      "langchain": 3,
+      "llamaindex": 1,
+      "dspy": 2
+    },
+    "latency (lower=better)": {
+      "langchain": 3,
+      "llamaindex": 2,
+      "dspy": 1
+    }
+  },
+  "_adversarial_degradation": {
+    "langchain": {
+      "standard_correctness": 0.644,
+      "adversarial_robustness": 0.765,
+      "degradation_ratio": 1.188,
+      "top_failure_mode": "correct_refusal"
+    },
+    "llamaindex": {
+      "standard_correctness": 0.698,
+      "adversarial_robustness": 0.716,
+      "degradation_ratio": 1.026,
+      "top_failure_mode": "missed_uncertainty"
+    },
+    "dspy": {
+      "standard_correctness": 0.611,
+      "adversarial_robustness": 0.703,
+      "degradation_ratio": 1.151,
+      "top_failure_mode": "missed_uncertainty"
+    }
+  }
+}

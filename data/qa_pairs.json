@@ -1,0 +1,1079 @@
+[
+  {
+    "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree, while importing cobol copybooks. Is there any format for copybooks(specifically to be used in wtx), that we need to follow?",
+    "ground_truth": "Yes, there is a specific format for COBOL copybooks to be used in IBM WebSphere Transformation Extender (WTX). In the context provided, it is mentioned that when installing IBM WTX Design Studio 8.4.1.1 over an existing installation, the COBOL Copybook importer may be missing after the upgrade. This issue occurs because some files are not correctly overwritten or modified during the upgrade process. To resolve this problem, it is recommended to install WTX Design Studio 8.4.1.1 in an empty directory and then perform any installation customization. Following this procedure should ensure that the COBOL Copybook importer functions properly in the WTX environment.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_0_0",
+      "techqa_0_1",
+      "techqa_0_2",
+      "techqa_0_3",
+      "techqa_0_4"
+    ]
+  },
+  {
+    "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10? When will WebSphere Transformation Extender (WTX) be supported for IBM Integration Bus V10?",
+    "ground_truth": "Based on the provided context, WebSphere Transformation Extender (WTX) version 9.0.0.x is mentioned to be used with IBM Integration Bus (IIB) 10.0.0.x. Therefore, WebSphere Transformation Extender (WTX) is supported for IBM Integration Bus V10.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_1_0",
+      "techqa_1_1",
+      "techqa_1_2",
+      "techqa_1_3",
+      "techqa_1_4"
+    ]
+  },
+  {
+    "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Microsoft Edge is supported with ICC?",
+    "ground_truth": "Microsoft Edge is supported starting with IBM Content Collector 4.0.1 Fix Pack 2 according to the provided context.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_2_0",
+      "techqa_2_1",
+      "techqa_2_2",
+      "techqa_2_3",
+      "techqa_2_4"
+    ]
+  },
+  {
+    "question": "What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031? What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031?",
+    "ground_truth": "IBM Business Process Manager is not mentioned in the provided context.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_3_0",
+      "techqa_3_1",
+      "techqa_3_2",
+      "techqa_3_3",
+      "techqa_3_4"
+    ]
+  },
+  {
+    "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS modeller trial version (18.1) (64 bit) and trying to install the same. I get the following error 1152: Error extracting modelerClient64.msi to the temporary location",
+    "ground_truth": "The error 1152 that you are experiencing while trying to install the SPSS Modeler trial version is likely due to the files being extracted improperly. The solution provided in the context is to transfer the files again to resolve the issue. Make sure that there is enough space in the temporary location noted by the installer and that you have the ability to write in that location. Verify the file content using a tool such as MD5 or try downloading the files again and testing the installation process.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_4_0",
+      "techqa_4_1",
+      "techqa_4_2",
+      "techqa_4_3",
+      "techqa_4_4"
+    ]
+  },
+  {
+    "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more information about WebSphere Message Broker (WMB) Fix Pack 8.0.0.5?",
+    "ground_truth": "You can find more details about WMB Fix Pack 8.0.0.5 on the IBM Support website by visiting the following link:\nhttp://www-01.ibm.com/support/docview.wss?uid=swg24036648",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_5_0",
+      "techqa_5_1",
+      "techqa_5_2",
+      "techqa_5_3",
+      "techqa_5_4"
+    ]
+  },
+  {
+    "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I see this exception in WebSphere Application Server J2c and RRA traces:\n\nWSRdbManagedC > preTestConnection Entry WSRdbManagedConnectionImpl@51a507f2 query: SELECT 1 FROM DUAL WSRdbManagedC 3 Exception java.sql.SQLException: ORA-02396: exceeded maximum idle time, please connect again DSRA0010E: SQL State = 61000, Error Code = 2,396 at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:440) at \n...\nEntry java.sql.SQLException: ORA-01012: not logged on ..... OracleDataSto < findMappingClass return Exit class com.ibm.websphere.ce.cm.StaleConnectionException",
+    "ground_truth": "To resolve the StaleConnectionException in WebSphere Application Server, you need to set the \"Validate on Reserve\" property to true for the connection pool associated with the data source in WebSphere Application Server. This setting will ensure that the connections are validated before being returned to the application to prevent stale connections. \n\nAdditionally, you may need to adjust the maximum idle time setting in the Oracle database to prevent the ORA-02396 error. This can be done by modifying the SQLNET.ORA file on the Oracle server to increase the value of the SQLNET.EXPIRE_TIME parameter. \n\nBy setting \"Validate on Reserve\" to true in the connection pool and adjusting the maximum idle time in the Oracle database, you should be able to resolve the StaleConnectionException in WebSphere Application Server.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_6_0",
+      "techqa_6_1",
+      "techqa_6_2",
+      "techqa_6_3",
+      "techqa_6_4"
+    ]
+  },
+  {
+    "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adapter? The following WebSphere MQ Resource Adapter hung thread can prevent an application server from starting...\n\nWSVR0605W: Thread \"WMQJCAResourceAdapter : 6\" (0000001b) has been active for 698530 milliseconds and may be hung. There is 1 thread(s) in total in the server that may be hung. at java.lang.Object.wait(Native Method) at java.lang.Object.wait(Object.java:167) at com.ibm.ejs.container.MessageEndpointFactoryImpl.createEndpoint(MessageEndpointFactoryImpl.java:498) at com.ibm.mq.connector.inbound.WorkImpl.run(WorkImpl.java:149)",
+    "ground_truth": "To resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adapter, you need to tune the thread pool size for the WebSphere MQ Resource Adapter. By default, the WebSphere MQ Resource Adapter thread pool is created with a minimum of 2 threads and a maximum of 20 threads. The Growable option is set to true, allowing the number of threads to go beyond the maximum if needed. To prevent blocked threads, you may need to limit and tune the maximum thread pool size. Individual performance tuning in a pre-production test environment is recommended to avoid performance problems on a production server.\n\nYou can access the configuration for work managers in the administrative console under Resources > Asynchronous beans > Work managers > WMQJCAResourceAdapter. It is important to configure work managers according to your specific requirements and workload to prevent hung thread issues.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_7_0",
+      "techqa_7_1",
+      "techqa_7_2",
+      "techqa_7_3",
+      "techqa_7_4"
+    ]
+  },
+  {
+    "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SPSS 24 license to a new machine. I have only used my activation code on one computer so far, and that computer was found to be defective which has led me to get a new computer. I was able to download SPSS 24 Gradpack onto the new computer, but every time I put in the activation code, the program gives me an error message saying that I am not allowed to generate any new licenses.",
+    "ground_truth": "To transfer your SPSS 24 license to a new computer, you will need to follow these steps:\n\n1. Contact IBM SPSS support for assistance with transferring your license. You can find support contact information on the IBM SPSS website or through the vendor from whom you purchased your license (e.g. Hearne, On the Hub, StudentDiscounts.com, JourneyEd, thinkEDU, Studica).\n\n2. Explain your situation to the support representative, indicating that your previous computer was defective and you are trying to transfer your license to a new computer.\n\n3. Provide the support representative with your activation code and any other relevant information they may require to verify your license.\n\n4. The support representative should be able to assist you in deactivating the license from your old computer and activating it on your new computer.\n\n5. Follow any instructions provided by the support representative to successfully transfer your SPSS 24 license to your new machine.\n\nBy following these steps and contacting IBM SPSS support, you should be able to resolve the issue with the error message you are receiving when trying to activate the license on your new computer.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_8_0",
+      "techqa_8_1",
+      "techqa_8_2",
+      "techqa_8_3",
+      "techqa_8_4"
+    ]
+  },
+  {
+    "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I export a private key from DataPower Gateway appliance?",
+    "ground_truth": "To export a private key from DataPower Gateway Appliance, you can use the `crypto-export` command. However, to successfully export a private key, the following conditions must be met:\n\n1. Ensure that the HSMs on both the exporting and importing machines are initialized and in the same key sharing domain.\n2. The private key you want to export must be marked as exportable at the time of key generation.\n3. The HSMs on both machines must share internal key-wrapping keys. These keys encrypt the exported private keys and decrypt imported private keys.\n4. If you are moving keys from one appliance to another, synchronize the key-wrapping keys using the `hsm-clone-kwk` command on both appliances.\n\nFollow these steps to successfully export a private key from a DataPower Gateway Appliance using the `crypto-export` command.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_9_0",
+      "techqa_9_1",
+      "techqa_9_2",
+      "techqa_9_3",
+      "techqa_9_4"
+    ]
+  },
+  {
+    "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ version 7.0 introduced a new feature, conversation sharing. Are there any special values on DataPower when configuring conversation sharing?",
+    "ground_truth": "Conversation sharing in DataPower MQ queue managers should be used when negotiating the sharing conversations value. It is beneficial to configure the Sharing Conversations attribute with a specific value based on the negotiated value with the MQ server. \n\nThree different use cases for configuring sharing conversations in DataPower MQ queue managers are outlined:\n1. When the negotiated sharing conversations value is 0, it is recommended to set a value of 0 or 1 on the Sharing Conversations attribute in DataPower to disable sharing conversations.\n2. If the negotiated sharing conversations value is 1, it is advised to set a value of 1 on the Sharing Conversations attribute and select \"on\" in Share Single Conversation attribute in DataPower. \n3. When the negotiated sharing conversations value is 2 or more, it is recommended to set a value of 2 or more on the Sharing Conversations attribute.\n\nIt is important to configure the Sharing Conversations attribute appropriately to ensure optimal performance and avoid potential errors or instability in the MQ environment.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_10_0",
+      "techqa_10_1",
+      "techqa_10_2",
+      "techqa_10_3",
+      "techqa_10_4"
+    ]
+  },
+  {
+    "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971) I need to understand details regarding Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971). Where can I find this information?",
+    "ground_truth": "To find the details regarding the Security Bulletin for IBM WebSphere MQ Administration command that could cause a denial of service (CVE-2016-8971), you can refer to the original document published by IBM on the IBM Security Bulletin website. The bulletin contains information about the vulnerability, its description, CVSS scores, affected products and versions, remediation/fixes, workarounds and mitigations, references, related information, change history, and disclaimer.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_11_0",
+      "techqa_11_1",
+      "techqa_11_2",
+      "techqa_11_3",
+      "techqa_11_4"
+    ]
+  },
+  {
+    "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ) I need to understand details regarding Security Bulletin: IBM Integration Bus is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ). Where can I find this information?",
+    "ground_truth": "You can find the information regarding the security bulletin for IBM Integration Bus being affected by Node.js security vulnerabilities CVE-2017-1000381 and CVE-2017-11499 by referring to the security bulletins provided in the context above. Specifically, you can review the Security Bulletins for IBM SDK for Node.js provided in the context to understand the details of the vulnerabilities and the remediation steps taken. Additionally, you can also visit the IBM Secure Engineering Web Portal and IBM Product Security Incident Response Blog for related information on security bulletins and incidents.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_12_0",
+      "techqa_12_1",
+      "techqa_12_2",
+      "techqa_12_3",
+      "techqa_12_4"
+    ]
+  },
+  {
+    "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593) I need to understand details regarding \"Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593)\" Where can I find this information?",
+    "ground_truth": "You can find the details regarding the \"Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593)\" in the provided context. It includes information about the vulnerabilities, affected products, vulnerability details, remedies/fixes, references, related information, and more.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_13_0",
+      "techqa_13_1",
+      "techqa_13_2",
+      "techqa_13_3",
+      "techqa_13_4"
+    ]
+  },
+  {
+    "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one computer and another on this one. This computer crashed and I was forced to reformat the hard drive. Subsequently, I lost SPSS in the process.  I am now reinstalling with the single user copy option.\n\nThe error it gave me now when I attempted to authorize the program with the original authorization number I received was:\n\nAuthorization in progress ... (removed) Authorization failed.: You are not allowed to generate any more new licenses. End Of Transaction. All permitted authorizations for the provided authorization code(s) have been utilized. No additional authorizations are permitted on this code. If you think this is an error, please contact IBM Corp. Customer Service at spssls@us.ibm.com ( http://www-01.ibm.com/software/analytics/spss ) with your product and purchase details. Click \"Finish\" to exit.",
+    "ground_truth": "The error message indicates that you have reached the maximum number of authorizations allowed for the provided authorization code. To resolve this issue, you will need to contact IBM Corp. Customer Service at spssls@us.ibm.com with your product and purchase details. They will be able to assist you in obtaining a new authorization code or resolving the issue with your current authorization code.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_14_0",
+      "techqa_14_1",
+      "techqa_14_2",
+      "techqa_14_3",
+      "techqa_14_4"
+    ]
+  },
+  {
+    "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How to download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 (GA) using the Passport Advantage Web site?.",
+    "ground_truth": "The download details for ITNM 4.2.0.1 GA version can be found in the context under the section \"DOWNLOADABLE FILES.\" To download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 using the Passport Advantage Web site, you need to follow these steps:\n\n1. Log on to Passport Advantage.\n2. Click Customer sign in.\n3. Enter your IBM ID and password, and click Sign in.\n4. Click Software download and media access.\n5. Click Download finder, and then click View all my downloads.\n6. Navigate to find the Tivoli Storage Productivity Center download parts.\n7. Select the Tivoli Storage Productivity Center parts that you require.\n8. Click I Agree followed by Download Now.\n9. When the download is complete, unpack Tivoli Storage Productivity Center Disk 1 images part 1, part 2, and part 3 to the same single temporary directory.\n10. Unpack all other parts into separate temporary directories for each part.\n11. Follow the instructions in the Quick Start Guide to install the product.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_15_0",
+      "techqa_15_1",
+      "techqa_15_2",
+      "techqa_15_3",
+      "techqa_15_4"
+    ]
+  },
+  {
+    "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nWhere can I find this information?",
+    "ground_truth": "You can find detailed information about the action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux on the IBM Support website. The specific document you should refer to is titled \"Action required for IBM WebSphere MQ Hypervisor Edition for Red Hat Enterprise Linux Server for the GNU C library (glibc) vulnerability (CVE-2015-0235)\" which can be accessed at the following link: http://www.ibm.com/support/docview.wss?uid=swg21695676",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_16_0",
+      "techqa_16_1",
+      "techqa_16_2",
+      "techqa_16_3",
+      "techqa_16_4"
+    ]
+  },
+  {
+    "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612) I need to understand details regarding Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612).",
+    "ground_truth": "Based on the context provided, there is no specific information regarding a security bulletin related to IBM WebSphere MQ being affected by a privilege escalation vulnerability (CVE-2017-1612). The context only discusses security bulletins related to vulnerabilities affecting IBM WebSphere Application Server (WAS) in different product configurations. \n\nTo get more information about a potential security bulletin related to IBM WebSphere MQ and CVE-2017-1612, you may need to refer directly to IBM's official security bulletins, notifications, or contact their support team for specific information on this topic.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_17_0",
+      "techqa_17_1",
+      "techqa_17_2",
+      "techqa_17_3",
+      "techqa_17_4"
+    ]
+  },
+  {
+    "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX 7.1\n\nCognos Disclosure Management 10.2.4 What's the procedure to drop an user in Cognos Disclosure Management",
+    "ground_truth": "Based on the provided context, the procedure to drop a user in Cognos Disclosure Management version 10.2.4 is as follows:\n\n1. Upgrade to Cognos Disclosure Management version 10.2.5 if possible, as this version introduces a \"Custom\" option field that allows users to input any required Reference Date.\n2. If upgrading is not possible, contact CDM support for further assistance in dropping a user.\n\nAlternatively, if you are looking for instructions on how to delete a user in the Cognos Disclosure Management application, you should refer to the official documentation or user guide provided by IBM for detailed instructions on how to manage users within the application.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_18_0",
+      "techqa_18_1",
+      "techqa_18_2",
+      "techqa_18_3",
+      "techqa_18_4"
+    ]
+  },
+  {
+    "question": "What things are important to consider when installing a fix pack for IIB running on a multi-instance environment? I am planning to apply a fix pack to my current version of IBM Integration Bus (IIB) using multi-instance brokers and I am looking for any important information regarding the process.\n\nFor example:\n\n \n\n- installation and verification tasks\n \n\n- is it possible to back out this fix pack in case there are issues\n \n\n- any specific tasks for multi instance configuration",
+    "ground_truth": "When installing a fix pack for IBM Integration Bus (IIB) in a multi-instance environment, it is important to consider the following:\n\n1. **Installation and Verification Tasks**: \n   - Ensure that the fix pack is compatible with your current version of IIB.\n   - Follow the installation instructions provided by IBM for applying the fix pack to a multi-instance environment.\n   - Verify that the installation is successful on all instances of IIB in your environment.\n\n2. **Rollback Procedure**: \n   - Before applying the fix pack, make sure to have a backup of your current configuration and data.\n   - Understand the rollback procedure in case the fix pack causes any issues.\n   - Test the rollback procedure in a non-production environment to ensure it works as expected.\n\n3. **Multi-Instance Configuration Tasks**:\n   - Ensure that all instances of IIB are stopped before applying the fix pack.\n   - Apply the fix pack to each instance of IIB individually to avoid any issues related to multi-instance configuration.\n   - After applying the fix pack to all instances, start them one by one to ensure proper functioning.\n\n4. **Testing After Installation**:\n   - Once the fix pack is applied to all instances, perform thorough testing of your applications to ensure that they are functioning correctly.\n   - Test the communication and interaction between different instances of IIB to ensure that the multi-instance setup is still working as expected.\n\n5. **Verify Post-Installation Configurations**:\n   - Double-check any custom configurations or settings that were applied to the multi-instance setup to ensure they are still in place after the fix pack installation.\n   - Verify that any integration points or dependencies with other systems are not affected by the fix pack installation.\n\nBy considering these aspects, you can ensure a smooth installation process of the fix pack for IBM Integration Bus in a multi-instance environment and minimize any potential issues that may arise.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_19_0",
+      "techqa_19_1",
+      "techqa_19_2",
+      "techqa_19_3",
+      "techqa_19_4"
+    ]
+  },
+  {
+    "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter is created with the browser language set to Japanese. This issue occurs in WebGUI 8.1 Fix Pack 11.",
+    "ground_truth": "To address the issue of the Event Dashboard breaking when a filter is created with the browser language set to Japanese in WebGUI 8.1 Fix Pack 11, you can follow the steps outlined in the APAR STATUS section of the provided context.\n\nThe APAR for this issue is JR46703, which affects BPM ADVANCED on version 8.0.1.0. The problem description states that when users with Non-English locales (e.g. ja_JP) for their browsers access Process Portal, the Dashboards do not display the Pie-Chart and Task lists.\n\nThe local fix suggested is to temporarily set the browser language preference to English, access the dashboard, and then change it back to the real locale, such as Japanese. This workaround should help resolve the issue until a permanent fix is implemented.\n\nThe problem was addressed by adding a configurable flag that resolves the user's browser locale to a Portal-supported locale and properly sets the language as their User Preference. If the user's browser locale is not a Portal-supported locale, then the user's locale will default to English.\n\nTo resolve this issue permanently, you can download the fix package from FixCentral. The fix information including install instructions will be available in the readme.txt file provided with the fix package.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_20_0",
+      "techqa_20_1",
+      "techqa_20_2",
+      "techqa_20_3",
+      "techqa_20_4"
+    ]
+  },
+  {
+    "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication System. (CVE-2015-1920) I need to understand details regarding \"Security Bulletin: Security Vulnerability in IBM PureApplication System (CVE-2015-1920)\". Where can I find this information?",
+    "ground_truth": "The details regarding \"Security Vulnerability in IBM PureApplication System (CVE-2015-1920)\" can be found in the security bulletin published at the following link:\n\n* Security Bulletin: Security Vulnerability in IBM PureApplication System (CVE-2015-1920) [http://www-01.ibm.com/support/docview.wss?uid=swg21957952]",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_21_0",
+      "techqa_21_1",
+      "techqa_21_2",
+      "techqa_21_3",
+      "techqa_21_4"
+    ]
+  },
+  {
+    "question": "Launching IBM Rational Software Architect application results in Error: Java was started but returned exit code = -1 At times when you launch Rational Software Architect (RSA) application, you might encounter the following error: Error: Java was started but returned exit code = -1",
+    "ground_truth": "This error may indicate a problem with the Java Virtual Machine (JVM) when launching IBM Rational Software Architect. To resolve this issue, you can try updating the video driver to the newest version, as outdated or incompatible drivers can cause JVM termination errors. Another possible cause could be related to a bug in the Intel Graphic Card driver for Windows XP Service Pack 3. If updating the video driver does not solve the problem, you should contact Rational support for further assistance.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_22_0",
+      "techqa_22_1",
+      "techqa_22_2",
+      "techqa_22_3",
+      "techqa_22_4"
+    ]
+  },
+  {
+    "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just completed an upgrade to Cognos Analytics 11.0.3. When running existing reports in HTML, the images are displayed but when I try to run them in PDF/Excel they are not.",
+    "ground_truth": "Based on the provided context, the issue you are experiencing with images not being displayed in PDF/Excel but working in HTML after upgrading to Cognos Analytics 11.0.3 may be due to permissions, file path configurations, or SSL settings. \n\nTo troubleshoot and potentially resolve the issue, you can try the following steps:\n\n1. Check the permissions of the folder containing the images to ensure they are configured correctly.\n\n2. Verify that the images are located within the directory specified in the report.\n\n3. If the image directory is not found, ensure that the images are placed in the specified location.\n\n4. If SSL is enabled and causing issues with image display in PDF, ensure that the SSL certificate Chain of Trust is imported on the Application Tier.\n\n5. Import the CA certificate and any Intermediate certificates in the chain of trust in the IBM Cognos CA keystore using the ThirdPartyCertificateTool.\n\nBy following these steps, you may be able to resolve the issue of images not being displayed in PDF/Excel reports in Cognos Analytics 11.0.3.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_23_0",
+      "techqa_23_1",
+      "techqa_23_2",
+      "techqa_23_3",
+      "techqa_23_4"
+    ]
+  },
+  {
+    "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How to configure the machines hosting the WebSphere Operational Decision Management modules with regard to HTTPS when executing scenario suites ?\nHow to avoid the exception below while requesting from Decision Center the execution of a scenario suite on Scenario Service Provider (SSP) over HTTPS ?\n Exception caught while contacting RES ilog.rules.res.util.http.IlrConnectionException: IO error when contacting \"/res/repositoryService\"\n ....\n Caused by: javax.net.ssl.SSLHandshakeException: com.ibm.jsse2.util.g: PKIX path building failed: java.security.cert.CertPathBuilderException: unable to find valid certification path to requested target",
+    "ground_truth": "To avoid the exception while requesting from Decision Center the execution of a scenario suite on Scenario Service Provider (SSP) over HTTPS, you need to ensure that the machines hosting the WebSphere Operational Decision Management modules are properly configured with regard to HTTPS.\n\nHere are the steps to configure the machines:\n\n1. Install the appropriate SSL certificates on all machines involved in the communication process. Make sure that all necessary certificates are added to the truststore of the Decision Center and the Scenario Service Provider.\n\n2. Verify that the SSL configurations are correctly set up on both Decision Center and Scenario Service Provider. Ensure that the SSL configurations match and are compatible with each other.\n\n3. Check the SSL handshake protocol versions used by Decision Center and the SSP. Ensure that both are using a compatible version to establish a secure connection.\n\n4. In the case of PKIX path building failing, make sure that the certificates in the truststore are valid and trusted by all machines involved in the communication.\n\nBy following these steps and ensuring proper SSL certificate management and configuration alignment between Decision Center and SSP, you can avoid the SSLHandshakeException related to PKIX path building failure.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_24_0",
+      "techqa_24_1",
+      "techqa_24_2",
+      "techqa_24_3",
+      "techqa_24_4"
+    ]
+  },
+  {
+    "question": "How to install Packaging utility? How to install Packaging utility?",
+    "ground_truth": "To install Packaging Utility, you can follow these steps:\n\n1. Download the fix pack from the provided download URL.\n2. Extract the compressed file in an appropriate directory, such as C:\\temp.\n3. Add the fix pack's repository location in IBM Installation Manager by browsing to the extracted directory.\n4. Start IBM Installation Manager and go to File > Preferences > Repositories.\n5. Click on Add Repository and enter the file path to the extracted directory.\n6. Close the Preferences page.\n7. If IBM Packaging Utility is already installed, click on Update Packages on the Installation Manager start page and follow the wizard to update it.\n8. If IBM Packaging Utility is not installed, click on Install Packages on the Installation Manager start page and follow the wizard to install it.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_25_0",
+      "techqa_25_1",
+      "techqa_25_2",
+      "techqa_25_3",
+      "techqa_25_4"
+    ]
+  },
+  {
+    "question": "Is there a support's guide to the CORBA Probes? Where can I download the support's guide to the IBM CORBA probes?",
+    "ground_truth": "Yes, there is a support guide to the IBM CORBA probes. You can download the Support's Guide to IBM CORBA probes from the following link provided in the context:\n\nGENERIC_CORBA_SupportsGuide_20.pdf [/support/docview.wss?uid=swg21614208&aid=1]",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_26_0",
+      "techqa_26_1",
+      "techqa_26_2",
+      "techqa_26_3",
+      "techqa_26_4"
+    ]
+  },
+  {
+    "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS using Oracle 12c are supported?",
+    "ground_truth": "The versions of WebSphere Application Server (WSAS) using Oracle 12c that are supported are as follows:\n\n- For IBM Emptoris Contract Management 9.5 through 10.0.2.5, WSAS version 8.0.0.x with Interim Fix PI27100 is supported.\n- For IBM Emptoris Program Management 10.0.0 through 10.0.2.5, WSAS version 8.5.0.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Sourcing 10.0.0 through 10.0.2.5, WSAS version 8.5.0.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Spend Analysis 10.0.0 through 10.0.2.5, WSAS version 8.5.0.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Supplier Lifecycle Management 9.5 through 10.0.2.5, WSAS version 8.5.0.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Strategic Supply Management 10.0.0 through 10.0.2.5, WSAS version 8.5.5.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Rivermine Telecom Expense Management 6.5.x through 7.0.1, WSAS version 8.5.5.x with Interim Fix PI27099 is supported.\n- For IBM Emptoris Services Procurement 10.0.0, WSAS version 8.5.5.x with Interim Fix PI27099 is supported.\n\nThese versions of WSAS with the specified Interim Fixes are compatible with Oracle 12c when running IBM Emptoris applications.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_27_0",
+      "techqa_27_1",
+      "techqa_27_2",
+      "techqa_27_3",
+      "techqa_27_4"
+    ]
+  },
+  {
+    "question": "TEP to TEPS communication issues with different Java versions Recent Java updates have caused connection problems when logging into the TEPS via the TEP client (Browser or Java Web Start). Is there an updated list of known issues?",
+    "ground_truth": "Yes, there are known issues with TEP to TEPS communication when using different Java versions. Some of the known issues include:\n1) Using Java 8 64-bit with Internet Explorer version 11 fails with a message stating \"This content cannot be displayed in a frame.\"\n- Workaround: Use Java 8 32-bit with Internet Explorer 11 or use the WebStart client.\n2) Java 8 fails with Firefox, and the client does not fully initialize, giving a blank screen.\n- Workaround: Use Internet Explorer or the WebStart client. This issue will be fixed in Oracle Java 8 u60, targeted for August 2015.\n\nFor more information on these known issues and the latest Java Support requirements, you can refer to technote #1672459:\nhttp://www.ibm.com/support/docview.wss?uid=swg21672459",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_28_0",
+      "techqa_28_1",
+      "techqa_28_2",
+      "techqa_28_3",
+      "techqa_28_4"
+    ]
+  },
+  {
+    "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to configure ITCAM J2EE v7.1.1 Tomcat DC to run as a Windows Service but it fails. Is this type of configuration supported? If so, what is the right procedure to do that?",
+    "ground_truth": "The configuration of the J2EE Tomcat DC to run as a Windows Service is not supported with ITCAM J2EE v7.1.1. The documentation provided does not mention any specific steps or procedures for configuring the Tomcat DC to run as a Windows Service. Therefore, this type of configuration may not be possible with this version of ITCAM. It is recommended to consult the official support channels or online forums for further assistance or alternative solutions.",
+    "domain": "techqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "techqa_29_0",
+      "techqa_29_1",
+      "techqa_29_2",
+      "techqa_29_3",
+      "techqa_29_4"
+    ]
+  },
+  {
+    "question": "what is the rate of return in cadence design systems inc . of an investment from 2010 to 2011?",
+    "ground_truth": "The rate of return in Cadence Design Systems Inc. from 2010 to 2011 is 37.9%. This is calculated by taking the value on 1/1/2011 (137.90) and subtracting the initial investment value on 1/2/2010 (100.00).",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_0_0",
+      "finqa_0_1",
+      "finqa_0_2"
+    ]
+  },
+  {
+    "question": "what is the ratio of the total american personnel to us airways personnel",
+    "ground_truth": "The total number of American personnel is 61,600 and the total number of US Airways personnel is 32,800. \n\nTherefore, the ratio of total American personnel to US Airways personnel is 61,600:32,800 which simplifies to 308:164, which further simplifies to 77:41.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_1_0",
+      "finqa_1_1"
+    ]
+  },
+  {
+    "question": "what portion of total assets acquired of anios are intangible assets?",
+    "ground_truth": "The portion of total assets acquired of Anios that are intangible assets is $324.8 million. This includes customer relationships ($252.0 million), trademarks ($65.7 million), and other technology ($16.1 million).",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_2_0",
+      "finqa_2_1",
+      "finqa_2_2"
+    ]
+  },
+  {
+    "question": "what is the five year total return on the goldman sachs group inc.?",
+    "ground_truth": "The five year total return on the Goldman Sachs Group Inc. is $148.36.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_3_0",
+      "finqa_3_1",
+      "finqa_3_2"
+    ]
+  },
+  {
+    "question": "what is the percentage change in the total carrying amount of goodwill from 2016 to 2017?",
+    "ground_truth": "To calculate the percentage change in the total carrying amount of goodwill from 2016 to 2017, we first need to find the total carrying amount of goodwill for each year:\n\n- Total carrying amount of goodwill in 2016 = $6383.0 million\n- Total carrying amount of goodwill in 2017 = $7167.1 million\n\nNext, we calculate the percentage change using the following formula:\n\nPercentage Change = ((Final Value - Initial Value) / Initial Value) * 100\n\nPercentage Change = (($7167.1 - $6383.0) / $6383.0) * 100\nPercentage Change = ($784.1 / $6383.0) * 100\nPercentage Change = 0.1229 * 100\nPercentage Change \u2248 12.29%\n\nTherefore, the percentage change in the total carrying amount of goodwill from 2016 to 2017 is approximately 12.29%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_4_0",
+      "finqa_4_1",
+      "finqa_4_2"
+    ]
+  },
+  {
+    "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+    "ground_truth": "The net change in net revenue during 2015 for Entergy Corporation was a decrease of $6 million ($5829 million - $5735 million).",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_5_0",
+      "finqa_5_1",
+      "finqa_5_2"
+    ]
+  },
+  {
+    "question": "what was the 2015 total return for the peer group?",
+    "ground_truth": "The 2015 total return for the peer group was 203.87.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_6_0",
+      "finqa_6_1",
+      "finqa_6_2"
+    ]
+  },
+  {
+    "question": "what was the profit margin of printing papers in 2005",
+    "ground_truth": "To calculate the profit margin, you would use the formula:\n\nProfit Margin = (Operating Profit / Sales) * 100\n\nFrom the context provided, we can see that in 2005:\n- Printing papers net sales were $7170 million\n- Printing papers operating profit was $473 million\n\nPlugging these values into the formula:\n\nProfit Margin = ($473 / $7170) * 100 = 6.60%\n\nTherefore, the profit margin of printing papers in 2005 was 6.60%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_7_0",
+      "finqa_7_1",
+      "finqa_7_2"
+    ]
+  },
+  {
+    "question": "what was the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008?",
+    "ground_truth": "To calculate the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008, we need to use the following values:\n\n- December 31, 2007: $150 billion\n- December 31, 2008: $85 billion\n\nPercent Change = ((Final Value - Initial Value) / Initial Value) * 100\n\nPercent Change = (($85 - $150) / $150) * 100\nPercent Change = ($-65 / $150) * 100\nPercent Change = -43.33%\n\nTherefore, the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008 was -43.33%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_8_0",
+      "finqa_8_1",
+      "finqa_8_2"
+    ]
+  },
+  {
+    "question": "what was the percentage cumulative total shareholder return on disca common stock for the five year period ended december 31 , 2014?",
+    "ground_truth": "The percentage cumulative total shareholder return on Disca common stock for the five-year period ended December 31, 2014, was 124.65%. \n\n(From the provided information, the initial investment of $100 grew to $224.65 by December 31, 2014)",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_9_0",
+      "finqa_9_1",
+      "finqa_9_2"
+    ]
+  },
+  {
+    "question": "what was the percentage change in the cash dividends paid per common share from 2006 to 2007",
+    "ground_truth": "The cash dividends paid per common share increased from $1.08 in 2006 to $1.11 in 2007. \n\nTo calculate the percentage change:\nPercentage Change = ((New Value - Old Value) / Old Value) * 100\nPercentage Change = (($1.11 - $1.08) / $1.08) * 100\nPercentage Change = ($0.03 / $1.08) * 100\nPercentage Change \u2248 2.78%\n\nTherefore, the percentage change in the cash dividends paid per common share from 2006 to 2007 was approximately 2.78%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_10_0",
+      "finqa_10_1",
+      "finqa_10_2"
+    ]
+  },
+  {
+    "question": "what is the after-tax share-based compensation cost in 2010?",
+    "ground_truth": "The after-tax share-based compensation cost in 2010 was $11.8 million ($18.1 million share-based compensation cost minus $6.3 million income tax benefit).",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_11_0",
+      "finqa_11_1",
+      "finqa_11_2"
+    ]
+  },
+  {
+    "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+    "ground_truth": "The total value of \"other\" loans held in 2012 was $81 million, and in 2011 was $120 million. To find the average, we add these two values together and then divide by 2: \n\n($81 + $120) / 2 = $201 / 2 = $100.5 million\n\nTherefore, the average for \"other\" loans held in 2012 and 2011 was $100.5 million.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_12_0",
+      "finqa_12_1",
+      "finqa_12_2"
+    ]
+  },
+  {
+    "question": "what is the percentage change in total financial liabilities at fair value in 2012?",
+    "ground_truth": "In 2012, the total financial liabilities at fair value amounted to $377,677 million, while in 2011 it was $388,669 million. \n\nTo calculate the percentage change:\nPercentage Change = ((New Value - Old Value) / Old Value) * 100\nPercentage Change = (($377,677 - $388,669) / $388,669) * 100\nPercentage Change = (-$10,992 / $388,669) * 100\nPercentage Change = -0.0282 * 100\nPercentage Change = -2.82%\n\nTherefore, the percentage change in total financial liabilities at fair value in 2012 compared to 2011 is -2.82%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_13_0",
+      "finqa_13_1",
+      "finqa_13_2"
+    ]
+  },
+  {
+    "question": "what are the net revenues in investment management in 2016 , in billions?",
+    "ground_truth": "The net revenues in investment management in 2016 were $6.22 billion.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_14_0",
+      "finqa_14_1",
+      "finqa_14_2"
+    ]
+  },
+  {
+    "question": "was was the total amount spent on stock repurchases in december 2012?",
+    "ground_truth": "The total amount spent on stock repurchases in December 2012 was $46.0 million.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_15_0",
+      "finqa_15_1",
+      "finqa_15_2"
+    ]
+  },
+  {
+    "question": "what was the net change in tax positions in 2014",
+    "ground_truth": "In 2014, the net change in tax positions was an increase of $17,290. This can be calculated by subtracting the decrease in prior period measurement of tax positions ($36,528) from the increase in current period tax positions ($53,818): $53,818 - $36,528 = $17,290.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_16_0",
+      "finqa_16_1",
+      "finqa_16_2"
+    ]
+  },
+  {
+    "question": "what portion of the total noncancelable future lease commitments are due in fiscal year of 2019?",
+    "ground_truth": "The portion of the total noncancelable future lease commitments due in the fiscal year of 2019 is $137.4 million for operating leases and $0.3 million for capital leases, making a total of $137.7 million.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_17_0",
+      "finqa_17_1",
+      "finqa_17_2"
+    ]
+  },
+  {
+    "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+    "ground_truth": "In 2012, the maximum tier 2 capital was $39 million. In 2011, the maximum tier 2 capital was $6 million.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_18_0",
+      "finqa_18_1",
+      "finqa_18_2"
+    ]
+  },
+  {
+    "question": "what portion of the total restricted units will vest in 2011?",
+    "ground_truth": "8000 restricted stock units will vest in 2011.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_19_0",
+      "finqa_19_1"
+    ]
+  },
+  {
+    "question": "what was the percent change in number of shares purchased by employees between 2010 and 2011",
+    "ground_truth": "To calculate the percent change in the number of shares purchased by employees between 2010 and 2011, we can use the formula:\n\nPercent Change = ((New Value - Old Value) / Old Value) * 100\n\nIn this case:\n- Old Value (2010): 2.7 million shares\n- New Value (2011): 2.2 million shares\n\nPercent Change = ((2.2 - 2.7) / 2.7) * 100\nPercent Change = (-0.5 / 2.7) * 100\nPercent Change = -0.185 * 100\nPercent Change = -18.5%\n\nTherefore, the percent change in the number of shares purchased by employees between 2010 and 2011 was a decrease of 18.5%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_20_0",
+      "finqa_20_1",
+      "finqa_20_2"
+    ]
+  },
+  {
+    "question": "what was the percent of the total gains that was from the sales of land",
+    "ground_truth": "The total gains from the sales of depreciable properties in 2001 was $45,428 and from the sales of land was $5,080, making the total gains $50,508. \n\nThe percentage of the total gains that was from the sales of land can be calculated by dividing the gain on land sales by the total gains and then multiplying by 100:\n\n(5080 / 50508) * 100 \u2248 10.06%\n\nTherefore, approximately 10.06% of the total gains was from the sales of land.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_21_0",
+      "finqa_21_1"
+    ]
+  },
+  {
+    "question": "what was the percentual decrease observed in the liabilities for accrued interest and penalties during 2012 and 2013?",
+    "ground_truth": "The liabilities for accrued interest and penalties decreased from $1.2 billion in 2012 to $665 million in 2013. \n\nTo calculate the percent decrease:\n\n1. Find the difference between the two amounts: $1.2 billion - $665 million = $535 million\n2. Calculate the percentage decrease: ($535 million / $1.2 billion) * 100 = 44.58%\n\nTherefore, the percentual decrease observed in the liabilities for accrued interest and penalties during 2012 and 2013 was approximately 44.58%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_22_0",
+      "finqa_22_1",
+      "finqa_22_2"
+    ]
+  },
+  {
+    "question": "what portion of the total estimated purchase price is paid in cash?",
+    "ground_truth": "The portion of the total estimated purchase price that is paid in cash is $2,094,800.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_23_0",
+      "finqa_23_1",
+      "finqa_23_2"
+    ]
+  },
+  {
+    "question": "as a result of the sales of certain non-core towers and other assets what was the percent of the change in the recorded net losses from 2007 to 2008",
+    "ground_truth": "The recorded net losses from the sales of certain non-core towers and other assets increased by approximately 4.5% from 2007 to 2008. This change can be calculated by subtracting the net losses recorded in 2007 ($7.8 million) from the net losses recorded in 2008 ($10.7 million), then dividing the result by the net losses recorded in 2007 and multiplying by 100 to get the percentage change. \n\nCalculation: (10.7 - 7.8) / 7.8 * 100 \u2248 37.18%\n\nTherefore, the recorded net losses from the sales of certain non-core towers and other assets increased by approximately 37.18% from 2007 to 2008.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_24_0",
+      "finqa_24_1",
+      "finqa_24_2"
+    ]
+  },
+  {
+    "question": "what was the percentage rent increase between 2007 and 2008?",
+    "ground_truth": "To find the percentage rent increase between 2007 and 2008, we first need to determine the total rent expense for each year:\n\n- Rent expense for 2007: $168 million\n- Rent expense for 2008: $205 million\n\nNext, we calculate the percentage increase using the formula:\n\nPercentage Increase = [(New Value - Old Value) / Old Value] * 100\n\nPercentage Increase = [($205 million - $168 million) / $168 million] * 100\nPercentage Increase = [$37 million / $168 million] * 100\nPercentage Increase = 0.2202 * 100\nPercentage Increase = 22.02%\n\nTherefore, the percentage rent increase between 2007 and 2008 was 22.02%.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_25_0",
+      "finqa_25_1",
+      "finqa_25_2"
+    ]
+  },
+  {
+    "question": "what was the percentage change in the the research and development costs from 2014 to 2015",
+    "ground_truth": "The research and development expenses were $86 million in 2014 and $119 million in 2015. \n\nTo calculate the percentage change:\n[(New Value - Old Value) / Old Value] * 100\n\n[(119 - 86) / 86] * 100\n= (33 / 86) * 100\n= 0.3837 * 100\n= 38.37%\n\nTherefore, the research and development costs increased by 38.37% from 2014 to 2015.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_26_0",
+      "finqa_26_1",
+      "finqa_26_2"
+    ]
+  },
+  {
+    "question": "what was the lowest effective tax rate in the three year period?",
+    "ground_truth": "The lowest effective tax rate in the three year period was 27% (27%) in 2005.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_27_0",
+      "finqa_27_1",
+      "finqa_27_2"
+    ]
+  },
+  {
+    "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+    "ground_truth": "The dividend yield percentage increased by 0.2% (2.9% - 2.7% = 0.2%) from 2007 to 2008.",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_28_0",
+      "finqa_28_1",
+      "finqa_28_2"
+    ]
+  },
+  {
+    "question": "in 2018 what was the percent of the cib markets net interest income as part of the managed interest income",
+    "ground_truth": "In 2018, the percent of the cib markets net interest income as part of the managed interest income was approximately 5.54% (3087 / 55687 * 100 = 5.54).",
+    "domain": "finqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "finqa_29_0",
+      "finqa_29_1",
+      "finqa_29_2"
+    ]
+  },
+  {
+    "question": "Which viruses may not cause prolonged inflammation due to strong induction of antiviral clearance?",
+    "ground_truth": "The viruses that may not cause prolonged inflammation due to strong induction of antiviral clearance are murine norovirus, human astrovirus, and murine cytomegalovirus.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_0_0",
+      "covidqa_0_1",
+      "covidqa_0_2",
+      "covidqa_0_3"
+    ]
+  },
+  {
+    "question": "When was the first case of COVID-19 identified?",
+    "ground_truth": "The first cases of COVID-19 were identified in the WHO European Region between 24 January and 21 February 2020.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_1_0",
+      "covidqa_1_1",
+      "covidqa_1_2",
+      "covidqa_1_3"
+    ]
+  },
+  {
+    "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+    "ground_truth": "Liew's multiplex ELISA test could detect 9 antigens.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_2_0",
+      "covidqa_2_1",
+      "covidqa_2_2",
+      "covidqa_2_3"
+    ]
+  },
+  {
+    "question": "What is the structure of Hantaan virus?",
+    "ground_truth": "The structure of Hantaan virus is spherical or ovoid, composed of 20-30% fat, >50% protein, 7% carbohydrates, and 2% RNA. The genome comprises three negative sense, single-stranded RNAs that consist of the small, medium, and large segments encoding the nucleoprotein, envelope glycoproteins, and viral RNA-dependent RNA polymerase, respectively. The outer membrane of Hantaan virus is composed of Gn and Gc glycoproteins.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_3_0",
+      "covidqa_3_1",
+      "covidqa_3_2",
+      "covidqa_3_3"
+    ]
+  },
+  {
+    "question": "How many people did SARS-CoV infect?",
+    "ground_truth": "SARS-CoV infected 8098 reported cases and 774 deaths in 37 countries before the epidemic was controlled.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_4_0",
+      "covidqa_4_1",
+      "covidqa_4_2",
+      "covidqa_4_3"
+    ]
+  },
+  {
+    "question": "What was the focus of the study?",
+    "ground_truth": "The focus of the study was to investigate community responses to communication campaigns for influenza A (H1N1) and to provide evidence-based practical information to guide the development and delivery of key health messages for H1N1 and other health campaigns. The study specifically focused on the responses of different target groups, including M\u0101ori, Pacific Peoples, children, general population, and vulnerable people with chronic conditions, to the key health messages in the 2009 and 2010 H1N1 campaigns.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_5_0",
+      "covidqa_5_1",
+      "covidqa_5_2",
+      "covidqa_5_3"
+    ]
+  },
+  {
+    "question": "What contributed to a large part of mammalian genomic sequence?",
+    "ground_truth": "The syntenic whole-genome alignments produced by the MULTIZ program contributed to a large part of the mammalian genomic sequence.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_6_0",
+      "covidqa_6_1",
+      "covidqa_6_2",
+      "covidqa_6_3"
+    ]
+  },
+  {
+    "question": "What is severe MARS noted for?",
+    "ground_truth": "Severe ARDS (acute respiratory distress syndrome) is noted for requiring adjunctive therapies such as prone positioning, inhaled nitric oxide, and extracorporeal circulation membrane oxygenation.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_7_0",
+      "covidqa_7_1",
+      "covidqa_7_2",
+      "covidqa_7_3"
+    ]
+  },
+  {
+    "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+    "ground_truth": "Animal models exist for both the asymptomatic carriage of PUUV and SNV in the bank vole Myodes glareolus and the deer mouse P. maniculatus.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_8_0",
+      "covidqa_8_1",
+      "covidqa_8_2",
+      "covidqa_8_3"
+    ]
+  },
+  {
+    "question": "What does Clade A contain?",
+    "ground_truth": "Clade A contains 1,889 viruses from 34 countries collected from 2010 to the present.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_9_0",
+      "covidqa_9_1",
+      "covidqa_9_2",
+      "covidqa_9_3"
+    ]
+  },
+  {
+    "question": "What is  an example of anti-viral defense in bats?",
+    "ground_truth": "One example of an anti-viral defense in bats is the interferon pathway, which is perpetually switched on in some bat species, helping to keep viral infections in check.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_10_0",
+      "covidqa_10_1",
+      "covidqa_10_2",
+      "covidqa_10_3"
+    ]
+  },
+  {
+    "question": "What could be novel candidates as potent inhibitors of papain like cysteine proteases in resistant microorganisms?",
+    "ground_truth": "1-substituted pyridylimidazopyridine derivatives could be novel candidates as potent inhibitors of papain like cysteine proteases in resistant microorganisms.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_11_0",
+      "covidqa_11_1",
+      "covidqa_11_2",
+      "covidqa_11_3"
+    ]
+  },
+  {
+    "question": "What are exhibited in the two phases?",
+    "ground_truth": "The RNA is exhibited in the bottom, complex-enriched phase in one of the two phases.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_12_0",
+      "covidqa_12_1",
+      "covidqa_12_2",
+      "covidqa_12_3"
+    ]
+  },
+  {
+    "question": "How was HFRS  first brought to the attention of western medicine ?",
+    "ground_truth": "HFRS was first brought to the attention of western medicine in association with an outbreak that occurred among United Nations troops during the Korean conflict between 1951 and 1954, where more than 3,200 soldiers were afflicted.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_13_0",
+      "covidqa_13_1",
+      "covidqa_13_2",
+      "covidqa_13_3"
+    ]
+  },
+  {
+    "question": "What has been the application of phage display technology?",
+    "ground_truth": "The application of phage display technology has been the production of protein libraries, specific binder screening with biopanning, and the modification of the filamentous phage genome to display polypeptides as fusions to coat proteins on the virion surface.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_14_0",
+      "covidqa_14_1",
+      "covidqa_14_2",
+      "covidqa_14_3"
+    ]
+  },
+  {
+    "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus?",
+    "ground_truth": "Based on the given context, it is suggested that modern day Influenza viruses may be related to the 1918 Spanish Influenza virus. The passages mention the origin and evolution of the 1918 influenza virus, and also discuss the possibility of a 1918-like virus circulating in Europe and North America in the 19th century. Furthermore, there is a question posed about whether a 1918-like pandemic could appear again, indicating a potential relation between the 1918 virus and modern day Influenza viruses.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_15_0",
+      "covidqa_15_1",
+      "covidqa_15_2",
+      "covidqa_15_3"
+    ]
+  },
+  {
+    "question": "In how many cases the symptoms at diagnosis were consistent with the case definition for acute respiratory infection?",
+    "ground_truth": "The passage mentions that there were 323 persons who met the pneumonia case definition in the previous year, with almost all of them reporting self-reported cough and difficulty breathing for at least two days, and 2% reported only a physician's diagnosis of pneumonia. This means that in 98% of the cases (323 - 2), the symptoms at diagnosis were consistent with the case definition for acute respiratory infection.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_16_0",
+      "covidqa_16_1",
+      "covidqa_16_2",
+      "covidqa_16_3"
+    ]
+  },
+  {
+    "question": "Which may be an occupational group with significantly higher incidence of seropositivity to MERS-CoV ?",
+    "ground_truth": "DCs (dromedary camels) may be an occupational group with significantly higher incidence of seropositivity to MERS-CoV.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_17_0",
+      "covidqa_17_1",
+      "covidqa_17_2",
+      "covidqa_17_3"
+    ]
+  },
+  {
+    "question": "Is there an Influenza vaccine?",
+    "ground_truth": "Yes, there is an Influenza vaccine, and there are also considerations for human influenza vaccination and approaches being taken to improve current limitations of influenza vaccines. You can find more information on Virus-Vectored Influenza Virus Vaccines at the provided link.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_18_0",
+      "covidqa_18_1",
+      "covidqa_18_2",
+      "covidqa_18_3"
+    ]
+  },
+  {
+    "question": "What is a future potential of filamentous phage?",
+    "ground_truth": "A potential future use of filamentous phage is as elements of combination therapeutics against certain drug-resistant infections.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_19_0",
+      "covidqa_19_1",
+      "covidqa_19_2",
+      "covidqa_19_3"
+    ]
+  },
+  {
+    "question": "What is the treatment for MERS-COV?",
+    "ground_truth": "The treatment for MERS-CoV is supportive and symptomatic, as there is currently no specific treatment or vaccine available. Supportive care, such as respiratory support, hydration, antipyretics, and infection control, is the mainstay of treatment for MERS-CoV. Additionally, preventative actions such as hand hygiene and covering the nose and mouth during sneezing and coughing are recommended. Various therapeutic options have been investigated, but no therapy of proven value currently exists.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_20_0",
+      "covidqa_20_1",
+      "covidqa_20_2",
+      "covidqa_20_3"
+    ]
+  },
+  {
+    "question": "What does LAIV rely on?",
+    "ground_truth": "LAIV relies on antigenic match and the HA and NA antigens are replaced on the same schedule as the TIV.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_21_0",
+      "covidqa_21_1",
+      "covidqa_21_2",
+      "covidqa_21_3"
+    ]
+  },
+  {
+    "question": "What percentage of population was affected?",
+    "ground_truth": "Based on the given context, the percentage of the population affected can range from 1.88% to 11.43% in the first passage and 36.6% in the last passage.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_22_0",
+      "covidqa_22_1",
+      "covidqa_22_2",
+      "covidqa_22_3"
+    ]
+  },
+  {
+    "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+    "ground_truth": "No, the context indicates that the use of oral swabs as the sole method for detecting 2019-nCoV infection is not sufficient. The passage mentions that there can be a shift from oral swab positive during early infection to anal swab positive during late infection, and it strongly suggests using viral IgM and IgG serological test to confirm an infection, considering the unreliable results from oral swabs detection. Therefore, additional testing methods such as serological tests are recommended to confirm 2019-nCoV infection.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_23_0",
+      "covidqa_23_1",
+      "covidqa_23_2",
+      "covidqa_23_3"
+    ]
+  },
+  {
+    "question": "How many people have persistent hepatitis C virus?",
+    "ground_truth": "Approximately 144-230 million people worldwide have persistent hepatitis C virus.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_24_0",
+      "covidqa_24_1",
+      "covidqa_24_2",
+      "covidqa_24_3"
+    ]
+  },
+  {
+    "question": "What was the main finding in the study?",
+    "ground_truth": "The main finding in the study was that index subjects in the face mask arm reported wearing a mask often or always during the follow-up period, compared to the control and hand hygiene arms. There was also a higher reported compliance in index subjects in the face mask group compared to household contacts.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_25_0",
+      "covidqa_25_1",
+      "covidqa_25_2",
+      "covidqa_25_3"
+    ]
+  },
+  {
+    "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+    "ground_truth": "Mutations in the KATNAL1 gene lead to changes in neuronal migration, neuronal morphology, and ependymal ciliary function, resulting in behavioral deficits including in learning and memory, reaction to anxiogenic situations, and circadian rhythms.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_26_0",
+      "covidqa_26_1",
+      "covidqa_26_2",
+      "covidqa_26_3"
+    ]
+  },
+  {
+    "question": "What statistical tests were used to compare categorical variables?",
+    "ground_truth": "The statistical tests used to compare categorical variables were the Chi-square test and the Fisher exact test.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_27_0",
+      "covidqa_27_1",
+      "covidqa_27_2",
+      "covidqa_27_3"
+    ]
+  },
+  {
+    "question": "What is this disease  characterized by ?",
+    "ground_truth": "The disease is characterized by symmetric proximal weakness, the presence of characteristic rashes, and other systemic features.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_28_0",
+      "covidqa_28_1",
+      "covidqa_28_2",
+      "covidqa_28_3"
+    ]
+  },
+  {
+    "question": "How do these exact processes ultimately restrict viral infectivity?",
+    "ground_truth": "These processes ultimately restrict viral infectivity by triggering a legion of cellular defense and antiviral systems, inducing inflammatory factors and activating innate and adaptive immunity. Additionally, these mechanisms include the activation of direct antiviral activity against the replicative stages of viruses, targeting common pathways or structures that are essential for viral replication. This evolutionary arms race between countermeasures and species-specific factors ultimately prevent effective viral envelope clustering, decrease fluidity and imposes rigidity, and induce an outward membrane curvature that opposes the forces exerted by viral fusion machinery, ultimately inhibiting the ins and outs of HIV replication and restricting viral infectivity.",
+    "domain": "covidqa",
+    "source": "ragbench",
+    "relevant_doc_ids": [
+      "covidqa_29_0",
+      "covidqa_29_1",
+      "covidqa_29_2",
+      "covidqa_29_3"
+    ]
+  }
+]
