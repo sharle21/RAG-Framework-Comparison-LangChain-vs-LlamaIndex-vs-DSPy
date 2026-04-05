@@ -21,40 +21,53 @@ DATA_DIR = Path(__file__).parent.parent.parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
 (DATA_DIR / "raw").mkdir(exist_ok=True)
 
-# Three domains for variety across technical, finance, and science
-# This matters for adversarial attacks — OOD queries and trojans are
-# more realistic when the corpus has genuine topic diversity
+# Three domains for variety across technical, finance, and science.
+# Available in RAGBench HuggingFace (test+train combined):
+#   techqa:  ~1,506 pairs
+#   finqa:   ~14,796 pairs
+#   covidqa: ~1,498 pairs
+#
+# We load up to these limits per domain. covidqa is the bottleneck.
+# For a balanced 5,000-query golden set: ~1,498 covidqa + ~1,506 techqa + ~1,996 finqa.
+# run_benchmark.py handles the final balancing via --n-pairs.
 RAGBENCH_SUBSETS = {
-    "techqa":  30,   # IBM tech support docs — longer passages, real-world
-    "finqa":   30,   # Financial documents — numerical, precise language
-    "covidqa": 30,   # Scientific/medical — domain-specific vocabulary
+    "techqa":  1600,   # IBM tech support docs — longer passages, real-world
+    "finqa":   2000,   # Financial documents — numerical, precise language
+    "covidqa": 1600,   # Scientific/medical — domain-specific vocabulary
 }
 
 
 def load_ragbench_subset(subset: str, n: int) -> tuple[list[dict], list[dict]]:
     """
     Load documents and QA pairs from one RAGBench subset.
-    
+    Combines test + train splits to maximize available data.
+
     Each row contains:
       - question: the query
       - documents: list of context passages (these become our retrieval corpus)
       - response: the ground truth answer
     """
-    print(f"  Loading {subset}...")
-    try:
-        ds = load_dataset("rungalileo/ragbench", subset, split="test")
-    except Exception:
+    print(f"  Loading {subset} (up to {n})...")
+
+    # Combine test + train splits for maximum data
+    rows = []
+    for split in ["test", "train"]:
         try:
-            ds = load_dataset("rungalileo/ragbench", subset, split="train")
+            ds = load_dataset("rungalileo/ragbench", subset, split=split)
+            rows.extend(ds)
+            print(f"    {split}: {len(ds)} rows")
         except Exception as e:
-            print(f"  Could not load {subset}: {e}")
-            return [], []
+            print(f"    {split}: not available ({e})")
+
+    if not rows:
+        print(f"  Could not load {subset}")
+        return [], []
 
     documents = []
     qa_pairs = []
     seen = set()
 
-    for i, row in enumerate(ds):
+    for i, row in enumerate(rows):
         if i >= n:
             break
 
@@ -106,8 +119,11 @@ def main():
         all_qa_pairs.extend(qas)
 
     print(f"\nTotal: {len(all_documents)} document passages, {len(all_qa_pairs)} QA pairs")
-    domains = set(d["domain"] for d in all_documents)
-    print(f"Domains: {domains}")
+    from collections import Counter
+    domain_counts = Counter(qa["domain"] for qa in all_qa_pairs)
+    doc_counts = Counter(d["domain"] for d in all_documents)
+    print(f"QA pairs by domain:  {dict(domain_counts)}")
+    print(f"Documents by domain: {dict(doc_counts)}")
 
     # Save
     docs_path = DATA_DIR / "raw" / "ragbench_documents.json"
