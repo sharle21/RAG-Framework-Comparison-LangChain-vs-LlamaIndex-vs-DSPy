@@ -137,15 +137,27 @@ Respond ONLY with JSON:
 
 
 def evaluate_adversarial_results(results: list[dict], model: str = "gpt-4o-mini") -> dict:
-    """Evaluate how each framework handles adversarial queries."""
+    """
+    Evaluate how each framework handles adversarial queries.
+
+    OOD queries are scored separately from the other three types.
+    Reason: a correct refusal on an OOD question is the RIGHT behavior and
+    gets a high robustness score from the judge — including it in the overall
+    average makes every framework look more robust adversarially than on normal
+    questions, which is a meaningless (and misleading) result.
+
+    Instead:
+    - non_ood_robustness: robustness on multi_hop + ambiguous + contradictory only
+      → used for the degradation ratio vs standard benchmark
+    - ood_refusal_rate: what fraction of OOD questions did the framework
+      correctly refuse to answer → reported separately as a hallucination-resistance metric
+    """
     client = openai.OpenAI()
 
-    scores_by_type = {
-        "multi_hop": [],
-        "ambiguous": [],
-        "out_of_distribution": [],
-        "contradictory": [],
-    }
+    # OOD is tracked separately — not included in robustness average
+    NON_OOD_TYPES = {"multi_hop", "ambiguous", "contradictory"}
+    scores_by_type = {t: [] for t in NON_OOD_TYPES}
+    ood_results = []   # (robustness, failure_mode) for each OOD query
     failure_modes = {}
     detailed = []
 
@@ -176,11 +188,13 @@ def evaluate_adversarial_results(results: list[dict], model: str = "gpt-4o-mini"
             parsed = json.loads(raw)
 
             robustness = float(parsed.get("robustness", 0))
-            if query_type in scores_by_type:
-                scores_by_type[query_type].append(robustness)
-
             fm = parsed.get("failure_mode", "unknown")
             failure_modes[fm] = failure_modes.get(fm, 0) + 1
+
+            if query_type in NON_OOD_TYPES:
+                scores_by_type[query_type].append(robustness)
+            elif query_type == "out_of_distribution":
+                ood_results.append(fm)
 
             detailed.append({
                 "question": r["question"][:80],
@@ -193,17 +207,24 @@ def evaluate_adversarial_results(results: list[dict], model: str = "gpt-4o-mini"
         except Exception as e:
             print(f"  Eval error: {e}")
 
-    # Compute per-type averages
+    # non-OOD robustness: the honest degradation metric
     avg_by_type = {
         t: round(sum(scores) / len(scores), 3) if scores else 0.0
         for t, scores in scores_by_type.items()
     }
+    non_ood_scores = [s for scores in scores_by_type.values() for s in scores]
+    non_ood_robustness = round(sum(non_ood_scores) / len(non_ood_scores), 3) if non_ood_scores else 0.0
 
-    all_scores = [s for scores in scores_by_type.values() for s in scores]
-    overall = round(sum(all_scores) / len(all_scores), 3) if all_scores else 0.0
+    # OOD refusal rate: what fraction of OOD queries did the framework correctly refuse?
+    ood_refusal_rate = (
+        round(ood_results.count("correct_refusal") / len(ood_results), 3)
+        if ood_results else 0.0
+    )
 
     return {
-        "overall_robustness": overall,
+        "non_ood_robustness": non_ood_robustness,
+        "ood_refusal_rate": ood_refusal_rate,
+        "ood_total": len(ood_results),
         "robustness_by_query_type": avg_by_type,
         "failure_modes": failure_modes,
         "detailed": detailed,
@@ -276,9 +297,13 @@ def run_adversarial_benchmark(frameworks: dict, qa_pairs: list[dict],n_source_qu
 
 def compute_degradation(standard_summary: dict, adversarial_results: dict) -> dict:
     """
-    The key insight metric: how much does each framework degrade under adversarial conditions?
-    Robustness score = adversarial performance / standard performance
-    Closer to 1.0 = more robust. Below 0.7 = significant degradation.
+    How much does each framework degrade under adversarial conditions?
+
+    Degradation ratio = non_ood_robustness / standard_correctness
+    - Uses non_ood_robustness (multi_hop + ambiguous + contradictory only)
+    - OOD excluded because correct refusals inflate the score artificially
+    - Ratio < 1.0 = quality drops under pressure (expected)
+    - Ratio > 1.0 = was already broken before (adversarial didn't make it worse)
     """
     degradation = {}
     for framework in adversarial_results:
@@ -286,15 +311,18 @@ def compute_degradation(standard_summary: dict, adversarial_results: dict) -> di
             "eval", {}
         ).get("llm_judge", {}).get("correctness", 0)
 
-        adversarial_score = adversarial_results[framework]["eval"]["overall_robustness"]
+        eval_data = adversarial_results[framework]["eval"]
+        non_ood_score = eval_data["non_ood_robustness"]
+        ood_refusal_rate = eval_data["ood_refusal_rate"]
 
         degradation[framework] = {
             "standard_correctness": round(standard_score, 3),
-            "adversarial_robustness": round(adversarial_score, 3),
-            "degradation_ratio": round(adversarial_score / standard_score, 3) if standard_score > 0 else 0,
+            "non_ood_robustness": round(non_ood_score, 3),
+            "degradation_ratio": round(non_ood_score / standard_score, 3) if standard_score > 0 else 0,
+            "ood_refusal_rate": ood_refusal_rate,
             "top_failure_mode": max(
-                adversarial_results[framework]["eval"]["failure_modes"],
-                key=adversarial_results[framework]["eval"]["failure_modes"].get,
+                eval_data["failure_modes"],
+                key=eval_data["failure_modes"].get,
                 default="unknown"
             ),
         }
@@ -340,13 +368,14 @@ if __name__ == "__main__":
         print("\n\n" + "="*60)
         print("ADVERSARIAL DEGRADATION RESULTS")
         print("="*60)
-        print(f"{'Framework':<15} {'Standard':<12} {'Adversarial':<14} {'Ratio':<10} {'Top Failure'}")
-        print("-" * 65)
+        print(f"{'Framework':<15} {'Standard':<12} {'Non-OOD Rob.':<14} {'Ratio':<10} {'OOD Refusal':<14} {'Top Failure'}")
+        print("-" * 80)
         for fw, stats in degradation.items():
             print(
                 f"{fw:<15} {stats['standard_correctness']:<12} "
-                f"{stats['adversarial_robustness']:<14} "
+                f"{stats['non_ood_robustness']:<14} "
                 f"{stats['degradation_ratio']:<10} "
+                f"{stats['ood_refusal_rate']:<14} "
                 f"{stats['top_failure_mode']}"
             )
 
