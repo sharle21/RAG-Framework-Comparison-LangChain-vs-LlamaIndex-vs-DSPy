@@ -1,0 +1,20 @@
+[
+  {
+    "question": "What is retrieval-augmented generation?",
+    "ground_truth": "RAG is a technique that combines information retrieval with text generation to produce more accurate and grounded responses.",
+    "domain": "techqa",
+    "framework": "langchain"
+  },
+  {
+    "question": "What is the capital of France?",
+    "ground_truth": "Paris",
+    "domain": "techqa",
+    "framework": "llamaindex"
+  },
+  {
+    "question": "How does a token bucket rate limiter work?",
+    "ground_truth": "A token bucket fills at a fixed rate. Each request consumes one token. If empty, requests wait.",
+    "domain": "techqa",
+    "framework": "dspy"
+  }
+]
