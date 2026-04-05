@@ -397,7 +397,7 @@ Use Lambda Cloud credits to run the full 5,000-query benchmark. No local GPU nee
 
 Fits both models on one instance comfortably:
 - Llama-3-8B-Instruct (worker) on port 8000 — ~16GB VRAM
-- Qwen2.5-14B-Instruct (judge) on port 8001 — ~28GB VRAM
+- Qwen3-14B (judge) on port 8001 — ~28GB VRAM
 - ~36GB VRAM remaining for KV cache headroom during concurrent requests
 
 Alternative if 80GB is unavailable: **2x A100 40GB at $2.58/hr** — one model per GPU, cleaner isolation, slightly better for demonstrating multi-instance serving.
@@ -409,7 +409,7 @@ Alternative if 80GB is unavailable: **2x A100 40GB at $2.58/hr** — one model p
 | Role | Model | Port | Training family | VRAM |
 |---|---|---|---|---|
 | Worker | Llama-3-8B-Instruct | 8000 | Meta | ~16GB |
-| Judge | Qwen2.5-14B-Instruct | 8001 | Alibaba | ~28GB |
+| Judge | Qwen3-14B | 8001 | Alibaba | ~28GB |
 | Embeddings | bge-m3 (sentence-transformers) | local | BAAI | CPU only |
 
 Three different companies, three different training lineages — cross-family evaluation maintained with zero API cost.
@@ -426,7 +426,7 @@ Three different companies, three different training lineages — cross-family ev
 | Session 4 | DSPy MIPROv2 optimization loop | ~1 hr | ~$2 |
 | **Total** | | **~7.5 hrs** | **~$15** |
 
-Model downloads (Llama ~16GB, Qwen2.5-14B ~28GB) happen in Session 1 and are the slowest part. Do them first before the clock runs long.
+Model downloads (Llama ~16GB, Qwen3-14B ~28GB) happen in Session 1 and are the slowest part. Do them first before the clock runs long.
 
 ---
 
@@ -441,7 +441,7 @@ pip install vllm
 
 # 3. Pull models (do this first — takes 20-30 mins)
 huggingface-cli download meta-llama/Meta-Llama-3-8B-Instruct
-huggingface-cli download Qwen/Qwen2.5-14B-Instruct
+huggingface-cli download Qwen/Qwen3-14B
 
 # 4. Start worker model (background)
 vllm serve meta-llama/Meta-Llama-3-8B-Instruct \
@@ -449,7 +449,7 @@ vllm serve meta-llama/Meta-Llama-3-8B-Instruct \
   --tensor-parallel-size 1 &
 
 # 5. Start judge model (background)
-vllm serve Qwen/Qwen2.5-14B-Instruct \
+vllm serve Qwen/Qwen3-14B \
   --port 8001 \
   --tensor-parallel-size 1 &
 
@@ -490,7 +490,7 @@ llm = ChatOpenAI(
 
 # Same pattern for the Qwen judge in metrics.py
 judge = ChatOpenAI(
-    model="Qwen/Qwen2.5-14B-Instruct",
+    model="Qwen/Qwen3-14B",
     base_url="http://<lambda-instance-ip>:8001/v1",
     api_key="dummy",
 )
@@ -529,7 +529,7 @@ RAG-Framework-Comparison/
 | Service | Image | Port | Purpose |
 |---|---|---|---|
 | `vllm-worker` | vllm/vllm-openai | 8000 | Llama-3-8B — answer generation |
-| `vllm-judge` | vllm/vllm-openai | 8001 | Qwen2.5-14B — cross-family scoring |
+| `vllm-judge` | vllm/vllm-openai | 8001 | Qwen3-14B — cross-family scoring |
 | `prometheus` | prom/prometheus | 9090 | Scrapes metrics from vLLM + Go |
 | `grafana` | grafana/grafana | 3000 | Dashboards — latency, throughput, KV cache |
 | `phoenix` | arizephoenix/phoenix | 6006 / 4317 | LLM quality traces |
@@ -569,7 +569,7 @@ Combined ~76GB which fits on an 80GB A100. If you hit OOM errors, lower one of t
 ```bash
 # Hybrid: run vLLM as bare processes, Compose only for observability
 vllm serve meta-llama/Meta-Llama-3-8B-Instruct --port 8000 --gpu-memory-utilization 0.45 &
-vllm serve Qwen/Qwen2.5-14B-Instruct --port 8001 --gpu-memory-utilization 0.50 &
+vllm serve Qwen/Qwen3-14B --port 8001 --gpu-memory-utilization 0.50 &
 
 docker compose up -d prometheus grafana phoenix
 ```
