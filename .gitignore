@@ -4,4 +4,6 @@ data/raw/
 data/chroma_langchain/
 __pycache__/
 *.pyc
-.DS_Store.env
+.DS_Store
+**/.DS_Store
+orchestrator/rag-orchestrator
