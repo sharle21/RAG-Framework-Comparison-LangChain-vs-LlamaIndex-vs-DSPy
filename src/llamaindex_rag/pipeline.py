@@ -41,7 +41,11 @@ class LlamaIndexRAG:
         llama_docs = [
             Document(
                 text=doc.get("content", ""),
-                metadata={"id": doc["id"], "title": doc["title"]},
+                metadata={
+                    "id": doc["id"],
+                    "title": doc["title"],
+                    **({"is_noise": True} if doc.get("is_noise") else {}),
+                },
             )
             for doc in documents
         ]
@@ -72,9 +76,13 @@ class LlamaIndexRAG:
 
         contexts = [node.get_content() for node in nodes]
 
+        # Check if any retrieved node is a noise (false) document
+        noise_retrieved = any(node.metadata.get("is_noise", False) for node in nodes)
+
         return {
             "answer": str(response),
             "contexts": contexts,
+            "retrieved_noise": noise_retrieved,
             "retrieval_ms": retrieval_ms,
             "generation_ms": generation_ms,
             "latency_ms": retrieval_ms + generation_ms,
