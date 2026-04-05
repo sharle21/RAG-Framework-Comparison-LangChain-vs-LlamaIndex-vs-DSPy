@@ -78,7 +78,10 @@ class LangChainRAG:
         for doc in documents:
             chunks = splitter.split_text(doc.get("content", ""))
             texts.extend(chunks)
-            metadatas.extend([{"id": doc["id"], "title": doc["title"]}] * len(chunks))
+            meta = {"id": doc["id"], "title": doc["title"]}
+            if doc.get("is_noise"):
+                meta["is_noise"] = True
+            metadatas.extend([meta] * len(chunks))
 
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         self.vectorstore = Chroma.from_texts(
@@ -140,6 +143,9 @@ Answer:"""
             if len(unique_contexts) == 4:
                 break
 
+        # Check if any retrieved doc is a noise (false) document
+        noise_retrieved = any(doc.metadata.get("is_noise", False) for doc in docs)
+
         # Step 2: generation — format prompt + LLM call
         t1 = time.perf_counter()
         answer = self.generation_chain.invoke({"context": docs, "question": question})
@@ -148,6 +154,7 @@ Answer:"""
         return {
             "answer": answer,
             "contexts": unique_contexts,
+            "retrieved_noise": noise_retrieved,
             "retrieval_ms": retrieval_ms,
             "generation_ms": generation_ms,
             "latency_ms": retrieval_ms + generation_ms,
