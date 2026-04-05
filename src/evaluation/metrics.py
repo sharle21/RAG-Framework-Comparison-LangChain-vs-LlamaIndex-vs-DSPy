@@ -18,6 +18,7 @@ depending on which metric you use?
 
 import re
 import json
+import statistics
 from typing import Any
 
 from ragas import evaluate, EvaluationDataset
@@ -36,8 +37,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Cross-family judge — Mistral evaluating OpenAI worker outputs
-mistral_judge = ChatMistralAI(model="mistral-large-latest", temperature=0)
+# Cross-family judge — lazy-initialized so we don't pay API init cost if overridden
+_default_judge = None
+
+
+def _get_default_judge():
+    global _default_judge
+    if _default_judge is None:
+        _default_judge = ChatMistralAI(model="mistral-large-latest", temperature=0)
+    return _default_judge
+
+
+def make_vllm_judge(base_url: str, model: str = "Qwen/Qwen2.5-14B-Instruct"):
+    """
+    OpenAI-compatible judge pointing at a vLLM endpoint.
+    Use this instead of Mistral when running on Lambda with local models.
+    Different model family from Llama worker = no same-family bias.
+    """
+    return ChatOpenAI(model=model, base_url=base_url, api_key="none", temperature=0)
 
 
 # ─────────────────────────────────────────
@@ -91,6 +108,40 @@ def evaluate_string_overlap(results: list[dict]) -> dict:
 
 
 # ─────────────────────────────────────────
+# 1b. BERTScore (semantic similarity)
+# ─────────────────────────────────────────
+
+def evaluate_bertscore(results: list[dict]) -> dict:
+    """
+    Semantic similarity using BERTScore.
+    Unlike string F1, understands that 'Q4' and 'fourth quarter' are the same.
+    Uses distilbert-base-uncased for speed; scores are precision/recall/F1.
+    """
+    from bert_score import score as bert_score_fn
+
+    valid = [(r["answer"], r["ground_truth"]) for r in results if r.get("answer")]
+    if not valid:
+        return {}
+
+    predictions, references = zip(*valid)
+    try:
+        P, R, F1 = bert_score_fn(
+            list(predictions), list(references),
+            lang="en",
+            model_type="distilbert-base-uncased",
+            verbose=False,
+        )
+        return {
+            "bertscore_precision": round(P.mean().item(), 4),
+            "bertscore_recall": round(R.mean().item(), 4),
+            "bertscore_f1": round(F1.mean().item(), 4),
+        }
+    except Exception as e:
+        print(f"  BERTScore error: {e}")
+        return {"error": str(e)}
+
+
+# ─────────────────────────────────────────
 # 2. Custom LLM-as-judge (Mistral Large)
 # ─────────────────────────────────────────
 
@@ -111,13 +162,21 @@ Respond ONLY with a JSON object like:
 {{"correctness": 0.8, "faithfulness": 0.9, "completeness": 0.7, "reasoning": "brief explanation"}}"""
 
 
-def evaluate_llm_judge(results: list[dict]) -> dict:
+def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict:
     """
-    Custom LLM-as-judge using Mistral Large.
-    Cross-family evaluation: Mistral judging GPT-4o-mini outputs.
-    Avoids same-family self-evaluation bias.
+    Custom LLM-as-judge. Defaults to Mistral Large (cross-family vs GPT-4o-mini worker).
+    Pass judge=make_vllm_judge(...) to use local Qwen on vLLM instead.
+
+    Runs the judge n_runs times per question and averages the scores.
+    Reports std dev to flag high-variance / unreliable judgements.
     """
-    scores = {"correctness": [], "faithfulness": [], "completeness": []}
+    if judge is None:
+        judge = _get_default_judge()
+
+    judge_model_name = getattr(judge, "model_name", None) or getattr(judge, "model", "unknown")
+    dims = ["correctness", "faithfulness", "completeness"]
+    per_question_means = {d: [] for d in dims}
+    per_question_stds = {d: [] for d in dims}
     errors = 0
 
     for r in results:
@@ -133,21 +192,34 @@ def evaluate_llm_judge(results: list[dict]) -> dict:
             context=context_str,
         )
 
-        try:
-            response = mistral_judge.invoke(prompt)
-            raw = response.content.strip()
-            raw = re.sub(r"```json|```", "", raw).strip()
-            parsed = json.loads(raw,strict=False)
-            for dim in ["correctness", "faithfulness", "completeness"]:
-                if dim in parsed:
-                    scores[dim].append(float(parsed[dim]))
-        except Exception as e:
-            errors += 1
-            print(f"  Mistral judge error: {e}")
+        run_scores = {d: [] for d in dims}
+        for _ in range(n_runs):
+            try:
+                response = judge.invoke(prompt)
+                raw = response.content.strip()
+                raw = re.sub(r"```json|```", "", raw).strip()
+                parsed = json.loads(raw, strict=False)
+                for dim in dims:
+                    if dim in parsed:
+                        run_scores[dim].append(float(parsed[dim]))
+            except Exception as e:
+                errors += 1
+                print(f"  Judge error: {e}")
 
-    result = {k: sum(v) / len(v) if v else 0.0 for k, v in scores.items()}
+        for dim in dims:
+            vals = run_scores[dim]
+            if vals:
+                per_question_means[dim].append(sum(vals) / len(vals))
+                if len(vals) > 1:
+                    per_question_stds[dim].append(statistics.stdev(vals))
+
+    result = {k: round(sum(v) / len(v), 4) if v else 0.0 for k, v in per_question_means.items()}
+    for dim in dims:
+        std_vals = per_question_stds[dim]
+        result[f"{dim}_std"] = round(sum(std_vals) / len(std_vals), 4) if std_vals else 0.0
     result["errors"] = errors
-    result["judge_model"] = "mistral-large-latest"
+    result["judge_model"] = judge_model_name
+    result["n_runs"] = n_runs
     return result
 
 
@@ -259,11 +331,15 @@ Respond ONLY with a JSON object:
 {{"category": "<category>", "reasoning": "<one sentence>"}}"""
 
 
-def analyze_failure_modes(results: list[dict], sample_n: int = 15) -> dict:
+def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -> dict:
     """
     Classify a sample of answers into failure categories.
-    Uses Mistral Large as cross-family judge.
+    Defaults to Mistral Large; pass judge=make_vllm_judge(...) for local Qwen.
     """
+    if judge is None:
+        judge = _get_default_judge()
+
+    judge_model_name = getattr(judge, "model_name", None) or getattr(judge, "model", "unknown")
     sample = results[:sample_n]
     categories = {cat: 0 for cat in FAILURE_CATEGORIES}
     detailed = []
@@ -282,7 +358,7 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15) -> dict:
         )
 
         try:
-            response = mistral_judge.invoke(prompt)
+            response = judge.invoke(prompt)
             raw = response.content.strip()
             raw = re.sub(r"```json|```", "", raw).strip()
             parsed = json.loads(raw,strict=False)
@@ -309,5 +385,5 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15) -> dict:
         "percentages": percentages,
         "sample_size": total,
         "detailed": detailed,
-        "judge_model": "mistral-large-latest",
+        "judge_model": judge_model_name,
     }
