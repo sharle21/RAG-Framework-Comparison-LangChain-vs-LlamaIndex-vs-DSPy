@@ -48,7 +48,7 @@ def _get_default_judge():
     return _default_judge
 
 
-def make_vllm_judge(base_url: str, model: str = "Qwen/Qwen2.5-14B-Instruct"):
+def make_vllm_judge(base_url: str, model: str = "Qwen/Qwen3-14B"):
     """
     OpenAI-compatible judge pointing at a vLLM endpoint.
     Use this instead of Mistral when running on Lambda with local models.
@@ -177,6 +177,7 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
     dims = ["correctness", "faithfulness", "completeness"]
     per_question_means = {d: [] for d in dims}
     per_question_stds = {d: [] for d in dims}
+    per_question_scores = []  # one entry per question, used for conflict detection
     errors = 0
 
     for r in results:
@@ -206,12 +207,18 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
                 errors += 1
                 print(f"  Judge error: {e}")
 
+        q_scores = {"question": r["question"]}
         for dim in dims:
             vals = run_scores[dim]
             if vals:
-                per_question_means[dim].append(sum(vals) / len(vals))
+                mean_val = sum(vals) / len(vals)
+                per_question_means[dim].append(mean_val)
+                q_scores[dim] = round(mean_val, 4)
                 if len(vals) > 1:
                     per_question_stds[dim].append(statistics.stdev(vals))
+            else:
+                q_scores[dim] = 0.0
+        per_question_scores.append(q_scores)
 
     result = {k: round(sum(v) / len(v), 4) if v else 0.0 for k, v in per_question_means.items()}
     for dim in dims:
@@ -220,6 +227,7 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
     result["errors"] = errors
     result["judge_model"] = judge_model_name
     result["n_runs"] = n_runs
+    result["per_question"] = per_question_scores
     return result
 
 
@@ -367,7 +375,7 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -
                 cat = "incomplete"
             categories[cat] += 1
             detailed.append({
-                "question": r["question"][:80],
+                "question": r["question"],  # full question for conflict detection
                 "category": cat,
                 "reasoning": parsed.get("reasoning", ""),
             })
@@ -387,3 +395,43 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -
         "detailed": detailed,
         "judge_model": judge_model_name,
     }
+
+
+# ─────────────────────────────────────────
+# 5. Conflict detection (Item 4)
+# ─────────────────────────────────────────
+
+def detect_conflicts(
+    judge_per_question: list[dict],
+    failure_detailed: list[dict],
+    correctness_threshold: float = 0.7,
+) -> list[dict]:
+    """
+    Find answers where the LLM judge scored correctness >= threshold
+    BUT the failure classifier labelled them as hallucination.
+
+    These are suspicious: the judge is rewarding a fluent, confident answer
+    even though the failure classifier caught that the answer isn't grounded
+    in the retrieved context. Known as judge sycophancy.
+
+    Returns a list of flagged questions with their scores and reasoning.
+    """
+    # Build a lookup: full question text → judge scores for that question
+    judge_by_question = {item["question"]: item for item in judge_per_question}
+
+    conflicts = []
+    for entry in failure_detailed:
+        if entry["category"] != "hallucination":
+            continue
+        q = entry["question"]
+        if q not in judge_by_question:
+            continue
+        correctness = judge_by_question[q].get("correctness", 0.0)
+        if correctness >= correctness_threshold:
+            conflicts.append({
+                "question": q[:120],
+                "judge_correctness": correctness,
+                "failure_reasoning": entry["reasoning"],
+            })
+
+    return conflicts
