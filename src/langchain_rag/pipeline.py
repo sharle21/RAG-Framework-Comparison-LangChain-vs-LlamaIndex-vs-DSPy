@@ -43,8 +43,10 @@ class LangChainRAG:
         model: str = "gpt-4o-mini",
         chunk_size: int = 1000,
         chunk_overlap: int = 200,
+        base_url: str = None,
     ):
         self.model_name = model
+        self.base_url = base_url
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.retrieval_chain = None
@@ -88,7 +90,11 @@ class LangChainRAG:
         )
         retriever = self.vectorstore.as_retriever(search_kwargs={"k": 4})
 
-        llm = ChatOpenAI(model=self.model_name, temperature=0)
+        llm_kwargs = {"model": self.model_name, "temperature": 0}
+        if self.base_url:
+            llm_kwargs["base_url"] = self.base_url
+            llm_kwargs["api_key"] = "none"
+        llm = ChatOpenAI(**llm_kwargs)
         prompt = ChatPromptTemplate.from_template(
             """Answer the question based only on the following context:
 
@@ -106,23 +112,27 @@ Answer:"""
             | StrOutputParser()
         )
 
+        self.retriever = retriever
+        self.generation_chain = rag_chain_from_docs
         self.retrieval_chain = RunnableParallel(
             context=retriever,
             question=RunnablePassthrough(),
         ).assign(answer=rag_chain_from_docs)
 
     def query(self, question: str) -> dict[str, Any]:
-        """Run a query — single retrieval call returns both answer and contexts."""
+        """Run a query with separate retrieval and generation timers."""
         if self.retrieval_chain is None:
             raise RuntimeError("Call build() first.")
 
-        start = time.perf_counter()
-        result = self.retrieval_chain.invoke(question)
-        latency_ms = (time.perf_counter() - start) * 1000
+        # Step 1: retrieval — embed question + search Chroma
+        t0 = time.perf_counter()
+        docs = self.retriever.invoke(question)
+        retrieval_ms = (time.perf_counter() - t0) * 1000
 
+        # Deduplicate retrieved chunks
         seen = set()
         unique_contexts = []
-        for doc in result["context"]:
+        for doc in docs:
             content = doc.page_content.strip()
             if content not in seen:
                 seen.add(content)
@@ -130,10 +140,16 @@ Answer:"""
             if len(unique_contexts) == 4:
                 break
 
+        # Step 2: generation — format prompt + LLM call
+        t1 = time.perf_counter()
+        answer = self.generation_chain.invoke({"context": docs, "question": question})
+        generation_ms = (time.perf_counter() - t1) * 1000
 
         return {
-            "answer": result["answer"],
+            "answer": answer,
             "contexts": unique_contexts,
-            "latency_ms": latency_ms,
+            "retrieval_ms": retrieval_ms,
+            "generation_ms": generation_ms,
+            "latency_ms": retrieval_ms + generation_ms,
             "framework": "langchain",
         }
