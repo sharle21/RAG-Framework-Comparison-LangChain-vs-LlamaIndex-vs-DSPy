@@ -1,0 +1,575 @@
+{
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    }
+  ],
+
+  "id": null,
+  "uid": "rag-benchmark-v1",
+  "title": "RAG Framework Benchmark",
+  "description": "Latency, throughput, and quality metrics for LangChain vs LlamaIndex vs DSPy",
+
+  "tags": ["rag", "benchmark", "vllm"],
+
+  "timezone": "browser",
+
+  "schemaVersion": 38,
+
+  "version": 1,
+
+  "refresh": "10s",
+
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m"]
+  },
+
+  "templating": {
+    "list": [
+      {
+        "name": "framework",
+        "label": "Framework",
+        "type": "custom",
+        "query": "langchain,llamaindex,dspy",
+        "current": { "text": "All", "value": "$__all" },
+        "options": [
+          { "text": "All",        "value": "$__all",    "selected": true },
+          { "text": "langchain",  "value": "langchain", "selected": false },
+          { "text": "llamaindex", "value": "llamaindex","selected": false },
+          { "text": "dspy",       "value": "dspy",      "selected": false }
+        ],
+        "multi": true,
+        "includeAll": true,
+        "hide": 0
+      }
+    ]
+  },
+
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "vLLM Worker — Request Latency",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 1 }
+    },
+
+    {
+      "id": 2,
+      "type": "timeseries",
+      "title": "E2E Request Latency p50 / p95 / p99 (Worker)",
+      "description": "How long each LLM request takes end-to-end on the worker model (Llama-3-8B). p50 = median, p95 = worst 5%, p99 = worst 1%.",
+      "gridPos": { "x": 0, "y": 1, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-worker\"}[1m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-worker\"}[1m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-worker\"}[1m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "E2E Request Latency p50 / p95 / p99 (Judge)",
+      "description": "Same metric for the judge model (Qwen2.5-14B). Judge latency is separate from answer latency — it adds cost to evaluation, not inference.",
+      "gridPos": { "x": 12, "y": 1, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-judge\"}[1m])) by (le))",
+          "legendFormat": "p50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-judge\"}[1m])) by (le))",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(vllm:e2e_request_latency_seconds_bucket{job=\"vllm-judge\"}[1m])) by (le))",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 4,
+      "type": "row",
+      "title": "vLLM Worker — Throughput",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 9, "w": 24, "h": 1 }
+    },
+
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Tokens Per Second — Generation (Worker)",
+      "description": "How many tokens per second the worker model generates. Higher = faster answers. vLLM batches requests, so this spikes when multiple queries arrive together.",
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "rate(vllm:generation_tokens_total{job=\"vllm-worker\"}[1m])",
+          "legendFormat": "generation tok/s",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(vllm:prompt_tokens_total{job=\"vllm-worker\"}[1m])",
+          "legendFormat": "prompt tok/s",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Running / Waiting / Swapped Requests (Worker)",
+      "description": "vLLM queue depth. 'running' = actively being processed. 'waiting' = queued, waiting for GPU. 'swapped' = paused to free GPU memory (bad — means GPU is full).",
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "vllm:num_requests_running{job=\"vllm-worker\"}",
+          "legendFormat": "running",
+          "refId": "A"
+        },
+        {
+          "expr": "vllm:num_requests_waiting{job=\"vllm-worker\"}",
+          "legendFormat": "waiting",
+          "refId": "B"
+        },
+        {
+          "expr": "vllm:num_requests_swapped{job=\"vllm-worker\"}",
+          "legendFormat": "swapped",
+          "refId": "C"
+        }
+      ]
+    },
+
+    {
+      "id": 7,
+      "type": "row",
+      "title": "GPU Memory",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 18, "w": 24, "h": 1 }
+    },
+
+    {
+      "id": 8,
+      "type": "gauge",
+      "title": "KV Cache Utilization — Worker",
+      "description": "KV cache is GPU memory used to store attention keys/values for in-flight requests. When this hits 100%, vLLM starts swapping requests to CPU — latency spikes. Keep below 90%.",
+      "gridPos": { "x": 0, "y": 19, "w": 6, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 0.7  },
+              { "color": "red",    "value": 0.9  }
+            ]
+          }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+
+      "targets": [
+        {
+          "expr": "vllm:gpu_cache_usage_perc{job=\"vllm-worker\"}",
+          "legendFormat": "kv cache",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "type": "gauge",
+      "title": "KV Cache Utilization — Judge",
+      "description": "Same metric for the judge. The judge processes longer prompts (question + answer + rubric), so its KV cache fills faster.",
+      "gridPos": { "x": 6, "y": 19, "w": 6, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null },
+              { "color": "yellow", "value": 0.7  },
+              { "color": "red",    "value": 0.9  }
+            ]
+          }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+
+      "targets": [
+        {
+          "expr": "vllm:gpu_cache_usage_perc{job=\"vllm-judge\"}",
+          "legendFormat": "kv cache",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "KV Cache % Over Time (Worker + Judge)",
+      "description": "Tracks how cache fills as the benchmark runs. A sawtooth pattern is normal — cache fills during a batch, empties when requests finish.",
+      "gridPos": { "x": 12, "y": 19, "w": 12, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "vllm:gpu_cache_usage_perc{job=\"vllm-worker\"}",
+          "legendFormat": "worker",
+          "refId": "A"
+        },
+        {
+          "expr": "vllm:gpu_cache_usage_perc{job=\"vllm-judge\"}",
+          "legendFormat": "judge",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 11,
+      "type": "row",
+      "title": "Go Orchestrator — Framework Comparison",
+      "collapsed": false,
+      "gridPos": { "x": 0, "y": 25, "w": 24, "h": 1 }
+    },
+
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Query Latency by Framework (p95)",
+      "description": "p95 latency per framework as measured by the Go orchestrator. This is the end-to-end wall clock time for one question — retrieval + generation combined. The Go orchestrator labels each request with the framework name.",
+      "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(rag_query_duration_seconds_bucket{framework=~\"$framework\"}[1m])) by (le, framework))",
+          "legendFormat": "{{framework}}",
+          "refId": "A"
+        }
+      ]
+    },
+
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Retrieval vs Generation Latency Split (p50)",
+      "description": "Breaks down where time is spent. 'retrieval' = embedding the question + vector search. 'generation' = LLM call. DSPy retrieval is fast (FAISS in-memory) but that doesn't mean DSPy is always faster end-to-end.",
+      "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": { "mode": "palette-classic" },
+          "custom": { "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "tooltip": { "mode": "multi" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(rag_retrieval_duration_seconds_bucket{framework=~\"$framework\"}[1m])) by (le, framework))",
+          "legendFormat": "retrieval {{framework}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(rag_generation_duration_seconds_bucket{framework=~\"$framework\"}[1m])) by (le, framework))",
+          "legendFormat": "generation {{framework}}",
+          "refId": "B"
+        }
+      ]
+    },
+
+    {
+      "id": 14,
+      "type": "barchart",
+      "title": "Queries Per Framework (total count)",
+      "description": "How many queries each framework has processed since the benchmark started. In a fair benchmark all three should be equal — any gap means errors caused retries or skips.",
+      "gridPos": { "x": 0, "y": 34, "w": 8, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "orientation": "vertical",
+        "xTickLabelRotation": 0,
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "sum(rag_queries_total{framework=~\"$framework\"}) by (framework)",
+          "legendFormat": "{{framework}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 15,
+      "type": "barchart",
+      "title": "Error Rate by Framework",
+      "description": "Fraction of queries that returned an error (timeout, API failure, empty answer). Any framework above 5% error rate has reliability problems.",
+      "gridPos": { "x": 8, "y": 34, "w": 8, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": { "mode": "palette-classic" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green",  "value": null  },
+              { "color": "yellow", "value": 0.05  },
+              { "color": "red",    "value": 0.10  }
+            ]
+          }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "orientation": "vertical",
+        "xTickLabelRotation": 0,
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+
+      "targets": [
+        {
+          "expr": "sum(rag_errors_total{framework=~\"$framework\"}) by (framework) / sum(rag_queries_total{framework=~\"$framework\"}) by (framework)",
+          "legendFormat": "{{framework}}",
+          "refId": "A",
+          "instant": true
+        }
+      ]
+    },
+
+    {
+      "id": 16,
+      "type": "stat",
+      "title": "Active Workers",
+      "description": "Number of goroutines in the Go worker pool currently processing a query. Should stay at the pool size (default 5) during a full benchmark run.",
+      "gridPos": { "x": 16, "y": 34, "w": 8, "h": 6 },
+
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue",  "value": null },
+              { "color": "green", "value": 1    }
+            ]
+          }
+        },
+        "overrides": []
+      },
+
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      },
+
+      "targets": [
+        {
+          "expr": "rag_active_workers",
+          "legendFormat": "active workers",
+          "refId": "A"
+        }
+      ]
+    }
+
+  ]
+}

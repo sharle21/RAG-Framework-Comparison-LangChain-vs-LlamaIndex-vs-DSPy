@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  # vLLM worker — exposes metrics at /metrics
+  # Includes: request latency, tokens per second, KV cache utilization
+  - job_name: "vllm-worker"
+    static_configs:
+      - targets: ["vllm-worker:8000"]
+    metrics_path: /metrics
+
+  # vLLM judge — same metrics, separate instance
+  - job_name: "vllm-judge"
+    static_configs:
+      - targets: ["vllm-judge:8001"]
+    metrics_path: /metrics
+
+  # Go orchestrator — exposes custom metrics on port 9091
+  # Includes: rag_query_duration_seconds, rag_queries_total, rag_errors_total, rag_active_workers
+  - job_name: "go-orchestrator"
+    static_configs:
+      - targets: ["host.docker.internal:9091"]
+
+  # Prometheus self-monitoring
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]

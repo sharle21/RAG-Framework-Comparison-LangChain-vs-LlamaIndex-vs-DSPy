@@ -1,0 +1,21 @@
+# Grafana Dashboard Provisioning
+#
+# This file tells Grafana WHERE to find dashboard JSON files.
+# Grafana calls this "provisioning" — instead of clicking "import" in the UI,
+# you drop JSON files in a folder and Grafana auto-loads them on startup.
+#
+# Without this file, Grafana would ignore the JSON files entirely.
+
+apiVersion: 1          # Grafana provisioning API version — always 1
+
+providers:
+  - name: "RAG Benchmark"     # Human-readable label, shows up in Grafana UI
+    orgId: 1                  # Organization ID — default Grafana install has org 1
+    type: file                # "file" means: read dashboards from the filesystem
+    disableDeletion: false     # Allow deleting dashboards from UI (false = allow)
+    updateIntervalSeconds: 10  # Re-scan folder every 10 seconds for new/changed JSON files
+    options:
+      path: /etc/grafana/dashboards   # The path INSIDE the container
+      # This matches the volume mount in docker-compose.yml:
+      #   ./infra/grafana/dashboards:/etc/grafana/dashboards:ro
+      # So our local folder is visible at /etc/grafana/dashboards inside Grafana
