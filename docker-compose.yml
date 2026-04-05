@@ -1,0 +1,145 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# RAG Benchmarking Platform — Docker Compose
+#
+# Services:
+#   vllm-worker   — Llama-3-8B-Instruct on port 8000 (answer generation)
+#   vllm-judge    — Qwen2.5-14B-Instruct on port 8001 (cross-family evaluation)
+#   prometheus    — scrapes metrics from vLLM + Go orchestrator
+#   grafana       — dashboards for latency, throughput, GPU metrics
+#   phoenix       — Arize Phoenix for LLM quality traces
+#
+# Usage:
+#   Full stack:        docker compose up -d
+#   Observability only: docker compose up -d prometheus grafana phoenix
+#   Tear down:         docker compose down
+#
+# Note on GPU:
+#   Both vLLM services share GPU 0 on a single A100 80GB instance.
+#   On a 2x A100 setup, change vllm-judge device_ids to ["1"] for clean separation.
+#   If GPU sharing causes issues, run vLLM services as bare processes instead
+#   (see plan.md Part 3) and only use Compose for prometheus/grafana/phoenix.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ---------------------------------------------------------------------------
+  # Worker model — generates answers for benchmark queries
+  # ---------------------------------------------------------------------------
+  vllm-worker:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-worker
+    ports:
+      - "8000:8000"
+    volumes:
+      - huggingface-cache:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    command: >
+      --model meta-llama/Meta-Llama-3-8B-Instruct
+      --port 8000
+      --tensor-parallel-size 1
+      --gpu-memory-utilization 0.45
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ---------------------------------------------------------------------------
+  # Judge model — scores answers (different family from worker = no bias)
+  # ---------------------------------------------------------------------------
+  vllm-judge:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-judge
+    ports:
+      - "8001:8001"
+    volumes:
+      - huggingface-cache:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    command: >
+      --model Qwen/Qwen2.5-14B-Instruct
+      --port 8001
+      --tensor-parallel-size 1
+      --gpu-memory-utilization 0.50
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/v1/models"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # ---------------------------------------------------------------------------
+  # Prometheus — scrapes metrics from vLLM endpoints + Go orchestrator
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+    depends_on:
+      vllm-worker:
+        condition: service_healthy
+      vllm-judge:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------------------
+  # Grafana — dashboards for latency, throughput, KV cache, GPU utilization
+  # ---------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/dashboards/rag_benchmark.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infra/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      # dashboards.yml tells Grafana to scan /etc/grafana/dashboards for JSON files
+      - ./infra/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      # the actual JSON dashboard files live here (same folder, two mount purposes)
+      - ./infra/grafana/dashboards:/etc/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+  # ---------------------------------------------------------------------------
+  # Arize Phoenix — LLM quality traces (retrieval relevancy, judge scores,
+  #                 hallucination flags, failure mode classification)
+  # ---------------------------------------------------------------------------
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    container_name: arize-phoenix
+    ports:
+      - "6006:6006"   # UI
+      - "4317:4317"   # OTLP gRPC trace ingestion
+    volumes:
+      - phoenix-data:/data
+
+volumes:
+  huggingface-cache:   # shared between worker and judge — download models once
+  prometheus-data:
+  grafana-data:
+  phoenix-data:
