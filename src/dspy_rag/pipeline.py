@@ -93,12 +93,18 @@ class DSPyRAG:
 
         # Pre-process corpus and truncate clearly over-sized docs
         # 1 token ≈ 4 chars, so 28,000 chars is a safe buffer for the 8,191 limit
+        # Also track which corpus entries are noise docs (DSPy has no metadata —
+        # we store the formatted string and check membership in query())
         corpus = []
+        self._noise_texts = set()
         for doc in documents:
             content = doc.get('content', '')
             if content:
                 text = f"Title: {doc['title']}\n\n{content}"
-                corpus.append(text[:28000])
+                text = text[:28000]
+                corpus.append(text)
+                if doc.get("is_noise"):
+                    self._noise_texts.add(text)
 
         embedder = dspy.Embedder(
             'openai/text-embedding-3-small',
@@ -245,9 +251,13 @@ class DSPyRAG:
         )
         generation_ms = (time.perf_counter() - t1) * 1000
 
+        # Check if any retrieved passage is a noise doc (string membership check)
+        noise_retrieved = any(p in self._noise_texts for p in search_result.passages)
+
         return {
             "answer": prediction.response,
             "contexts": search_result.passages,
+            "retrieved_noise": noise_retrieved,
             "retrieval_ms": retrieval_ms,
             "generation_ms": generation_ms,
             "latency_ms": retrieval_ms + generation_ms,
