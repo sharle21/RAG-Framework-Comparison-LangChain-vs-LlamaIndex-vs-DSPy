@@ -120,7 +120,7 @@
       "id": 3,
       "type": "timeseries",
       "title": "E2E Request Latency p50 / p95 / p99 (Judge)",
-      "description": "Same metric for the judge model (Qwen2.5-14B). Judge latency is separate from answer latency — it adds cost to evaluation, not inference.",
+      "description": "Same metric for the judge model (Qwen3-14B). Judge latency is separate from answer latency — it adds cost to evaluation, not inference.",
       "gridPos": { "x": 12, "y": 1, "w": 12, "h": 8 },
 
       "datasource": { "type": "prometheus", "uid": "prometheus" },
