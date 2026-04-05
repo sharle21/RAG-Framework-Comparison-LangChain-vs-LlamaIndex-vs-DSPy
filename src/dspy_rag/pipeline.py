@@ -46,13 +46,36 @@ class RAGModule(dspy.Module):
         return prediction
 
 
+class OptimizableRAGModule(dspy.Module):
+    """
+    Variant of RAGModule used during MIPROv2 optimization.
+
+    RAGModule.forward() takes (question, search_fn) — but MIPROv2 only knows
+    about the fields in your trainset. It can't pass search_fn. So we bake
+    search_fn into __init__ and expose forward(question) only, which is the
+    signature the optimizer expects.
+
+    After optimization, we copy optimized.respond back into the main rag_module
+    so the regular query() path benefits from the improved prompt.
+    """
+    def __init__(self, search_fn):
+        self.search_fn = search_fn
+        self.respond = dspy.ChainOfThought('context, question -> response')
+
+    def forward(self, question: str):
+        result = self.search_fn(question)
+        return self.respond(context=result.passages, question=question)
+
+
 class DSPyRAG:
-    def __init__(self, model: str = "gpt-4o-mini", k: int = 4):
+    def __init__(self, model: str = "gpt-4o-mini", k: int = 4, base_url: str = None):
         self.model_name = model
+        self.base_url = base_url
         self.k = k
         self.rag_module = None
         self.search = None
         self.lm = None
+        self._optimized = False
 
     def build(self, documents: list[dict]) -> None:
         """
@@ -61,10 +84,11 @@ class DSPyRAG:
         without this DSPy's LiteLLM cache returns sub-millisecond responses
         that are not comparable to LangChain/LlamaIndex latency.
         """
-        self.lm = dspy.LM(
-            f"openai/{self.model_name}",
-            temperature=0,
-        )
+        lm_kwargs = {"temperature": 0}
+        if self.base_url:
+            lm_kwargs["api_base"] = self.base_url
+            lm_kwargs["api_key"] = "none"
+        self.lm = dspy.LM(f"openai/{self.model_name}", **lm_kwargs)
         dspy.configure(lm=self.lm, cache=False)  # cache=False for real latency measurement
 
         # Pre-process corpus and truncate clearly over-sized docs
@@ -139,28 +163,93 @@ class DSPyRAG:
 
         self.rag_module = RAGModule()
 
-    # NOTE: DSPy's unique value — you can optimize prompts automatically:
-    # from dspy.teleprompt import MIPROv2
-    # optimizer = MIPROv2(metric=your_metric, auto="light")
-    # self.rag_module = optimizer.compile(self.rag_module, trainset=trainset)
-    #
-    # Running unoptimized for fair baseline comparison.
-
-    def query(self, question: str) -> dict[str, Any]:
+    def optimize(self, qa_pairs: list[dict], n_train: int = 20) -> None:
         """
-        Run a query — single search call, contexts returned from module.
-        No double embedding call — latency timer covers the full operation.
+        Run MIPROv2 prompt optimization using QA pairs as training examples.
+
+        MIPROv2 generates candidate instruction variants, evaluates each one
+        against a fast metric (token F1 — no extra LLM cost), and picks the
+        best. The winning prompt replaces the default ChainOfThought prompt.
+
+        auto="light" tries ~5-10 candidates (cheap). Use "medium" or "heavy"
+        for a more thorough search at higher API cost.
+
+        This is DSPy's core value proposition: instead of hand-writing prompts,
+        you show it examples and it figures out the prompt structure itself.
         """
         if self.rag_module is None:
             raise RuntimeError("Call build() first.")
 
-        start = time.perf_counter()
-        prediction = self.rag_module(question=question, search_fn=self.search)
-        latency_ms = (time.perf_counter() - start) * 1000
+        from dspy.teleprompt import MIPROv2
+
+        # Trainset: each example is a question with its expected answer
+        trainset = [
+            dspy.Example(
+                question=qa["question"],
+                response=qa["ground_truth"],
+            ).with_inputs("question")
+            for qa in qa_pairs[:n_train]
+        ]
+
+        # Token F1 metric — fast and deterministic, no LLM cost during search
+        def f1_metric(example, prediction, trace=None):
+            pred = getattr(prediction, "response", "") or ""
+            gt = example.response or ""
+            pred_tokens = set(pred.lower().split())
+            gt_tokens = set(gt.lower().split())
+            if not pred_tokens or not gt_tokens:
+                return 0.0
+            common = pred_tokens & gt_tokens
+            if not common:
+                return 0.0
+            p = len(common) / len(pred_tokens)
+            r = len(common) / len(gt_tokens)
+            return 2 * p * r / (p + r)
+
+        # OptimizableRAGModule bakes in search_fn so the optimizer only sees question
+        optimizable = OptimizableRAGModule(self.search)
+
+        print(f"  MIPROv2: optimizing on {len(trainset)} examples (auto='light')...")
+        optimizer = MIPROv2(metric=f1_metric, auto="light")
+        optimized = optimizer.compile(
+            optimizable,
+            trainset=trainset,
+            requires_permission_to_run=False,
+        )
+
+        # Copy the optimized ChainOfThought prompt back into the main rag_module.
+        # MIPROv2 updates respond.predict.extended_signature (instructions + demos).
+        self.rag_module.respond = optimized.respond
+        self._optimized = True
+        print("  MIPROv2 done — optimized prompt installed.")
+
+    def query(self, question: str) -> dict[str, Any]:
+        """
+        Run a query with separate retrieval and generation timers.
+        Calls search and ChainOfThought respond directly instead of
+        going through RAGModule.forward() so we can put a timer between them.
+        """
+        if self.rag_module is None:
+            raise RuntimeError("Call build() first.")
+
+        # Step 1: retrieval — embed question + FAISS nearest-neighbor search
+        t0 = time.perf_counter()
+        search_result = self.search(question)
+        retrieval_ms = (time.perf_counter() - t0) * 1000
+
+        # Step 2: generation — DSPy ChainOfThought calls the LLM
+        t1 = time.perf_counter()
+        prediction = self.rag_module.respond(
+            context=search_result.passages,
+            question=question,
+        )
+        generation_ms = (time.perf_counter() - t1) * 1000
 
         return {
             "answer": prediction.response,
-            "contexts": prediction.passages,
-            "latency_ms": latency_ms,
-            "framework": "dspy",
+            "contexts": search_result.passages,
+            "retrieval_ms": retrieval_ms,
+            "generation_ms": generation_ms,
+            "latency_ms": retrieval_ms + generation_ms,
+            "framework": "dspy_optimized" if self._optimized else "dspy",
         }
