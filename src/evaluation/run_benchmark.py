@@ -16,8 +16,15 @@ from src.evaluation.metrics import (
     evaluate_ragas,
     evaluate_llm_judge,
     evaluate_string_overlap,
+    evaluate_bertscore,
     analyze_failure_modes,
+    make_vllm_judge,
 )
+# trace_span is the manual span context manager — wraps our
+# application-level operations (framework runs, evaluation phases).
+# init_tracing sets up OTel + auto-instrumentors for all 3 frameworks.
+# add_span_event records milestone events within a span.
+from src.evaluation.tracing import init_tracing, trace_span, add_span_event
 
 
 DATA_DIR = Path(__file__).parent.parent.parent / "data"
@@ -42,66 +49,154 @@ def load_data():
     return documents, qa_pairs, synthetic_qa
 
 
-def run_framework(rag_instance, documents, qa_pairs, name):
+def run_framework(rag_instance, documents, qa_pairs, name, optimizer_fn=None):
     print(f"\n{'='*50}\nRunning: {name}\n{'='*50}")
 
-    print("Building index...")
-    build_start = time.perf_counter()
-    rag_instance.build(documents)
-    build_time_s = time.perf_counter() - build_start
-    print(f"Index built in {build_time_s:.1f}s")
+    # ── Manual span: "build_index" ──────────────────────────────────
+    # This span wraps the index-building phase. In Phoenix you'll see
+    # how long each framework takes to index documents, and the
+    # auto-instrumentor will show the embedding API calls inside it.
+    with trace_span("build_index", {"framework": name, "n_documents": len(documents)}):
+        print("Building index...")
+        build_start = time.perf_counter()
+        rag_instance.build(documents)
+        build_time_s = time.perf_counter() - build_start
+        print(f"Index built in {build_time_s:.1f}s")
+
+    if optimizer_fn:
+        # ── Manual span: "optimize_prompts" ─────────────────────────
+        # Only DSPy hits this path. Phoenix will show the MIPROv2
+        # candidate evaluation LLM calls nested inside.
+        with trace_span("optimize_prompts", {"framework": name}):
+            print("Optimizing prompts...")
+            opt_start = time.perf_counter()
+            optimizer_fn(rag_instance)
+            print(f"Optimization took {time.perf_counter() - opt_start:.1f}s")
 
     results = []
     for i, qa in enumerate(qa_pairs):
         print(f"  Query {i+1}/{len(qa_pairs)}: {qa['question'][:60]}...")
-        try:
-            result = rag_instance.query(qa["question"])
-            result["question"] = qa["question"]
-            result["ground_truth"] = qa["ground_truth"]
-            results.append(result)
-        except Exception as e:
-            print(f"  ERROR: {e}")
-            results.append({
-                "question": qa["question"],
-                "ground_truth": qa["ground_truth"],
-                "answer": "",
-                "contexts": [],
-                "latency_ms": -1,
-                "framework": name,
-                "error": str(e),
-            })
+
+        # ── Manual span: "query" ────────────────────────────────────
+        # One span per question. Inside it, the auto-instrumentor
+        # creates child spans for the retriever call and LLM call.
+        # In Phoenix you can click on any query and see:
+        #   query #37 (1.8s)
+        #     ├── retriever.invoke()  (45ms)  ← auto
+        #     └── ChatOpenAI.invoke() (1750ms) ← auto
+        with trace_span("query", {
+            "framework": name,
+            "query_index": i + 1,
+            "question": qa["question"][:100],  # truncate for readability
+            "domain": qa.get("domain", "unknown"),
+        }):
+            try:
+                result = rag_instance.query(qa["question"])
+                result["question"] = qa["question"]
+                result["ground_truth"] = qa["ground_truth"]
+                result["domain"] = qa.get("domain", "unknown")
+                results.append(result)
+            except Exception as e:
+                print(f"  ERROR: {e}")
+                results.append({
+                    "question": qa["question"],
+                    "ground_truth": qa["ground_truth"],
+                    "answer": "",
+                    "contexts": [],
+                    "latency_ms": -1,
+                    "framework": name,
+                    "domain": qa.get("domain", "unknown"),
+                    "error": str(e),
+                })
 
     return results, build_time_s
 
 
-def compute_latency_stats(results):
-    latencies = [r["latency_ms"] for r in results if r.get("latency_ms", -1) > 0]
-    if not latencies:
+def _stats(values):
+    if not values:
         return {}
-    sorted_l = sorted(latencies)
+    s = sorted(values)
     return {
-        "mean_ms": round(sum(latencies) / len(latencies), 1),
-        "min_ms": round(min(latencies), 1),
-        "max_ms": round(max(latencies), 1),
-        "p95_ms": round(sorted_l[int(len(sorted_l) * 0.95)], 1),
+        "mean_ms": round(sum(values) / len(values), 1),
+        "min_ms": round(min(values), 1),
+        "max_ms": round(max(values), 1),
+        "p95_ms": round(s[int(len(s) * 0.95)], 1),
     }
 
 
-def evaluate_all(results, name):
-    print(f"\nEvaluating {name}...")
-    print("  Running string overlap (fast, no LLM)...")
-    string_scores = evaluate_string_overlap(results)
-    print("  Running LLM-as-judge...")
-    llm_scores = evaluate_llm_judge(results)
-    print("  Running RAGAS...")
-    ragas_scores = evaluate_ragas(results)
-    print("  Analyzing failure modes...")
-    failure_modes = analyze_failure_modes(results, sample_n=15)
+def compute_latency_stats(results):
+    total = [r["latency_ms"] for r in results if r.get("latency_ms", -1) > 0]
+    retrieval = [r["retrieval_ms"] for r in results if r.get("retrieval_ms", -1) > 0]
+    generation = [r["generation_ms"] for r in results if r.get("generation_ms", -1) > 0]
+    if not total:
+        return {}
+    return {
+        **_stats(total),
+        "retrieval": _stats(retrieval),
+        "generation": _stats(generation),
+    }
+
+
+def compute_domain_breakdown(results):
+    """Per-domain string overlap scores to see if framework ranking differs by topic."""
+    from collections import defaultdict
+    by_domain = defaultdict(list)
+    for r in results:
+        by_domain[r.get("domain", "unknown")].append(r)
+
+    breakdown = {}
+    for domain, domain_results in sorted(by_domain.items()):
+        breakdown[domain] = {
+            "n": len(domain_results),
+            "string_overlap": evaluate_string_overlap(domain_results),
+            "bertscore": evaluate_bertscore(domain_results),
+        }
+    return breakdown
+
+
+def evaluate_all(results, name, judge=None):
+    # ── Manual span: "evaluation" ───────────────────────────────────
+    # This wraps the entire scoring phase for one framework.
+    # Without this span, Phoenix would show judge LLM calls mixed in
+    # with the query LLM calls — you wouldn't know which is which.
+    # With this span, all judge calls are grouped under "evaluation".
+    with trace_span("evaluation", {"framework": name, "n_results": len(results)}):
+        print(f"\nEvaluating {name}...")
+
+        print("  Running string overlap (fast, no LLM)...")
+        string_scores = evaluate_string_overlap(results)
+        # ── Span event: milestone marker ────────────────────────────
+        # This shows as a dot on the "evaluation" span's timeline.
+        # Quick way to see when each phase finished without creating
+        # a full child span (events are lighter-weight than spans).
+        add_span_event("string_overlap_done", {"answer_f1": string_scores.get("answer_f1", 0)})
+
+        print("  Running BERTScore (semantic similarity)...")
+        bert_scores = evaluate_bertscore(results)
+        add_span_event("bertscore_done", {"f1": bert_scores.get("bertscore_f1", 0)})
+
+        print("  Running LLM-as-judge (3 runs, averaged)...")
+        llm_scores = evaluate_llm_judge(results, n_runs=3, judge=judge)
+        add_span_event("llm_judge_done", {"correctness": llm_scores.get("correctness", 0)})
+
+        print("  Running RAGAS...")
+        ragas_scores = evaluate_ragas(results)
+        add_span_event("ragas_done")
+
+        print("  Analyzing failure modes...")
+        failure_modes = analyze_failure_modes(results, sample_n=15, judge=judge)
+        add_span_event("failure_modes_done")
+
+        print("  Computing per-domain breakdown...")
+        domain_breakdown = compute_domain_breakdown(results)
+
     return {
         "string_overlap": string_scores,
+        "bertscore": bert_scores,
         "llm_judge": llm_scores,
         "ragas": ragas_scores,
         "failure_modes": failure_modes,
+        "domain_breakdown": domain_breakdown,
     }
 
 
@@ -112,6 +207,7 @@ def generate_ranking_comparison(summary):
     frameworks = [k for k in summary.keys() if not k.startswith("_")]
     metrics_to_rank = {
         "answer_f1 (string)": lambda f: summary[f]["eval"]["string_overlap"].get("answer_f1", 0),
+        "bertscore_f1 (semantic)": lambda f: summary[f]["eval"]["bertscore"].get("bertscore_f1", 0),
         "correctness (llm_judge)": lambda f: summary[f]["eval"]["llm_judge"].get("correctness", 0),
         "faithfulness (ragas)": lambda f: summary[f]["eval"]["ragas"].get("faithfulness", 0),
         "answer_relevancy (ragas)": lambda f: summary[f]["eval"]["ragas"].get("answer_relevancy", 0),
@@ -136,13 +232,32 @@ def print_summary(summary, ranking_table):
         print(f"\n── {framework.upper()} ──")
         print(f"  Build time:      {stats['build_time_s']:.1f}s")
         if stats["latency"]:
-            print(f"  Mean latency:    {stats['latency']['mean_ms']}ms")
-            print(f"  P95 latency:     {stats['latency']['p95_ms']}ms")
+            lat = stats["latency"]
+            r = lat.get("retrieval", {})
+            g = lat.get("generation", {})
+            print(f"  Total latency:   mean={lat['mean_ms']}ms  p95={lat['p95_ms']}ms")
+            if r:
+                print(f"  Retrieval:       mean={r['mean_ms']}ms  p95={r['p95_ms']}ms")
+            if g:
+                print(f"  Generation:      mean={g['mean_ms']}ms  p95={g['p95_ms']}ms")
         print(f"  Answer F1:       {stats['eval']['string_overlap'].get('answer_f1', 0):.3f}")
-        print(f"  LLM Correctness: {stats['eval']['llm_judge'].get('correctness', 0):.3f}")
+        bs = stats["eval"].get("bertscore", {})
+        if bs.get("bertscore_f1"):
+            print(f"  BERTScore F1:    {bs['bertscore_f1']:.4f}  (P={bs.get('bertscore_precision',0):.4f} R={bs.get('bertscore_recall',0):.4f})")
+        lj = stats["eval"]["llm_judge"]
+        print(f"  LLM Correctness: {lj.get('correctness', 0):.3f}  ±{lj.get('correctness_std', 0):.3f}  (judge ran {lj.get('n_runs', 1)}x)")
         print(f"  RAGAS Faith:     {stats['eval']['ragas'].get('faithfulness', 0):.3f}")
         fm = stats["eval"]["failure_modes"]["percentages"]
         print(f"  Failure modes:   correct={fm.get('correct',0)}% | hallucination={fm.get('hallucination',0)}% | wrong_context={fm.get('wrong_context',0)}%")
+
+        # Per-domain breakdown
+        domain_bd = stats["eval"].get("domain_breakdown", {})
+        if domain_bd:
+            print(f"  Domain breakdown:")
+            for domain, d_stats in domain_bd.items():
+                f1 = d_stats["string_overlap"].get("answer_f1", 0)
+                bsf1 = d_stats.get("bertscore", {}).get("bertscore_f1", 0)
+                print(f"    {domain:<12} n={d_stats['n']:>3}  F1={f1:.3f}  BERTScore={bsf1:.4f}")
 
     print("\n\n── RANKING BY METRIC (1=best) ──")
     header = f"{'Metric':<35}" + "".join(f"{f:<15}" for f in frameworks)
@@ -162,9 +277,38 @@ def main():
                         help="Generate synthetic QA pairs before benchmarking (costs ~$0.15)")
     parser.add_argument("--adversarial", action="store_true",
                         help="Run adversarial stress test after standard benchmark")
-    parser.add_argument("--n-pairs", type=int, default=10,
-                        help="Number of QA pairs to use (default 10 for dev, use 50 for full run)")
+    parser.add_argument("--n-pairs", type=int, default=50,
+                        help="Number of QA pairs to use (default 50, use 150 for full statistical run)")
+    parser.add_argument("--vllm", action="store_true",
+                        help="Use local vLLM: Llama-3-8B worker + Qwen2.5-14B judge (requires docker compose up -d)")
+    parser.add_argument("--worker-url", default="http://localhost:8000/v1",
+                        help="vLLM worker base URL (default: http://localhost:8000/v1)")
+    parser.add_argument("--judge-url", default="http://localhost:8001/v1",
+                        help="vLLM judge base URL (default: http://localhost:8001/v1)")
+    parser.add_argument("--dspy-optimize", action="store_true",
+                        help="Run MIPROv2 prompt optimization on DSPy before benchmarking (adds ~5 min, costs ~$0.10)")
+    parser.add_argument("--trace", action="store_true",
+                        help="Send traces to Arize Phoenix (requires docker compose up -d phoenix, open http://localhost:6006)")
+    parser.add_argument("--phoenix-endpoint", default="http://localhost:4317",
+                        help="Phoenix OTLP endpoint (default: http://localhost:4317)")
     args = parser.parse_args()
+
+    # ── Tracing setup ───────────────────────────────────────────────
+    # init_tracing() does three things:
+    #   1. Creates an OTel TracerProvider that sends spans to Phoenix
+    #   2. Calls instrument() on all three framework instrumentors
+    #   3. Returns a shutdown() function we call at the end
+    #
+    # IMPORTANT: this must happen BEFORE importing the framework
+    # pipelines, because instrument() monkey-patches the framework
+    # classes. If we import LangChainRAG first and instrument() later,
+    # the classes are already loaded and the patches miss them.
+    #
+    # When --trace is not set, tracing_shutdown is a no-op and
+    # trace_span() becomes a passthrough (runs your code, no spans).
+    tracing_shutdown = None
+    if args.trace:
+        tracing_shutdown = init_tracing(phoenix_endpoint=args.phoenix_endpoint)
 
     documents, qa_pairs, synthetic_qa = load_data()
     print(f"Loaded {len(documents)} documents, {len(qa_pairs)} QA pairs, {len(synthetic_qa)} synthetic")
@@ -216,64 +360,128 @@ def main():
     from src.llamaindex_rag.pipeline import LlamaIndexRAG
     from src.dspy_rag.pipeline import DSPyRAG
 
+    # Configure worker model and judge based on --vllm flag
+    if args.vllm:
+        worker_model = "meta-llama/Meta-Llama-3-8B-Instruct"
+        worker_base_url = args.worker_url
+        judge = make_vllm_judge(args.judge_url, "Qwen/Qwen2.5-14B-Instruct")
+        print(f"\nvLLM mode: worker={worker_base_url} ({worker_model})")
+        print(f"           judge={args.judge_url} (Qwen/Qwen2.5-14B-Instruct)")
+    else:
+        worker_model = "gpt-4o-mini"
+        worker_base_url = None
+        judge = None  # defaults to Mistral Large in metrics.py
+        print(f"\nAPI mode: worker=gpt-4o-mini (OpenAI), judge=mistral-large-latest (Mistral)")
+
     frameworks = {
-        "langchain": LangChainRAG(),
-        "llamaindex": LlamaIndexRAG(),
-        "dspy": DSPyRAG(),
+        "langchain": LangChainRAG(model=worker_model, base_url=worker_base_url),
+        "llamaindex": LlamaIndexRAG(model=worker_model, base_url=worker_base_url),
+        "dspy": DSPyRAG(model=worker_model, base_url=worker_base_url),
     }
 
     # Step 2: Standard benchmark
-    summary = {}
-    for name, rag in frameworks.items():
-        results, build_time = run_framework(rag, documents, test_pairs, name)
-        eval_scores = evaluate_all(results, name)
-        summary[name] = {
-            "build_time_s": round(build_time, 2),
-            "latency": compute_latency_stats(results),
-            "eval": eval_scores,
-        }
-        with open(RESULTS_DIR / f"results_{name}.json", "w") as f:
-            json.dump({"results": results, "summary": summary[name]}, f, indent=2)
+    # For DSPy, use the first third of test_pairs as a training set for MIPROv2.
+    # The remaining two thirds are used for evaluation — no data leakage.
+    n_train = max(5, len(test_pairs) // 3)
+    dspy_train_pairs = test_pairs[:n_train]
+    dspy_eval_pairs = test_pairs[n_train:]
 
-    ranking_table = generate_ranking_comparison(summary)
-    summary["_ranking_table"] = ranking_table
+    # ── Manual span: "benchmark_run" ────────────────────────────────
+    # This is the ROOT span — the top of the trace tree.
+    # Everything else (framework runs, evaluations, adversarial) nests
+    # inside it. In Phoenix, this one span represents the entire
+    # benchmark execution. You can see total wall-clock time and
+    # drill into any framework.
+    with trace_span("benchmark_run", {
+        "n_pairs": len(test_pairs),
+        "frameworks": ",".join(frameworks.keys()),
+        "dspy_optimize": args.dspy_optimize,
+        "vllm_mode": args.vllm,
+    }):
 
-    with open(RESULTS_DIR / "summary.json", "w") as f:
-        json.dump(summary, f, indent=2)
+        summary = {}
+        for name, rag in frameworks.items():
+            # Only DSPy gets the optimizer; LangChain and LlamaIndex run as-is
+            optimizer_fn = None
+            if args.dspy_optimize and name == "dspy":
+                optimizer_fn = lambda r, pairs=dspy_train_pairs: r.optimize(pairs, n_train=len(pairs))
 
-    print_summary(summary, ranking_table)
+            eval_pairs = dspy_eval_pairs if (args.dspy_optimize and name == "dspy") else test_pairs
 
-    # Step 3: Optionally run adversarial stress test
-    if args.adversarial:
-        print("\n" + "="*50)
-        print("RUNNING ADVERSARIAL STRESS TEST")
-        print("="*50)
-        
-        from src.evaluation.adversarial_agent import run_adversarial_benchmark,compute_degradation
-        
-        adv_results = run_adversarial_benchmark(frameworks, adversarial_source,n_source_questions=30)
-        degradation = compute_degradation(summary, adv_results)
+            # ── Manual span: "framework_run" ────────────────────────
+            # Groups ALL work for one framework: index build + queries
+            # + evaluation. In Phoenix this shows as:
+            #
+            #   benchmark_run
+            #     ├── framework_run: langchain     ← THIS SPAN
+            #     │     ├── build_index
+            #     │     ├── query #1
+            #     │     │     ├── retriever (auto)
+            #     │     │     └── LLM call (auto)
+            #     │     ├── query #2 ...
+            #     │     └── evaluation
+            #     │           ├── judge call (auto)
+            #     │           └── RAGAS call (auto)
+            #     ├── framework_run: llamaindex
+            #     └── framework_run: dspy
+            with trace_span("framework_run", {"framework": name, "n_pairs": len(eval_pairs)}):
+                results, build_time = run_framework(rag, documents, eval_pairs, name, optimizer_fn=optimizer_fn)
+                eval_scores = evaluate_all(results, name, judge=judge)
 
-        summary["_adversarial_degradation"] = degradation
+            summary[name] = {
+                "build_time_s": round(build_time, 2),
+                "latency": compute_latency_stats(results),
+                "eval": eval_scores,
+            }
+            with open(RESULTS_DIR / f"results_{name}.json", "w") as f:
+                json.dump({"results": results, "summary": summary[name]}, f, indent=2)
+
+        ranking_table = generate_ranking_comparison(summary)
+        summary["_ranking_table"] = ranking_table
+
         with open(RESULTS_DIR / "summary.json", "w") as f:
             json.dump(summary, f, indent=2)
 
-        print("\n── ADVERSARIAL DEGRADATION (1.0 = no degradation) ──")
-        print(f"{'Framework':<15} {'Standard':<12} {'Adversarial':<14} {'Ratio':<10} {'Note'}")
-        print("-" * 75)
-        for fw, stats in degradation.items():
-            note = ""
-            if "worst_injection_cell" in stats:
-                note = f"worst cell: {stats['worst_injection_cell']} (leakage={stats.get('grid_leakage_rate', 0):.0%})"
-            elif "blind_spot_verdict" in stats:
-                note = f"blind spot: {stats['blind_spot_verdict']}"
-            print(
-                f"{fw:<15} {stats['standard_correctness']:<12} "
-                f"{stats['adversarial_robustness']:<14} "
-                f"{stats['degradation_ratio']:<10} "
-                f"{note}"
-            )
-        print("\n→ Framework with ratio closest to 1.0 is most robust under adversarial conditions.")
+        print_summary(summary, ranking_table)
+
+        # Step 3: Optionally run adversarial stress test
+        if args.adversarial:
+            print("\n" + "="*50)
+            print("RUNNING ADVERSARIAL STRESS TEST")
+            print("="*50)
+
+            from src.evaluation.adversarial_agent import run_adversarial_benchmark,compute_degradation
+
+            # ── Manual span: "adversarial_benchmark" ────────────────
+            # Groups all adversarial work: query generation + running
+            # all frameworks on hard queries + robustness evaluation.
+            with trace_span("adversarial_benchmark", {"n_source_questions": 30}):
+                adv_results = run_adversarial_benchmark(frameworks, adversarial_source,n_source_questions=30)
+                degradation = compute_degradation(summary, adv_results)
+
+            summary["_adversarial_degradation"] = degradation
+            with open(RESULTS_DIR / "summary.json", "w") as f:
+                json.dump(summary, f, indent=2)
+
+            print("\n── ADVERSARIAL DEGRADATION (OOD excluded from ratio) ──")
+            print(f"{'Framework':<15} {'Standard':<12} {'Non-OOD Rob.':<14} {'Ratio':<10} {'OOD Refusal':<14} {'Top Failure'}")
+            print("-" * 85)
+            for fw, stats in degradation.items():
+                print(
+                    f"{fw:<15} {stats['standard_correctness']:<12} "
+                    f"{stats['non_ood_robustness']:<14} "
+                    f"{stats['degradation_ratio']:<10} "
+                    f"{stats['ood_refusal_rate']:<14} "
+                    f"{stats['top_failure_mode']}"
+                )
+            print("\n→ Ratio < 1.0 = framework degrades under pressure (expected).")
+            print("→ OOD Refusal Rate: higher = better at saying 'I don't know' (hallucination resistance).")
+
+    # ── Flush remaining spans to Phoenix ────────────────────────────
+    # This must happen OUTSIDE the benchmark_run span (after it ends)
+    # so the root span itself gets flushed too.
+    if tracing_shutdown:
+        tracing_shutdown()
 
     print(f"\nAll results saved to {RESULTS_DIR}/")
 
