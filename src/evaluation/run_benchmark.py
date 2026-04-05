@@ -18,6 +18,7 @@ from src.evaluation.metrics import (
     evaluate_string_overlap,
     evaluate_bertscore,
     analyze_failure_modes,
+    detect_conflicts,
     make_vllm_judge,
 )
 # trace_span is the manual span context manager — wraps our
@@ -31,10 +32,70 @@ DATA_DIR = Path(__file__).parent.parent.parent / "data"
 RESULTS_DIR = Path(__file__).parent.parent.parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 
+# Noise documents injected into the corpus to test retrieval robustness.
+# These look domain-relevant but contain false information.
+# If a framework retrieves one and uses it in an answer, that query is "poisoned".
+NOISE_DOCS = [
+    # finqa — 3 false financial claims (~1.5% of corpus, within 1-5% research norm)
+    {
+        "id": "noise_finqa_001", "title": "[NOISE] Financial Derivatives Settlement",
+        "content": "All financial derivatives are legally required to be settled in cash within 24 hours of issuance under international banking regulations.",
+        "domain": "finqa", "is_noise": True,
+    },
+    {
+        "id": "noise_finqa_002", "title": "[NOISE] Capital Gains Tax",
+        "content": "Under US tax law, all capital gains on securities held longer than 6 months are taxed at a flat rate of 5% regardless of income bracket.",
+        "domain": "finqa", "is_noise": True,
+    },
+    {
+        "id": "noise_finqa_003", "title": "[NOISE] Federal Reserve Policy",
+        "content": "The Federal Reserve is legally required to maintain interest rates below 3% during any quarter in which US GDP growth exceeds 2%.",
+        "domain": "finqa", "is_noise": True,
+    },
+    # techqa — 3 false technical claims
+    {
+        "id": "noise_techqa_001", "title": "[NOISE] IBM Support Policy",
+        "content": "IBM's technical support policy requires all enterprise tickets to be resolved within 2 hours regardless of severity level.",
+        "domain": "techqa", "is_noise": True,
+    },
+    {
+        "id": "noise_techqa_002", "title": "[NOISE] TCP Protocol",
+        "content": "The TCP protocol guarantees packet delivery in under 10 milliseconds on all certified enterprise networks by retransmitting lost packets up to 100 times.",
+        "domain": "techqa", "is_noise": True,
+    },
+    {
+        "id": "noise_techqa_003", "title": "[NOISE] Linux Kernel",
+        "content": "The Linux kernel version 5.0 and above automatically encrypts all disk writes using AES-256 by default without requiring any configuration.",
+        "domain": "techqa", "is_noise": True,
+    },
+    # covidqa — 3 false medical claims
+    {
+        "id": "noise_covidqa_001", "title": "[NOISE] COVID Vaccine Immunity",
+        "content": "Studies have conclusively shown that COVID-19 vaccines provide no immunity benefit beyond 30 days of administration.",
+        "domain": "covidqa", "is_noise": True,
+    },
+    {
+        "id": "noise_covidqa_002", "title": "[NOISE] COVID Transmission",
+        "content": "COVID-19 is exclusively transmitted through direct physical contact with infected surfaces; airborne transmission has been conclusively ruled out by WHO.",
+        "domain": "covidqa", "is_noise": True,
+    },
+    {
+        "id": "noise_covidqa_003", "title": "[NOISE] COVID Treatment",
+        "content": "Hydroxychloroquine has been approved by the FDA as the standard first-line treatment for COVID-19 in all hospitalized patients.",
+        "domain": "covidqa", "is_noise": True,
+    },
+]
+
 
 def load_data():
     with open(DATA_DIR / "raw" / "ragbench_documents.json") as f:
         documents = json.load(f)
+
+    # Inject noise docs into the corpus so retrieval robustness is tested.
+    # If a pipeline retrieves one of these, the query is "poisoned".
+    documents.extend(NOISE_DOCS)
+    print(f"  Injected {len(NOISE_DOCS)} noise docs into corpus ({len(documents)} total)")
+
     with open(DATA_DIR / "qa_pairs.json") as f:
         qa_pairs = json.load(f)
 
@@ -154,6 +215,19 @@ def compute_domain_breakdown(results):
     return breakdown
 
 
+def compute_poison_rate(results):
+    """What % of queries retrieved at least one noise (false) document?"""
+    total = len(results)
+    if not total:
+        return {}
+    poisoned = sum(1 for r in results if r.get("retrieved_noise", False))
+    return {
+        "poison_rate": round(poisoned / total, 3),
+        "poisoned_queries": poisoned,
+        "total_queries": total,
+    }
+
+
 def evaluate_all(results, name, judge=None):
     # ── Manual span: "evaluation" ───────────────────────────────────
     # This wraps the entire scoring phase for one framework.
@@ -187,8 +261,22 @@ def evaluate_all(results, name, judge=None):
         failure_modes = analyze_failure_modes(results, sample_n=15, judge=judge)
         add_span_event("failure_modes_done")
 
+        # Item 4: cross-check — find answers the judge called "correct"
+        # but the failure classifier called "hallucination"
+        conflicts = detect_conflicts(
+            llm_scores.get("per_question", []),
+            failure_modes.get("detailed", []),
+        )
+        if conflicts:
+            print(f"  ⚠ {len(conflicts)} correctness/hallucination conflict(s) detected")
+
         print("  Computing per-domain breakdown...")
         domain_breakdown = compute_domain_breakdown(results)
+
+        # Item 6: poison rate — did any query retrieve a noise document?
+        poison = compute_poison_rate(results)
+        if poison.get("poisoned_queries", 0) > 0:
+            print(f"  ⚠ Poison rate: {poison['poison_rate']*100:.1f}% ({poison['poisoned_queries']}/{poison['total_queries']} queries retrieved noise)")
 
     return {
         "string_overlap": string_scores,
@@ -196,6 +284,8 @@ def evaluate_all(results, name, judge=None):
         "llm_judge": llm_scores,
         "ragas": ragas_scores,
         "failure_modes": failure_modes,
+        "conflicts": conflicts,
+        "poison": poison,
         "domain_breakdown": domain_breakdown,
     }
 
@@ -249,6 +339,19 @@ def print_summary(summary, ranking_table):
         print(f"  RAGAS Faith:     {stats['eval']['ragas'].get('faithfulness', 0):.3f}")
         fm = stats["eval"]["failure_modes"]["percentages"]
         print(f"  Failure modes:   correct={fm.get('correct',0)}% | hallucination={fm.get('hallucination',0)}% | wrong_context={fm.get('wrong_context',0)}%")
+        conflicts = stats["eval"].get("conflicts", [])
+        if conflicts:
+            print(f"  ⚠ Judge/classifier conflicts: {len(conflicts)} answer(s) scored correct by judge but flagged as hallucination")
+            for c in conflicts[:2]:
+                print(f"    Q: {c['question'][:80]}")
+                print(f"       correctness={c['judge_correctness']:.2f} | {c['failure_reasoning'][:80]}")
+
+        poison = stats["eval"].get("poison", {})
+        if poison:
+            pr = poison.get("poison_rate", 0)
+            pq = poison.get("poisoned_queries", 0)
+            tq = poison.get("total_queries", 0)
+            print(f"  Poison rate:     {pr*100:.1f}% ({pq}/{tq} queries retrieved noise docs)")
 
         # Per-domain breakdown
         domain_bd = stats["eval"].get("domain_breakdown", {})
@@ -280,7 +383,7 @@ def main():
     parser.add_argument("--n-pairs", type=int, default=50,
                         help="Number of QA pairs to use (default 50, use 150 for full statistical run)")
     parser.add_argument("--vllm", action="store_true",
-                        help="Use local vLLM: Llama-3-8B worker + Qwen2.5-14B judge (requires docker compose up -d)")
+                        help="Use local vLLM: Llama-3-8B worker + Qwen3-14B judge (requires docker compose up -d)")
     parser.add_argument("--worker-url", default="http://localhost:8000/v1",
                         help="vLLM worker base URL (default: http://localhost:8000/v1)")
     parser.add_argument("--judge-url", default="http://localhost:8001/v1",
@@ -364,9 +467,9 @@ def main():
     if args.vllm:
         worker_model = "meta-llama/Meta-Llama-3-8B-Instruct"
         worker_base_url = args.worker_url
-        judge = make_vllm_judge(args.judge_url, "Qwen/Qwen2.5-14B-Instruct")
+        judge = make_vllm_judge(args.judge_url, "Qwen/Qwen3-14B")
         print(f"\nvLLM mode: worker={worker_base_url} ({worker_model})")
-        print(f"           judge={args.judge_url} (Qwen/Qwen2.5-14B-Instruct)")
+        print(f"           judge={args.judge_url} (Qwen/Qwen3-14B)")
     else:
         worker_model = "gpt-4o-mini"
         worker_base_url = None
