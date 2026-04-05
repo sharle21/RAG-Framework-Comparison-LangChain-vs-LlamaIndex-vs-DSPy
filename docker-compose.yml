@@ -5,7 +5,7 @@ version: "3.9"
 #
 # Services:
 #   vllm-worker   — Llama-3-8B-Instruct on port 8000 (answer generation)
-#   vllm-judge    — Qwen2.5-14B-Instruct on port 8001 (cross-family evaluation)
+#   vllm-judge    — Qwen3-14B on port 8001 (cross-family evaluation)
 #   prometheus    — scrapes metrics from vLLM + Go orchestrator
 #   grafana       — dashboards for latency, throughput, GPU metrics
 #   phoenix       — Arize Phoenix for LLM quality traces
@@ -71,7 +71,7 @@ services:
               device_ids: ["0"]
               capabilities: [gpu]
     command: >
-      --model Qwen/Qwen2.5-14B-Instruct
+      --model Qwen/Qwen3-14B
       --port 8001
       --tensor-parallel-size 1
       --gpu-memory-utilization 0.50
