@@ -87,7 +87,10 @@ class LangChainRAG:
             metadatas.extend([meta] * len(chunks))
 
         if self.local_embeddings:
-            embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+            embeddings = HuggingFaceEmbeddings(
+                model_name="BAAI/bge-m3",
+                model_kwargs={"device": "cpu"},
+            )
         else:
             embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         self.vectorstore = Chroma.from_texts(
