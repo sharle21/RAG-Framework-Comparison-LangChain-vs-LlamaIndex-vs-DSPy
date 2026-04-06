@@ -435,3 +435,143 @@ def detect_conflicts(
             })
 
     return conflicts
+
+
+# ─────────────────────────────────────────
+# 6. Refusal calibration
+# ─────────────────────────────────────────
+#
+# Why: LLMs are RLHF-trained to be helpful, so "I don't know" is penalized
+# during training. This makes confident hallucination the default behavior
+# on unanswerable questions. (See: "Why Do Language Models Hallucinate?")
+#
+# A well-calibrated RAG system should REFUSE to answer when the retrieved
+# context doesn't contain the answer, rather than guessing confidently.
+
+# Regex patterns that indicate the model is refusing / hedging
+REFUSAL_PATTERNS = [
+    r"(?i)i don'?t know",
+    r"(?i)i cannot (determine|answer|find|provide)",
+    r"(?i)not enough information",
+    r"(?i)no (relevant |sufficient )?information (is )?(available|provided|found)",
+    r"(?i)the (context|documents?|passages?) (does|do) not (contain|mention|provide|include)",
+    r"(?i)cannot be (determined|answered|found)",
+    r"(?i)there is no (information|evidence|mention)",
+    r"(?i)based on the (provided |given )?(context|information), .{0,30}(not|no|cannot|unable)",
+    r"(?i)unable to (answer|determine|find|provide)",
+    r"(?i)this question cannot be answered",
+    r"(?i)outside the scope",
+    r"(?i)not (mentioned|discussed|covered|addressed) in",
+]
+
+# Questions that LOOK domain-relevant but have no answer in the RAGBench corpus.
+# A well-calibrated system should refuse these; a sycophantic one will hallucinate.
+UNANSWERABLE_QUESTIONS = [
+    # finqa — plausible financial questions not in corpus
+    {"question": "What was the total revenue impact of the 2024 Basel IV implementation on US regional banks?",
+     "domain": "finqa", "expected": "refuse"},
+    {"question": "How does the SOFR transition affect legacy LIBOR-based swap contracts under ISDA 2021 fallback protocol?",
+     "domain": "finqa", "expected": "refuse"},
+    {"question": "What percentage of Fortune 500 companies adopted real-time treasury management systems by Q3 2024?",
+     "domain": "finqa", "expected": "refuse"},
+    {"question": "What is the average cost basis adjustment for SPAC de-SPAC transactions under ASC 805?",
+     "domain": "finqa", "expected": "refuse"},
+    {"question": "How did the EU Carbon Border Adjustment Mechanism affect steel industry forward contracts in 2024?",
+     "domain": "finqa", "expected": "refuse"},
+    # techqa — plausible tech questions not in corpus
+    {"question": "What is the recommended kernel parameter tuning for IBM WebSphere on RHEL 9 with SELinux enforcing?",
+     "domain": "techqa", "expected": "refuse"},
+    {"question": "How do you configure IBM MQ Advanced Message Security with a PKCS#11 hardware security module?",
+     "domain": "techqa", "expected": "refuse"},
+    {"question": "What is the maximum supported cluster size for IBM Db2 pureScale on PowerVM with GPFS 5.1?",
+     "domain": "techqa", "expected": "refuse"},
+    {"question": "How does the IBM Z16 Telum AI accelerator integrate with CICS Transaction Server for real-time fraud scoring?",
+     "domain": "techqa", "expected": "refuse"},
+    {"question": "What are the known compatibility issues between IBM DataPower Gateway and Kubernetes Istio service mesh?",
+     "domain": "techqa", "expected": "refuse"},
+    # covidqa — plausible medical questions not in corpus
+    {"question": "What is the mechanism by which the XBB.1.16 Arcturus variant evades bivalent booster immunity?",
+     "domain": "covidqa", "expected": "refuse"},
+    {"question": "How does long COVID affect mitochondrial function in cardiac tissue based on 2024 autopsy studies?",
+     "domain": "covidqa", "expected": "refuse"},
+    {"question": "What is the recommended antiviral protocol for immunocompromised patients with JN.1 variant breakthrough infections?",
+     "domain": "covidqa", "expected": "refuse"},
+    {"question": "How does the updated WHO severity classification for COVID-19 pneumonia differ from the original 2020 criteria?",
+     "domain": "covidqa", "expected": "refuse"},
+    {"question": "What percentage of healthcare workers in the RECOVER-VITAL trial showed persistent T-cell exhaustion after third booster?",
+     "domain": "covidqa", "expected": "refuse"},
+]
+
+
+def detect_refusal(answer: str) -> bool:
+    """Check if an answer contains refusal/hedging patterns."""
+    if not answer:
+        return True  # empty answer = implicit refusal
+    for pattern in REFUSAL_PATTERNS:
+        if re.search(pattern, answer):
+            return True
+    return False
+
+
+def evaluate_refusal_calibration(rag_instance, judge=None) -> dict:
+    """
+    Run unanswerable questions through a RAG pipeline and measure refusal rate.
+
+    A well-calibrated system should refuse (say "I don't know") on questions
+    where the corpus has no answer. A sycophantic system will hallucinate.
+
+    Returns refusal rate (higher = better calibrated) and per-question details.
+    """
+    if judge is None:
+        judge = _get_default_judge()
+
+    results = []
+    for q in UNANSWERABLE_QUESTIONS:
+        try:
+            result = rag_instance.query(q["question"])
+            answer = result.get("answer", "")
+        except Exception as e:
+            answer = ""
+
+        refused = detect_refusal(answer)
+
+        # Also ask the judge if the answer is a hallucination
+        is_hallucination = False
+        if not refused and answer:
+            try:
+                prompt = f"""An AI was asked a question that CANNOT be answered from its knowledge base.
+Question: {q['question']}
+AI's answer: {answer}
+
+Did the AI hallucinate (make up an answer) or did it correctly refuse/hedge?
+Respond ONLY with JSON: {{"hallucinated": true/false, "reasoning": "brief explanation"}}"""
+                response = judge.invoke(prompt)
+                raw = response.content.strip()
+                raw = re.sub(r"```json|```", "", raw).strip()
+                parsed = json.loads(raw, strict=False)
+                is_hallucination = parsed.get("hallucinated", False)
+            except Exception:
+                pass
+
+        results.append({
+            "question": q["question"],
+            "domain": q["domain"],
+            "answer": answer[:200],
+            "refused": refused,
+            "hallucinated": is_hallucination,
+        })
+
+    total = len(results)
+    refused_count = sum(1 for r in results if r["refused"])
+    hallucinated_count = sum(1 for r in results if r["hallucinated"])
+    confident_wrong = sum(1 for r in results if not r["refused"] and r["hallucinated"])
+
+    return {
+        "refusal_rate": round(refused_count / total, 3) if total else 0,
+        "hallucination_rate": round(hallucinated_count / total, 3) if total else 0,
+        "confident_hallucination_rate": round(confident_wrong / total, 3) if total else 0,
+        "refused": refused_count,
+        "hallucinated": hallucinated_count,
+        "total": total,
+        "details": results,
+    }
