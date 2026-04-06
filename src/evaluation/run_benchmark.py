@@ -19,6 +19,7 @@ from src.evaluation.metrics import (
     evaluate_bertscore,
     analyze_failure_modes,
     detect_conflicts,
+    evaluate_refusal_calibration,
     make_vllm_judge,
 )
 # trace_span is the manual span context manager — wraps our
@@ -290,6 +291,96 @@ def evaluate_all(results, name, judge=None):
     }
 
 
+def run_feedback_loop(dspy_rag, documents, initial_results, test_pairs, initial_eval=None, judge=None):
+    """
+    DSPy's unique advantage: feed failures back into MIPROv2 to auto-improve prompts.
+
+    1. Compute per-question F1 from the initial run to find failures
+    2. Build a failure-weighted training set (hard examples + some easy ones)
+    3. Run MIPROv2 optimization on that set
+    4. Re-run DSPy with the optimized prompt
+    5. Return before/after comparison
+    """
+    print("\n" + "="*50)
+    print("FEEDBACK LOOP: DSPy MIPROv2 self-improvement")
+    print("="*50)
+
+    # Score each question from the initial run
+    scored = []
+    for r in initial_results:
+        if not r.get("answer"):
+            continue
+        score = evaluate_string_overlap([r]).get("answer_f1", 0)
+        scored.append({"question": r["question"], "ground_truth": r["ground_truth"], "f1": score})
+
+    failures = [s for s in scored if s["f1"] < 0.3]
+    successes = [s for s in scored if s["f1"] > 0.7]
+    print(f"  Initial run: {len(failures)} hard failures (F1<0.3), {len(successes)} successes (F1>0.7)")
+
+    # Training set: all failures + a few successes for balance
+    train_pairs = failures + successes[:max(5, len(failures) // 2)]
+    if len(train_pairs) < 5:
+        # Not enough signal — use all scored results
+        train_pairs = scored
+    print(f"  Training set: {len(train_pairs)} examples ({len(failures)} failures + {len(train_pairs) - len(failures)} successes)")
+
+    # Run MIPROv2 on failure-weighted training set
+    dspy_rag.optimize(train_pairs, n_train=min(len(train_pairs), 30))
+
+    # Re-run queries with optimized prompt (skip build — index already exists,
+    # and build() would overwrite the optimized RAGModule)
+    print("\n  Re-running DSPy with optimized prompt...")
+    optimized_results = []
+    for i, qa in enumerate(test_pairs):
+        print(f"  Query {i+1}/{len(test_pairs)}: {qa['question'][:60]}...")
+        try:
+            result = dspy_rag.query(qa["question"])
+            result["question"] = qa["question"]
+            result["ground_truth"] = qa["ground_truth"]
+            result["domain"] = qa.get("domain", "unknown")
+            optimized_results.append(result)
+        except Exception as e:
+            print(f"  ERROR: {e}")
+            optimized_results.append({
+                "question": qa["question"], "ground_truth": qa["ground_truth"],
+                "answer": "", "contexts": [], "latency_ms": -1,
+                "framework": "dspy_optimized", "domain": qa.get("domain", "unknown"),
+                "error": str(e),
+            })
+    optimized_eval = evaluate_all(optimized_results, "dspy_optimized", judge=judge)
+
+    # Before/after comparison — reuse initial eval if provided (avoids re-running judge)
+    if initial_eval is None:
+        initial_eval = evaluate_all(initial_results, "dspy_initial", judge=judge)
+    comparison = {
+        "before": {
+            "answer_f1": initial_eval["string_overlap"].get("answer_f1", 0),
+            "bertscore_f1": initial_eval["bertscore"].get("bertscore_f1", 0),
+            "correctness": initial_eval["llm_judge"].get("correctness", 0),
+        },
+        "after": {
+            "answer_f1": optimized_eval["string_overlap"].get("answer_f1", 0),
+            "bertscore_f1": optimized_eval["bertscore"].get("bertscore_f1", 0),
+            "correctness": optimized_eval["llm_judge"].get("correctness", 0),
+        },
+        "training_failures": len(failures),
+        "training_total": len(train_pairs),
+    }
+
+    # Print delta
+    print("\n── FEEDBACK LOOP RESULTS ──")
+    print(f"  {'Metric':<25} {'Before':<12} {'After':<12} {'Delta':<12}")
+    print(f"  {'-'*60}")
+    for metric in ["answer_f1", "bertscore_f1", "correctness"]:
+        before = comparison["before"][metric]
+        after = comparison["after"][metric]
+        delta = after - before
+        sign = "+" if delta >= 0 else ""
+        print(f"  {metric:<25} {before:<12.4f} {after:<12.4f} {sign}{delta:<12.4f}")
+
+    return optimized_results, optimized_eval, comparison
+
+
 def generate_ranking_comparison(summary):
     """
     Core research question: does framework ranking change by metric?
@@ -301,6 +392,7 @@ def generate_ranking_comparison(summary):
         "correctness (llm_judge)": lambda f: summary[f]["eval"]["llm_judge"].get("correctness", 0),
         "faithfulness (ragas)": lambda f: summary[f]["eval"]["ragas"].get("faithfulness", 0),
         "answer_relevancy (ragas)": lambda f: summary[f]["eval"]["ragas"].get("answer_relevancy", 0),
+        "refusal_rate (higher=better)": lambda f: summary[f]["eval"].get("refusal_calibration", {}).get("refusal_rate", 0),
         "latency (lower=better)": lambda f: -summary[f]["latency"].get("mean_ms", 9999),
     }
     ranking_table = {}
@@ -353,6 +445,12 @@ def print_summary(summary, ranking_table):
             tq = poison.get("total_queries", 0)
             print(f"  Poison rate:     {pr*100:.1f}% ({pq}/{tq} queries retrieved noise docs)")
 
+        refusal = stats["eval"].get("refusal_calibration", {})
+        if refusal:
+            rr = refusal.get("refusal_rate", 0)
+            chr_ = refusal.get("confident_hallucination_rate", 0)
+            print(f"  Refusal cal.:    refusal={rr*100:.0f}% | confident_hallucination={chr_*100:.0f}% (on {refusal.get('total', 0)} unanswerable Qs)")
+
         # Per-domain breakdown
         domain_bd = stats["eval"].get("domain_breakdown", {})
         if domain_bd:
@@ -390,6 +488,10 @@ def main():
                         help="vLLM judge base URL (default: http://localhost:8001/v1)")
     parser.add_argument("--dspy-optimize", action="store_true",
                         help="Run MIPROv2 prompt optimization on DSPy before benchmarking (adds ~5 min, costs ~$0.10)")
+    parser.add_argument("--feedback-loop", action="store_true",
+                        help="After benchmark, feed DSPy failures into MIPROv2 and re-run (closes the optimization loop)")
+    parser.add_argument("--local-embeddings", action="store_true",
+                        help="Use local bge-m3 embeddings instead of OpenAI text-embedding-3-small (zero API cost)")
     parser.add_argument("--trace", action="store_true",
                         help="Send traces to Arize Phoenix (requires docker compose up -d phoenix, open http://localhost:6006)")
     parser.add_argument("--phoenix-endpoint", default="http://localhost:4317",
@@ -476,10 +578,14 @@ def main():
         judge = None  # defaults to Mistral Large in metrics.py
         print(f"\nAPI mode: worker=gpt-4o-mini (OpenAI), judge=mistral-large-latest (Mistral)")
 
+    embed_local = args.local_embeddings
+    if embed_local:
+        print("Local embeddings: BAAI/bge-m3 (no OpenAI embedding calls)")
+
     frameworks = {
-        "langchain": LangChainRAG(model=worker_model, base_url=worker_base_url),
-        "llamaindex": LlamaIndexRAG(model=worker_model, base_url=worker_base_url),
-        "dspy": DSPyRAG(model=worker_model, base_url=worker_base_url),
+        "langchain": LangChainRAG(model=worker_model, base_url=worker_base_url, local_embeddings=embed_local),
+        "llamaindex": LlamaIndexRAG(model=worker_model, base_url=worker_base_url, local_embeddings=embed_local),
+        "dspy": DSPyRAG(model=worker_model, base_url=worker_base_url, local_embeddings=embed_local),
     }
 
     # Step 2: Standard benchmark
@@ -503,6 +609,7 @@ def main():
     }):
 
         summary = {}
+        dspy_initial_results = None  # stored for feedback loop
         for name, rag in frameworks.items():
             # Only DSPy gets the optimizer; LangChain and LlamaIndex run as-is
             optimizer_fn = None
@@ -531,11 +638,21 @@ def main():
                 results, build_time = run_framework(rag, documents, eval_pairs, name, optimizer_fn=optimizer_fn)
                 eval_scores = evaluate_all(results, name, judge=judge)
 
+                # Refusal calibration: test if framework hallucinates on unanswerable questions
+                print(f"  Running refusal calibration ({name})...")
+                with trace_span("refusal_calibration", {"framework": name}):
+                    refusal_scores = evaluate_refusal_calibration(rag, judge=judge)
+                eval_scores["refusal_calibration"] = refusal_scores
+                print(f"  Refusal rate: {refusal_scores['refusal_rate']*100:.0f}% | "
+                      f"Confident hallucination: {refusal_scores['confident_hallucination_rate']*100:.0f}%")
+
             summary[name] = {
                 "build_time_s": round(build_time, 2),
                 "latency": compute_latency_stats(results),
                 "eval": eval_scores,
             }
+            if name == "dspy":
+                dspy_initial_results = results
             with open(RESULTS_DIR / f"results_{name}.json", "w") as f:
                 json.dump({"results": results, "summary": summary[name]}, f, indent=2)
 
@@ -547,7 +664,25 @@ def main():
 
         print_summary(summary, ranking_table)
 
-        # Step 3: Optionally run adversarial stress test
+        # Step 3: Optionally run feedback loop on DSPy
+        if args.feedback_loop and dspy_initial_results:
+            with trace_span("feedback_loop", {"framework": "dspy"}):
+                opt_results, opt_eval, comparison = run_feedback_loop(
+                    frameworks["dspy"], documents, dspy_initial_results, test_pairs,
+                    initial_eval=summary["dspy"]["eval"], judge=judge,
+                )
+            summary["dspy_optimized"] = {
+                "build_time_s": summary["dspy"]["build_time_s"],
+                "latency": compute_latency_stats(opt_results),
+                "eval": opt_eval,
+            }
+            summary["_feedback_loop"] = comparison
+            with open(RESULTS_DIR / "results_dspy_optimized.json", "w") as f:
+                json.dump({"results": opt_results, "summary": summary["dspy_optimized"]}, f, indent=2)
+            with open(RESULTS_DIR / "summary.json", "w") as f:
+                json.dump(summary, f, indent=2)
+
+        # Step 4: Optionally run adversarial stress test
         if args.adversarial:
             print("\n" + "="*50)
             print("RUNNING ADVERSARIAL STRESS TEST")
