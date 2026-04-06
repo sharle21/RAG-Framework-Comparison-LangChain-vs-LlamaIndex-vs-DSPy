@@ -33,7 +33,7 @@ class LlamaIndexRAG:
             llm_kwargs["api_key"] = "none"
         Settings.llm = OpenAI(**llm_kwargs)
         if local_embeddings:
-            Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-m3")
+            Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-m3", device="cpu")
         else:
             Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
         Settings.node_parser = SentenceSplitter(
