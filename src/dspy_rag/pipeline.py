@@ -68,10 +68,11 @@ class OptimizableRAGModule(dspy.Module):
 
 
 class DSPyRAG:
-    def __init__(self, model: str = "gpt-4o-mini", k: int = 4, base_url: str = None):
+    def __init__(self, model: str = "gpt-4o-mini", k: int = 4, base_url: str = None, local_embeddings: bool = False):
         self.model_name = model
         self.base_url = base_url
         self.k = k
+        self.local_embeddings = local_embeddings
         self.rag_module = None
         self.search = None
         self.lm = None
@@ -106,10 +107,15 @@ class DSPyRAG:
                 if doc.get("is_noise"):
                     self._noise_texts.add(text)
 
-        embedder = dspy.Embedder(
-            'openai/text-embedding-3-small',
-            dimensions=512,
-        )
+        if self.local_embeddings:
+            from sentence_transformers import SentenceTransformer
+            st_model = SentenceTransformer("BAAI/bge-m3")
+            embedder = lambda texts: st_model.encode(texts, normalize_embeddings=True).tolist()
+        else:
+            embedder = dspy.Embedder(
+                'openai/text-embedding-3-small',
+                dimensions=512,
+            )
 
         print(f"Building DSPy index for {len(corpus)} documents...")
 
