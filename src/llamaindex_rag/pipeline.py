@@ -11,16 +11,18 @@ from llama_index.core import Document, Settings, VectorStoreIndex
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.openai import OpenAI
 
 load_dotenv()
 
 
 class LlamaIndexRAG:
-    def __init__(self, model: str = "gpt-4o-mini", chunk_size: int = 1000, chunk_overlap: int = 200, base_url: str = None):
+    def __init__(self, model: str = "gpt-4o-mini", chunk_size: int = 1000, chunk_overlap: int = 200, base_url: str = None, local_embeddings: bool = False):
         self.model_name = model
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        self.local_embeddings = local_embeddings
         self.query_engine = None
         self.index = None
 
@@ -30,7 +32,10 @@ class LlamaIndexRAG:
             llm_kwargs["api_base"] = base_url
             llm_kwargs["api_key"] = "none"
         Settings.llm = OpenAI(**llm_kwargs)
-        Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
+        if local_embeddings:
+            Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-m3")
+        else:
+            Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
         Settings.node_parser = SentenceSplitter(
             chunk_size=chunk_size,
             chunk_overlap=chunk_overlap,
