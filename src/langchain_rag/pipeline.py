@@ -27,6 +27,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
@@ -44,11 +45,13 @@ class LangChainRAG:
         chunk_size: int = 1000,
         chunk_overlap: int = 200,
         base_url: str = None,
+        local_embeddings: bool = False,
     ):
         self.model_name = model
         self.base_url = base_url
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        self.local_embeddings = local_embeddings
         self.retrieval_chain = None
         self.vectorstore = None
 
@@ -83,7 +86,10 @@ class LangChainRAG:
                 meta["is_noise"] = True
             metadatas.extend([meta] * len(chunks))
 
-        embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        if self.local_embeddings:
+            embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+        else:
+            embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         self.vectorstore = Chroma.from_texts(
             texts=texts,
             embedding=embeddings,
