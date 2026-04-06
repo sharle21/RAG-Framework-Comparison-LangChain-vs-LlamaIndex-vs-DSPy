@@ -1,6 +1,6 @@
 module github.com/sharvari/rag-orchestrator
 
-go 1.18
+go 1.26.1
 
 require (
 	github.com/prometheus/client_golang v1.23.2
