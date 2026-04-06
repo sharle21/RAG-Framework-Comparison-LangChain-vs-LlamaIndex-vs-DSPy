@@ -109,7 +109,7 @@ class DSPyRAG:
 
         if self.local_embeddings:
             from sentence_transformers import SentenceTransformer
-            st_model = SentenceTransformer("BAAI/bge-m3")
+            st_model = SentenceTransformer("BAAI/bge-m3", device="cpu")
             embedder = lambda texts: st_model.encode(texts, normalize_embeddings=True).tolist()
         else:
             embedder = dspy.Embedder(
