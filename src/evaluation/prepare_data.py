@@ -27,13 +27,11 @@ DATA_DIR.mkdir(exist_ok=True)
 #   finqa:   ~14,796 pairs
 #   covidqa: ~1,498 pairs
 #
-# We load up to these limits per domain. covidqa is the bottleneck.
-# For a balanced 5,000-query golden set: ~1,498 covidqa + ~1,506 techqa + ~1,996 finqa.
-# run_benchmark.py handles the final balancing via --n-pairs.
+# Default: load all available data. run_benchmark.py handles balancing via --n-pairs.
 RAGBENCH_SUBSETS = {
-    "techqa":  1600,   # IBM tech support docs — longer passages, real-world
-    "finqa":   2000,   # Financial documents — numerical, precise language
-    "covidqa": 1600,   # Scientific/medical — domain-specific vocabulary
+    "techqa":  99999,  # IBM tech support docs — load all (~1,506)
+    "finqa":   99999,  # Financial documents — load all (~14,796)
+    "covidqa": 99999,  # Scientific/medical — load all (~1,498)
 }
 
 
@@ -108,7 +106,70 @@ def load_ragbench_subset(subset: str, n: int) -> tuple[list[dict], list[dict]]:
     return documents, qa_pairs
 
 
+def generate_synthetic_for_domain(documents: list[dict], domain: str, n_generate: int) -> list[dict]:
+    """
+    Generate synthetic QA pairs for a specific domain using an LLM.
+    Uses existing documents as context to create question-answer pairs.
+    """
+    from langchain_openai import ChatOpenAI
+    import random
+
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+    domain_docs = [d for d in documents if d.get("domain") == domain]
+    if not domain_docs:
+        return []
+
+    synthetic_pairs = []
+    batch_size = 5  # generate 5 QA pairs per LLM call
+
+    for i in range(0, n_generate, batch_size):
+        n_this_batch = min(batch_size, n_generate - i)
+        # Pick random docs as context
+        sample_docs = random.sample(domain_docs, min(3, len(domain_docs)))
+        context = "\n\n".join(
+            f"Document: {d['title']}\n{d['content'][:500]}" for d in sample_docs
+        )
+
+        prompt = f"""Based on the following {domain} documents, generate exactly {n_this_batch} question-answer pairs.
+Each question should be answerable from the documents. Each answer should be concise and factual.
+
+Documents:
+{context}
+
+Respond with a JSON array of objects, each with "question" and "answer" keys.
+Example: [{{"question": "What is X?", "answer": "X is..."}}]"""
+
+        try:
+            response = llm.invoke(prompt)
+            raw = response.content.strip()
+            # Strip markdown code fences if present
+            import re
+            raw = re.sub(r"```json|```", "", raw).strip()
+            pairs = json.loads(raw)
+            for p in pairs:
+                if p.get("question") and p.get("answer"):
+                    synthetic_pairs.append({
+                        "question": p["question"],
+                        "ground_truth": p["answer"],
+                        "domain": domain,
+                        "source": "synthetic_expansion",
+                    })
+        except Exception as e:
+            print(f"    Synthetic generation error: {e}")
+
+        if len(synthetic_pairs) >= n_generate:
+            break
+
+    return synthetic_pairs[:n_generate]
+
+
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--target", type=int, default=0,
+                        help="Target total QA pairs. If set, generates synthetic pairs for underrepresented domains to reach this target with balanced distribution.")
+    args = parser.parse_args()
+
     all_documents = []
     all_qa_pairs = []
 
@@ -118,12 +179,34 @@ def main():
         all_documents.extend(docs)
         all_qa_pairs.extend(qas)
 
-    print(f"\nTotal: {len(all_documents)} document passages, {len(all_qa_pairs)} QA pairs")
     from collections import Counter
     domain_counts = Counter(qa["domain"] for qa in all_qa_pairs)
     doc_counts = Counter(d["domain"] for d in all_documents)
+    print(f"\nTotal: {len(all_documents)} document passages, {len(all_qa_pairs)} QA pairs")
     print(f"QA pairs by domain:  {dict(domain_counts)}")
     print(f"Documents by domain: {dict(doc_counts)}")
+
+    # Synthetic expansion: generate QA pairs for underrepresented domains
+    if args.target > len(all_qa_pairs):
+        domains = sorted(domain_counts.keys())
+        target_per_domain = args.target // len(domains)
+        print(f"\n── Synthetic expansion to {args.target} pairs ({target_per_domain}/domain) ──")
+
+        for domain in domains:
+            current = domain_counts[domain]
+            deficit = target_per_domain - current
+            if deficit > 0:
+                print(f"  {domain}: {current} real → generating {deficit} synthetic...")
+                synthetic = generate_synthetic_for_domain(all_documents, domain, deficit)
+                all_qa_pairs.extend(synthetic)
+                print(f"  {domain}: +{len(synthetic)} synthetic = {current + len(synthetic)} total")
+            else:
+                print(f"  {domain}: {current} real (already >= {target_per_domain}, no expansion needed)")
+
+        # Recount
+        domain_counts = Counter(qa["domain"] for qa in all_qa_pairs)
+        print(f"\nAfter expansion: {len(all_qa_pairs)} QA pairs")
+        print(f"QA pairs by domain: {dict(domain_counts)}")
 
     # Save
     docs_path = DATA_DIR / "raw" / "ragbench_documents.json"
