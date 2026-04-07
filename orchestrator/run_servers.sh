@@ -42,21 +42,47 @@ echo ""
 echo "[1/4] Generating queries.json..."
 python orchestrator/generate_queries.py --per-domain "$PER_DOMAIN"
 
-# ── 2. Start the three Python RAG servers in the background ───────────────────
+# ── 2. Start the three Python RAG servers one at a time ───────────────────────
+# Each server embeds the full corpus with bge-m3 on CPU (~16GB RAM each).
+# Starting them in parallel causes OOM — start sequentially and wait for each
+# to report ready before starting the next.
 echo ""
-echo "[2/4] Starting RAG servers..."
+echo "[2/4] Starting RAG servers (sequential index build to avoid OOM)..."
 
 COMMON_ARGS="--base-url $VLLM_URL --model $MODEL --local-embeddings"
 
-python src/rag_server.py --framework langchain  --port 8100 $COMMON_ARGS &
+wait_ready() {
+    local name=$1 url=$2 logfile=$3
+    echo -n "  [$name] building index..."
+    until curl -s "$url/health" | python3 -c "import sys,json; d=json.load(sys.stdin); sys.exit(0 if d.get('ready') else 1)" 2>/dev/null; do
+        # If the process died, print its log and abort
+        if ! kill -0 $4 2>/dev/null; then
+            echo ""
+            echo "  [$name] CRASHED — log:"
+            cat "$logfile"
+            exit 1
+        fi
+        echo -n "."
+        sleep 5
+    done
+    echo " ready!"
+}
+
+# PYTHONUNBUFFERED=1 forces Python to flush stdout/stderr immediately —
+# without it, log files stay empty until the process exits (OS buffers the output)
+PYTHONUNBUFFERED=1 python src/rag_server.py --framework langchain  --port 8100 $COMMON_ARGS > /tmp/langchain_server.log 2>&1 &
 LANGCHAIN_PID=$!
+wait_ready "langchain" "http://localhost:8100" /tmp/langchain_server.log $LANGCHAIN_PID
 
-python src/rag_server.py --framework llamaindex --port 8101 $COMMON_ARGS &
+PYTHONUNBUFFERED=1 python src/rag_server.py --framework llamaindex --port 8101 $COMMON_ARGS > /tmp/llamaindex_server.log 2>&1 &
 LLAMAINDEX_PID=$!
+wait_ready "llamaindex" "http://localhost:8101" /tmp/llamaindex_server.log $LLAMAINDEX_PID
 
-python src/rag_server.py --framework dspy       --port 8102 $COMMON_ARGS &
+PYTHONUNBUFFERED=1 python src/rag_server.py --framework dspy       --port 8102 $COMMON_ARGS > /tmp/dspy_server.log 2>&1 &
 DSPY_PID=$!
+wait_ready "dspy" "http://localhost:8102" /tmp/dspy_server.log $DSPY_PID
 
+echo "  All servers ready."
 echo "  langchain  PID $LANGCHAIN_PID  → port 8100"
 echo "  llamaindex PID $LLAMAINDEX_PID → port 8101"
 echo "  dspy       PID $DSPY_PID       → port 8102"
