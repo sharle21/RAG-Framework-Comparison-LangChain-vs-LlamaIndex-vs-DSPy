@@ -93,13 +93,26 @@ class LangChainRAG:
             )
         else:
             embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-        self.vectorstore = Chroma.from_texts(
-            texts=texts,
-            embedding=embeddings,
-            metadatas=metadatas,
-            collection_name=collection_name,
-            persist_directory=str(persist_dir or PERSIST_DIR),
-        )
+
+        _persist_dir = str(persist_dir or PERSIST_DIR)
+        _db_file = Path(_persist_dir) / "chroma.sqlite3"
+        if _db_file.exists():
+            # Index already on disk — load without re-embedding
+            print(f"  Loading existing Chroma index from {_persist_dir}")
+            self.vectorstore = Chroma(
+                collection_name=collection_name,
+                embedding_function=embeddings,
+                persist_directory=_persist_dir,
+            )
+        else:
+            print(f"  Building new Chroma index at {_persist_dir}")
+            self.vectorstore = Chroma.from_texts(
+                texts=texts,
+                embedding=embeddings,
+                metadatas=metadatas,
+                collection_name=collection_name,
+                persist_directory=_persist_dir,
+            )
         retriever = self.vectorstore.as_retriever(search_kwargs={"k": 4})
 
         llm_kwargs = {"model": self.model_name, "temperature": 0}
