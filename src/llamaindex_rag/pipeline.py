@@ -7,7 +7,9 @@ import time
 from typing import Any
 
 from dotenv import load_dotenv
-from llama_index.core import Document, Settings, VectorStoreIndex
+from pathlib import Path
+
+from llama_index.core import Document, Settings, StorageContext, VectorStoreIndex, load_index_from_storage
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -16,6 +18,8 @@ from llama_index.llms.openai import OpenAI
 from llama_index.llms.openai_like import OpenAILike
 
 load_dotenv()
+
+PERSIST_DIR = Path(__file__).parent.parent.parent / "data" / "llamaindex_storage"
 
 
 class LlamaIndexRAG:
@@ -51,21 +55,33 @@ class LlamaIndexRAG:
             chunk_overlap=chunk_overlap,
         )
 
-    def build(self, documents: list[dict]) -> None:
-        """Index documents and build the query engine."""
-        llama_docs = [
-            Document(
-                text=doc.get("content", ""),
-                metadata={
-                    "id": doc["id"],
-                    "title": doc["title"],
-                    **({"is_noise": True} if doc.get("is_noise") else {}),
-                },
-            )
-            for doc in documents
-        ]
+    def build(self, documents: list[dict], persist_dir: Path = None) -> None:
+        """Index documents and build the query engine. Persists to disk on first build,
+        loads from disk on subsequent runs to avoid re-embedding."""
+        _persist_dir = str(persist_dir or PERSIST_DIR)
+        _index_file = Path(_persist_dir) / "docstore.json"
 
-        self.index = VectorStoreIndex.from_documents(llama_docs, show_progress=True)
+        if _index_file.exists():
+            print(f"  Loading existing LlamaIndex storage from {_persist_dir}")
+            storage_context = StorageContext.from_defaults(persist_dir=_persist_dir)
+            self.index = load_index_from_storage(storage_context)
+        else:
+            print(f"  Building new LlamaIndex storage at {_persist_dir}")
+            llama_docs = [
+                Document(
+                    text=doc.get("content", ""),
+                    metadata={
+                        "id": doc["id"],
+                        "title": doc["title"],
+                        **({"is_noise": True} if doc.get("is_noise") else {}),
+                    },
+                )
+                for doc in documents
+            ]
+            self.index = VectorStoreIndex.from_documents(llama_docs, show_progress=True)
+            self.index.storage_context.persist(persist_dir=_persist_dir)
+            print(f"  LlamaIndex storage saved to {_persist_dir}")
+
         self.query_engine = self.index.as_query_engine(
             similarity_top_k=4,
             response_mode="compact",
