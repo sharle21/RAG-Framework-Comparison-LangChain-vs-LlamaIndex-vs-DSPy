@@ -13,12 +13,13 @@ from llama_index.core.response_synthesizers import get_response_synthesizer
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.openai import OpenAI
+from llama_index.llms.openai_like import OpenAILike
 
 load_dotenv()
 
 
 class LlamaIndexRAG:
-    def __init__(self, model: str = "gpt-4o-mini", chunk_size: int = 1000, chunk_overlap: int = 200, base_url: str = None, local_embeddings: bool = False):
+    def __init__(self, model: str = "gpt-4o-mini", chunk_size: int = 2000, chunk_overlap: int = 200, base_url: str = None, local_embeddings: bool = False):
         self.model_name = model
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
@@ -26,12 +27,21 @@ class LlamaIndexRAG:
         self.query_engine = None
         self.index = None
 
-        # Configure global settings
-        llm_kwargs = {"model": model, "temperature": 0}
+        # Configure global settings.
+        # Use OpenAILike when a custom base_url is provided (e.g. vLLM) — the
+        # standard OpenAI class validates model names against known OpenAI models
+        # and will reject "meta-llama/Llama-3.1-8B-Instruct" etc.
         if base_url:
-            llm_kwargs["api_base"] = base_url
-            llm_kwargs["api_key"] = "none"
-        Settings.llm = OpenAI(**llm_kwargs)
+            Settings.llm = OpenAILike(
+                model=model,
+                api_base=base_url,
+                api_key="none",
+                temperature=0,
+                is_chat_model=True,
+                context_window=8192,
+            )
+        else:
+            Settings.llm = OpenAI(model=model, temperature=0)
         if local_embeddings:
             Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-m3", device="cpu")
         else:
