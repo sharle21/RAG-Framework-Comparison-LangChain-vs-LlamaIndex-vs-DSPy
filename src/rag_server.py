@@ -21,6 +21,7 @@ import argparse
 import json
 import sys
 import time
+import traceback
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
@@ -72,14 +73,19 @@ def make_app(args: argparse.Namespace) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         global _rag
-        documents = _load_documents()
-        print(f"[{args.framework}] Loaded {len(documents)} documents")
-        print(f"[{args.framework}] Building index (model={args.model}, local_embeddings={args.local_embeddings})...")
-        t0 = time.perf_counter()
-        rag = _build_pipeline(args)
-        rag.build(documents)
-        _rag = rag  # assign only after build completes — health check returns ready=True from this point
-        print(f"[{args.framework}] Index ready in {time.perf_counter() - t0:.1f}s — listening on :{args.port}")
+        try:
+            documents = _load_documents()
+            print(f"[{args.framework}] Loaded {len(documents)} documents")
+            print(f"[{args.framework}] Building index (model={args.model}, local_embeddings={args.local_embeddings})...")
+            t0 = time.perf_counter()
+            rag = _build_pipeline(args)
+            rag.build(documents)
+            _rag = rag  # assign only after build completes — health check returns ready=True from this point
+            print(f"[{args.framework}] Index ready in {time.perf_counter() - t0:.1f}s — listening on :{args.port}")
+        except Exception:
+            print(f"[{args.framework}] STARTUP FAILED:")
+            traceback.print_exc()
+            raise
         yield
         print(f"[{args.framework}] Shutting down.")
 
