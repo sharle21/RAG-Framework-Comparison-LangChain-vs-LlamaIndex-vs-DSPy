@@ -11,8 +11,8 @@ set -e
 
 HF_TOKEN="${1:?Usage: bash setup_lambda.sh <huggingface_token>}"
 
-echo "=== Creating Python venv (isolate from system packages) ==="
-python3 -m venv ~/vllm_env
+echo "=== Creating Python venv (inherits system PyTorch + CUDA) ==="
+python3 -m venv --system-site-packages ~/vllm_env
 source ~/vllm_env/bin/activate
 
 echo "=== Installing vLLM ==="
