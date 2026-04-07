@@ -15,15 +15,26 @@ echo "=== Creating Python venv (inherits system PyTorch + CUDA) ==="
 python3 -m venv --system-site-packages ~/vllm_env
 source ~/vllm_env/bin/activate
 
+echo "=== Upgrading system packages for numpy 2.x compatibility ==="
+# Lambda ships system scipy/sklearn/pandas compiled against numpy 1.x.
+# They conflict with the newer numpy vLLM and our deps require.
+# Must do this BEFORE any other pip installs.
+pip install --upgrade numpy scipy scikit-learn pandas
+
+echo "=== Removing conflicting system packages ==="
+sudo mv /usr/lib/python3/dist-packages/tensorflow /tmp/tensorflow_backup 2>/dev/null || true
+sudo mv /usr/lib/python3/dist-packages/flash_attn /tmp/flash_attn_backup 2>/dev/null || true
+sudo mv /usr/lib/python3/dist-packages/flash_attn_2_cuda* /tmp/ 2>/dev/null || true
+
 echo "=== Installing vLLM ==="
-pip install vllm
+pip install "vllm>=0.8.0" "torch>=2.10" --index-url https://download.pytorch.org/whl/cu128 --extra-index-url https://pypi.org/simple
 
 echo "=== Installing benchmark dependencies ==="
 pip install \
     langchain langchain-openai langchain-community langchain-mistralai \
     langchain-huggingface langchain-text-splitters \
     llama-index llama-index-embeddings-openai llama-index-embeddings-huggingface \
-    llama-index-llms-openai \
+    llama-index-llms-openai llama-index-llms-openai-like \
     dspy faiss-cpu chromadb ragas python-dotenv bert-score \
     sentence-transformers datasets \
     fastapi uvicorn
