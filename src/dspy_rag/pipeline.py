@@ -19,10 +19,15 @@ The interesting thing about DSPy vs LangChain/LlamaIndex:
 import time
 from typing import Any
 
+import json
+from pathlib import Path
+
 import dspy
 from dotenv import load_dotenv
 
 load_dotenv()
+
+PERSIST_DIR = Path(__file__).parent.parent.parent / "data" / "dspy_index"
 
 
 class RAGModule(dspy.Module):
@@ -78,7 +83,7 @@ class DSPyRAG:
         self.lm = None
         self._optimized = False
 
-    def build(self, documents: list[dict]) -> None:
+    def build(self, documents: list[dict], persist_dir: Path = None) -> None:
         """
         Index documents and configure DSPy with token-limit protection.
         cache=False ensures real API calls are made each query —
@@ -91,6 +96,48 @@ class DSPyRAG:
             lm_kwargs["api_key"] = "none"
         self.lm = dspy.LM(f"openai/{self.model_name}", **lm_kwargs)
         dspy.configure(lm=self.lm, cache=False)  # cache=False for real latency measurement
+
+        import numpy as np
+        import faiss
+
+        # Load from disk if index already exists — skip re-embedding
+        _persist_dir = Path(persist_dir or PERSIST_DIR)
+        _index_file = _persist_dir / "index.faiss"
+        if _index_file.exists():
+            print(f"  Loading existing DSPy index from {_persist_dir}")
+            index = faiss.read_index(str(_index_file))
+            with open(_persist_dir / "corpus.json") as f:
+                final_corpus = json.load(f)
+            with open(_persist_dir / "noise_texts.json") as f:
+                self._noise_texts = set(json.load(f))
+
+            if self.local_embeddings:
+                from sentence_transformers import SentenceTransformer
+                st_model = SentenceTransformer("BAAI/bge-m3", device="cpu")
+                embedder = lambda texts: st_model.encode(texts, normalize_embeddings=True).tolist()
+            else:
+                embedder = dspy.Embedder('openai/text-embedding-3-small', dimensions=512)
+
+            class BatchedEmbeddingsRetriever:
+                def __init__(self, embedder, corpus, index, k):
+                    self.embedder = embedder
+                    self.corpus = corpus
+                    self.index = index
+                    self.k = k
+
+                def __call__(self, query: str):
+                    q_emb = np.array(self.embedder([query])).astype('float32')
+                    _, indices = self.index.search(q_emb, self.k)
+                    passages = [self.corpus[i] for i in indices[0] if i < len(self.corpus)]
+                    class Result:
+                        pass
+                    r = Result()
+                    r.passages = passages
+                    return r
+
+            self.search = BatchedEmbeddingsRetriever(embedder=embedder, corpus=final_corpus, index=index, k=self.k)
+            self.rag_module = RAGModule()
+            return
 
         # Pre-process corpus and truncate clearly over-sized docs
         # 1 token ≈ 4 chars, so 28,000 chars is a safe buffer for the 8,191 limit
@@ -147,6 +194,16 @@ class DSPyRAG:
         emb_matrix = np.array(all_embeddings).astype('float32')
         index = faiss.IndexFlatL2(emb_matrix.shape[1])
         index.add(emb_matrix)
+
+        # Persist FAISS index and corpus to disk so next restart skips re-embedding
+        _persist_dir = Path(persist_dir or PERSIST_DIR)
+        _persist_dir.mkdir(parents=True, exist_ok=True)
+        faiss.write_index(index, str(_persist_dir / "index.faiss"))
+        with open(_persist_dir / "corpus.json", "w") as f:
+            json.dump(final_corpus, f)
+        with open(_persist_dir / "noise_texts.json", "w") as f:
+            json.dump(list(self._noise_texts), f)
+        print(f"  DSPy index saved to {_persist_dir}")
 
         class BatchedEmbeddingsRetriever:
             def __init__(self, embedder, corpus, index, k):
