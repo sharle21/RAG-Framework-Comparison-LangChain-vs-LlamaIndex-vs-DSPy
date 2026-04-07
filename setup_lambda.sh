@@ -32,10 +32,10 @@ pip install "vllm>=0.8.0" "torch>=2.10" --index-url https://download.pytorch.org
 echo "=== Installing benchmark dependencies ==="
 pip install \
     langchain langchain-openai langchain-community langchain-mistralai \
-    langchain-huggingface langchain-text-splitters \
+    langchain-huggingface langchain-text-splitters langchain-core \
     llama-index llama-index-embeddings-openai llama-index-embeddings-huggingface \
     llama-index-llms-openai llama-index-llms-openai-like \
-    dspy faiss-cpu chromadb ragas python-dotenv bert-score \
+    dspy faiss-cpu "chromadb>=0.4" ragas python-dotenv bert-score \
     sentence-transformers datasets \
     fastapi uvicorn
 
