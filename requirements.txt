@@ -13,6 +13,7 @@ langchain-mistralai>=0.2.12
 llama-index>=0.11.0
 llama-index-llms-openai>=0.3.0
 llama-index-embeddings-openai>=0.3.0
+llama-index-embeddings-huggingface>=0.3.0
 dspy>=2.5.0                    # v3.x API — do not downgrade to dspy-ai
 
 # Vector store
@@ -22,6 +23,14 @@ faiss-cpu>=1.8.0
 # Evaluation
 ragas==0.4.3                   # pinned: 0.4.x API is what our synthetic_data.py is written against
 datasets>=3.0.0
+
+# RAG server (Go orchestrator calls these)
+fastapi>=0.115.0
+uvicorn>=0.30.0
+
+# Local embeddings (bge-m3 — used instead of OpenAI embeddings on Lambda)
+sentence-transformers>=3.0.0
+langchain-huggingface>=0.1.0
 
 # Utilities
 python-dotenv>=1.0.0
