@@ -12,6 +12,7 @@ langchain-text-splitters>=0.3.0
 langchain-mistralai>=0.2.12
 llama-index>=0.11.0
 llama-index-llms-openai>=0.3.0
+llama-index-llms-openai-like>=0.3.0
 llama-index-embeddings-openai>=0.3.0
 llama-index-embeddings-huggingface>=0.3.0
 dspy>=2.5.0                    # v3.x API — do not downgrade to dspy-ai
