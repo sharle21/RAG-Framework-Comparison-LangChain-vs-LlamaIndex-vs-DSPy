@@ -16,7 +16,11 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 RESULTS_DIR="$REPO_DIR/results"
-VLLM_URL="http://localhost:8000/v1"
+
+# RAG server URLs (started by run_servers.sh or manually)
+LANGCHAIN_URL="${LANGCHAIN_URL:-http://localhost:8100}"
+LLAMAINDEX_URL="${LLAMAINDEX_URL:-http://localhost:8101}"
+DSPY_URL="${DSPY_URL:-http://localhost:8102}"
 
 # Concurrency levels to test
 WORKERS=(1 4 8 16 32)
@@ -59,8 +63,9 @@ for i in "${!WORKERS[@]}"; do
         --output "$OUTPUT" \
         --workers "$W" \
         --rps "$R" \
-        --vllm-url "$VLLM_URL" \
-        --model "meta-llama/Meta-Llama-3-8B-Instruct" \
+        --langchain-url "$LANGCHAIN_URL" \
+        --llamaindex-url "$LLAMAINDEX_URL" \
+        --dspy-url "$DSPY_URL" \
         2>&1 | tail -5
     END_TIME=$(date +%s%N)
 
