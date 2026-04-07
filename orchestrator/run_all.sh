@@ -11,12 +11,10 @@ REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOG="/tmp/pipeline.log"
 
 echo "=== Full Pipeline Started ===" | tee "$LOG"
-echo "$(date): Waiting for benchmark to finish..." | tee -a "$LOG"
+echo "$(date): Starting benchmark..." | tee -a "$LOG"
 
-# Step 1: Wait for the Python benchmark to finish
-while pgrep -f "run_benchmark.py" > /dev/null 2>&1; do
-    sleep 30
-done
+# Step 1: Run the server-based benchmark (starts Python RAG servers + Go orchestrator)
+bash "$REPO_DIR/orchestrator/run_servers.sh" 2>&1 | tee -a "$LOG"
 echo "$(date): Benchmark finished!" | tee -a "$LOG"
 
 # Step 2: Run KV cache sweep
