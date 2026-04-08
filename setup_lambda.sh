@@ -71,16 +71,32 @@ echo "Go orchestrator built"
 cd ~/rag-bench
 
 echo "=== Starting vLLM servers ==="
-# GH200 has 96GB HBM3 — give each model 0.45 = ~43GB each, plenty of KV cache room.
-# On A100 80GB, lower to 0.40 each.
-nohup python3 -m vllm.entrypoints.openai.api_server \
+# Pin each model to its own GPU using CUDA_VISIBLE_DEVICES.
+# On multi-GPU instances (4x H100 etc): GPU 0 = worker, GPU 1 = judge.
+# On single-GPU (GH200/A100 80GB): both share GPU 0, lower utilization to 0.45 each.
+GPU_COUNT=$(nvidia-smi --list-gpus | wc -l)
+if [ "$GPU_COUNT" -ge 2 ]; then
+    WORKER_GPU=0
+    JUDGE_GPU=1
+    WORKER_UTIL=0.90
+    JUDGE_UTIL=0.90
+    echo "  Multi-GPU detected ($GPU_COUNT GPUs) — pinning worker→GPU$WORKER_GPU, judge→GPU$JUDGE_GPU"
+else
+    WORKER_GPU=0
+    JUDGE_GPU=0
+    WORKER_UTIL=0.45
+    JUDGE_UTIL=0.45
+    echo "  Single GPU detected — sharing GPU 0, utilization 0.45 each"
+fi
+
+CUDA_VISIBLE_DEVICES=$WORKER_GPU nohup python3 -m vllm.entrypoints.openai.api_server \
     --model meta-llama/Llama-3.1-8B-Instruct \
-    --port 8000 --gpu-memory-utilization 0.45 \
+    --port 8000 --gpu-memory-utilization $WORKER_UTIL \
     > /tmp/vllm_worker.log 2>&1 &
 
-nohup python3 -m vllm.entrypoints.openai.api_server \
+CUDA_VISIBLE_DEVICES=$JUDGE_GPU nohup python3 -m vllm.entrypoints.openai.api_server \
     --model Qwen/Qwen3-14B \
-    --port 8001 --gpu-memory-utilization 0.45 --max-model-len 4096 \
+    --port 8001 --gpu-memory-utilization $JUDGE_UTIL --max-model-len 8192 \
     > /tmp/vllm_judge.log 2>&1 &
 
 echo "=== Waiting for vLLM servers to be ready ==="
