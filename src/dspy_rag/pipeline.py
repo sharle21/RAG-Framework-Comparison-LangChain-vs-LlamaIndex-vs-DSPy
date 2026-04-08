@@ -315,7 +315,10 @@ class DSPyRAG:
             context=search_result.passages,
             question=question,
         )
-        answer = prediction.response  # forces the actual LLM call now
+        t1b = time.perf_counter()
+        answer = prediction.response
+        t1c = time.perf_counter()
+        print(f"[dspy timing] respond={1000*(t1b-t1):.1f}ms  .response={1000*(t1c-t1b):.1f}ms", flush=True)
         generation_ms = (time.perf_counter() - t1) * 1000
 
         # Check if any retrieved passage is a noise doc (string membership check)
