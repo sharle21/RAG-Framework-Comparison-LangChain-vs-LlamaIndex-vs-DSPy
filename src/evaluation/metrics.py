@@ -198,7 +198,13 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
             try:
                 response = judge.invoke(prompt)
                 raw = response.content.strip()
+                # Strip Qwen3 <think>...</think> blocks before parsing
+                raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
                 raw = re.sub(r"```json|```", "", raw).strip()
+                # Extract first JSON object if there's surrounding text
+                m = re.search(r"\{.*\}", raw, re.DOTALL)
+                if m:
+                    raw = m.group(0)
                 parsed = json.loads(raw, strict=False)
                 for dim in dims:
                     if dim in parsed:
@@ -368,8 +374,12 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -
         try:
             response = judge.invoke(prompt)
             raw = response.content.strip()
+            raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
             raw = re.sub(r"```json|```", "", raw).strip()
-            parsed = json.loads(raw,strict=False)
+            m = re.search(r"\{.*\}", raw, re.DOTALL)
+            if m:
+                raw = m.group(0)
+            parsed = json.loads(raw, strict=False)
             cat = parsed.get("category", "incomplete")
             if cat not in categories:
                 cat = "incomplete"
