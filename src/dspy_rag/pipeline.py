@@ -306,19 +306,23 @@ class DSPyRAG:
         search_result = self.search(question)
         retrieval_ms = (time.perf_counter() - t0) * 1000
 
-        # Step 2: generation — DSPy ChainOfThought calls the LLM
+        # Step 2: generation — DSPy ChainOfThought calls the LLM.
+        # prediction.response must be accessed inside the timed block —
+        # DSPy returns a Prediction object immediately but the LM network
+        # call fires lazily on first attribute access.
         t1 = time.perf_counter()
         prediction = self.rag_module.respond(
             context=search_result.passages,
             question=question,
         )
+        answer = prediction.response  # forces the actual LLM call now
         generation_ms = (time.perf_counter() - t1) * 1000
 
         # Check if any retrieved passage is a noise doc (string membership check)
         noise_retrieved = any(p in self._noise_texts for p in search_result.passages)
 
         return {
-            "answer": prediction.response,
+            "answer": answer,
             "contexts": search_result.passages,
             "retrieved_noise": noise_retrieved,
             "retrieval_ms": retrieval_ms,
