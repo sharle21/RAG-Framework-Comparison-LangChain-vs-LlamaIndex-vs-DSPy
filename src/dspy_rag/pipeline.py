@@ -90,12 +90,12 @@ class DSPyRAG:
         without this DSPy's LiteLLM cache returns sub-millisecond responses
         that are not comparable to LangChain/LlamaIndex latency.
         """
-        lm_kwargs = {"temperature": 0}
+        lm_kwargs = {"temperature": 0, "cache": False}
         if self.base_url:
             lm_kwargs["api_base"] = self.base_url
             lm_kwargs["api_key"] = "none"
         self.lm = dspy.LM(f"openai/{self.model_name}", **lm_kwargs)
-        dspy.configure(lm=self.lm, cache=False)  # cache=False for real latency measurement
+        dspy.configure(lm=self.lm, cache=False)
 
         import numpy as np
         import faiss
