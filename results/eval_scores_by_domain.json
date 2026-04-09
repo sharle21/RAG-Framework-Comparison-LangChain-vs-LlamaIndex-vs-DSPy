@@ -1,0 +1,2801 @@
+{
+  "langchain": {
+    "covidqa": {
+      "answer_f1": 0.40234021550108706,
+      "context_coverage": 0.702017208426279,
+      "correctness": 0.595,
+      "faithfulness": 0.915,
+      "completeness": 0.465,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "When was the first case of COVID-19 identified?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What is the structure of Hantaan virus?",
+          "correctness": 0.5,
+          "faithfulness": 0.6,
+          "completeness": 0.3
+        },
+        {
+          "question": "How many people did SARS-CoV infect?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What contributed to a large part of mammalian genomic sequence?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "Which viruses may not cause prolonged inflammation due to strong induction of antiviral clearance?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What is severe MARS noted for?",
+          "correctness": 0.2,
+          "faithfulness": 1.0,
+          "completeness": 0.1
+        },
+        {
+          "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What was the focus of the study?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What is  an example of anti-viral defense in bats?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What does Clade A contain?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What could be novel candidates as potent inhibitors of papain like cysteine proteases in resistant microorganisms?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "How was HFRS  first brought to the attention of western medicine ?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What are exhibited in the two phases?",
+          "correctness": 0.2,
+          "faithfulness": 0.9,
+          "completeness": 0.0
+        },
+        {
+          "question": "What has been the application of phage display technology?",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "In how many cases the symptoms at diagnosis were consistent with the case definition for acute respiratory infection?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Which may be an occupational group with significantly higher incidence of seropositivity to MERS-CoV ?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Is there an Influenza vaccine?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "What is a future potential of filamentous phage?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What does LAIV rely on?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the treatment for MERS-COV?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "What percentage of population was affected?",
+          "correctness": 0.75,
+          "faithfulness": 0.95,
+          "completeness": 0.7
+        },
+        {
+          "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "How many people have persistent hepatitis C virus?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "What was the main finding in the study?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What statistical tests were used to compare categorical variables?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.8
+        },
+        {
+          "question": "What is this disease  characterized by ?",
+          "correctness": 0.3,
+          "faithfulness": 0.9,
+          "completeness": 0.2
+        },
+        {
+          "question": "How do these exact processes ultimately restrict viral infectivity?",
+          "correctness": 0.4,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What are the ages of the patients in this study?",
+          "correctness": 0.5,
+          "faithfulness": 0.9,
+          "completeness": 0.3
+        },
+        {
+          "question": "What was used to measure the performance of the NINA heaters?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "What types of viruses can be diagnosed through serological testing?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Why does the claim lack any scientific  basis?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "How does COVID19 get spread?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "What conditions are considered lower respiratory tract infections?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.4
+        },
+        {
+          "question": "What is the likely period of under-reporting?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "hen did Asian genotype emerge?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What was the prevalence of Coronavirus OC 229 E/NL63 in clinical subjects in Ilorin, Nigeria?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What is the  relation between the new2019-nCOV and the conserved orf8?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is neo-virology?",
+          "correctness": 0.8,
+          "faithfulness": 0.85,
+          "completeness": 0.75
+        },
+        {
+          "question": "What is the effect of chronic airway inflammatory disease  in patients?",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "What has this focus on mammalian defences and pathologies sidelined?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "How do some respiratory viruses spread?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "What is a lockdown?",
+          "correctness": 0.2,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What's the recommended procedure to disinfect at CT scanner after a COVID-19 exposure?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "What genotype causes truncation of the IFITM3 protein?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the conclusion of this study?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What is the transmission of MERS-CoV is defined as?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "Among whom are the coronaviruses distributed?",
+          "correctness": 0.2,
+          "faithfulness": 0.9,
+          "completeness": 0.3
+        }
+      ]
+    },
+    "techqa": {
+      "answer_f1": 0.4754925742156889,
+      "context_coverage": 0.5914855118445624,
+      "correctness": 0.631,
+      "faithfulness": 0.83,
+      "completeness": 0.582,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree, while importing cobol copybooks. Is there any format for copybooks(specifically to be used in wtx), that we need to follow?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10? When will WebSphere Transformation Extender (WTX) be supported for IBM Integration Bus V10?",
+          "correctness": 0.6,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Microsoft Edge is supported with ICC?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031? What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS modeller trial version (18.1) (64 bit) and trying to install the same. I get the following error 1152: Error extracting modelerClient64.msi to the temporary location",
+          "correctness": 0.6,
+          "faithfulness": 0.8,
+          "completeness": 0.4
+        },
+        {
+          "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more information about WebSphere Message Broker (WMB) Fix Pack 8.0.0.5?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.4
+        },
+        {
+          "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I see this exception in WebSphere Application Server J2c and RRA traces:\n\nWSRdbManagedC > preTestConnection Entry WSRdbManagedConnectionImpl@51a507f2 query: SELECT 1 FROM DUAL WSRdbManagedC 3 Exception java.sql.SQLException: ORA-02396: exceeded maximum idle time, please connect again DSRA0010E: SQL State = 61000, Error Code = 2,396 at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:440) at \n...\nEntry java.sql.SQLException: ORA-01012: not logged on ..... OracleDataSto < findMappingClass return Exit class com.ibm.websphere.ce.cm.StaleConnectionException",
+          "correctness": 0.6,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adapter? The following WebSphere MQ Resource Adapter hung thread can prevent an application server from starting...\n\nWSVR0605W: Thread \"WMQJCAResourceAdapter : 6\" (0000001b) has been active for 698530 milliseconds and may be hung. There is 1 thread(s) in total in the server that may be hung. at java.lang.Object.wait(Native Method) at java.lang.Object.wait(Object.java:167) at com.ibm.ejs.container.MessageEndpointFactoryImpl.createEndpoint(MessageEndpointFactoryImpl.java:498) at com.ibm.mq.connector.inbound.WorkImpl.run(WorkImpl.java:149)",
+          "correctness": 0.6,
+          "faithfulness": 0.5,
+          "completeness": 0.5
+        },
+        {
+          "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SPSS 24 license to a new machine. I have only used my activation code on one computer so far, and that computer was found to be defective which has led me to get a new computer. I was able to download SPSS 24 Gradpack onto the new computer, but every time I put in the activation code, the program gives me an error message saying that I am not allowed to generate any new licenses.",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I export a private key from DataPower Gateway appliance?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ version 7.0 introduced a new feature, conversation sharing. Are there any special values on DataPower when configuring conversation sharing?",
+          "correctness": 0.85,
+          "faithfulness": 0.95,
+          "completeness": 0.8
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971) I need to understand details regarding Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971). Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ) I need to understand details regarding Security Bulletin: IBM Integration Bus is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ). Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593) I need to understand details regarding \"Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593)\" Where can I find this information?",
+          "correctness": 0.6,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one computer and another on this one. This computer crashed and I was forced to reformat the hard drive. Subsequently, I lost SPSS in the process.  I am now reinstalling with the single user copy option.\n\nThe error it gave me now when I attempted to authorize the program with the original authorization number I received was:\n\nAuthorization in progress ... (removed) Authorization failed.: You are not allowed to generate any more new licenses. End Of Transaction. All permitted authorizations for the provided authorization code(s) have been utilized. No additional authorizations are permitted on this code. If you think this is an error, please contact IBM Corp. Customer Service at spssls@us.ibm.com ( http://www-01.ibm.com/software/analytics/spss ) with your product and purchase details. Click \"Finish\" to exit.",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How to download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 (GA) using the Passport Advantage Web site?.",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612) I need to understand details regarding Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612).",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nWhere can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.7
+        },
+        {
+          "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX 7.1\n\nCognos Disclosure Management 10.2.4 What's the procedure to drop an user in Cognos Disclosure Management",
+          "correctness": 0.3,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "What things are important to consider when installing a fix pack for IIB running on a multi-instance environment? I am planning to apply a fix pack to my current version of IBM Integration Bus (IIB) using multi-instance brokers and I am looking for any important information regarding the process.\n\nFor example:\n\n \n\n- installation and verification tasks\n \n\n- is it possible to back out this fix pack in case there are issues\n \n\n- any specific tasks for multi instance configuration",
+          "correctness": 0.9,
+          "faithfulness": 0.85,
+          "completeness": 0.95
+        },
+        {
+          "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter is created with the browser language set to Japanese. This issue occurs in WebGUI 8.1 Fix Pack 11.",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication System. (CVE-2015-1920) I need to understand details regarding \"Security Bulletin: Security Vulnerability in IBM PureApplication System (CVE-2015-1920)\". Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Launching IBM Rational Software Architect application results in Error: Java was started but returned exit code = -1 At times when you launch Rational Software Architect (RSA) application, you might encounter the following error: Error: Java was started but returned exit code = -1",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just completed an upgrade to Cognos Analytics 11.0.3. When running existing reports in HTML, the images are displayed but when I try to run them in PDF/Excel they are not.",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.9
+        },
+        {
+          "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How to configure the machines hosting the WebSphere Operational Decision Management modules with regard to HTTPS when executing scenario suites ?\nHow to avoid the exception below while requesting from Decision Center the execution of a scenario suite on Scenario Service Provider (SSP) over HTTPS ?\n Exception caught while contacting RES ilog.rules.res.util.http.IlrConnectionException: IO error when contacting \"/res/repositoryService\"\n ....\n Caused by: javax.net.ssl.SSLHandshakeException: com.ibm.jsse2.util.g: PKIX path building failed: java.security.cert.CertPathBuilderException: unable to find valid certification path to requested target",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "How to install Packaging utility? How to install Packaging utility?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "Is there a support's guide to the CORBA Probes? Where can I download the support's guide to the IBM CORBA probes?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS using Oracle 12c are supported?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "TEP to TEPS communication issues with different Java versions Recent Java updates have caused connection problems when logging into the TEPS via the TEP client (Browser or Java Web Start). Is there an updated list of known issues?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to configure ITCAM J2EE v7.1.1 Tomcat DC to run as a Windows Service but it fails. Is this type of configuration supported? If so, what is the right procedure to do that?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Why is the file db2jcc.jar missing after an upgrade to BPM V8.5.7 CF2016.12? After upgrading to IBM Business Process Manager V8.5.7 Cumulative Fix 2016.12, I have encountered several JDBC related exceptions during my process application development. It seems that the file db2jcc.jar was removed during the installation of the cumulative fix pack. What happened?",
+          "correctness": 0.3,
+          "faithfulness": 0.8,
+          "completeness": 0.4
+        },
+        {
+          "question": "Traffic across domains seems unexpected \n\nI have two Multi-Protocol Gateways (MPGWs) configured, each in their own domain:\n\n     Domain A\n     MPGW_A\n     FSH_A (1.2.3.4:443)\n     Domain B\n     MPGW_B\n     FSH_B (0.0.0.0:443)\n\nThe FSH_B is disabled, thus MPGW_B cannot take traffic. However, if I modify the config for MPGW_B (i.e. just change a Stylesheet parameter) the traffic goes to MPGW_B somehow. How is this happening? FSH_B is still disabled.",
+          "correctness": 0.4,
+          "faithfulness": 0.9,
+          "completeness": 0.3
+        },
+        {
+          "question": "Why do I get error when I try to save application in APMUI? I am using APMUI 7.7 IF1. Following error occurs when I try to save application:\n\n \n\nCTGAZ0001E: The application cannot be saved because the application repository is not available.\nmessages.log of scr server shows that it is listening at 17310 port:\n\n \n\nA CWWKT0016I: Web application available (default_host): http://apmhost:17310/SCRCLUSTER_SCR_oslc.html\nBut apmui is referring to this URL with port 8080 (APM_UI.log):\n\n \n\nhttp://apmhost:8080/SCRCLUSTER_SCR_oslc/scr/gettime",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.2
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699) I need to understand details regarding Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699). Where can I find this information?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Additional steps to apply fix pack to Decision Center \n\nWe are upgrading ODM 8.8.1 Decision Center to the latest 8.8.1.3.\n\nAre there any additional steps to apply the fixpack to Decision Center after we install the fixpack with Installation Manager?",
+          "correctness": 0.3,
+          "faithfulness": 0.9,
+          "completeness": 0.2
+        },
+        {
+          "question": "Installing fixpacks with Installation Manager - when did it change from using updateInstaller,  starting in which version of WebSphere I was using updateInstaller to install fixpacks, and there was a separate fixpack for WebSphere and separate for the JDK, independent of each other. Now I understand that with Installation Manager there is a single package containing both the WebSphere App server fixpack as well as the JDK. When did this occur, starting with which version of WebSphere ?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WMB and IIB I need to understand details regarding Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WebSphere Message Broker and IBM Integration Bus. Where can I find this information?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "Port number error starting 9.0 Launcher \n\nI'm attempting to start up v9.0 for the first time with one .msl file on a Windows server and get the following error.  I also have v8.4 on this server and it starts fine.  I do not have v8.4 running when I attempt to start v9.0.\n\nCannot recognize if the system RecordChangeSystem.msl; has started. Reason: Server is unable to get the status of the system on port number 6,002.\n\nI have the port range set to 7000/8000.  Why am I seeing this?",
+          "correctness": 0.3,
+          "faithfulness": 0.5,
+          "completeness": 0.2
+        },
+        {
+          "question": "DFHAP1203I and DFHSR0601 with 0C1 in EQA10OSM after upgrading to CICS TS 5.2 Why is my CICS region failing during startup with message DFHAP1203I followed by DFHSR0601 after I upgraded to CICS Transaction Server for z/OS (CICS TS) V5.2? A system dump shows an abend 0C1 occurring in the Debug Tool for z/OS module EQA10OSM. \nI receive the following messages:\nDFHAP1203I Language Environment is being initialized. \nDFHSR0601 Program interrupt occurred with system task III in control.",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "We got a NullPointerException when bootstrapping the object store or accessing Site Preferences/Access Role on WorkplaceXT \n\nAfter logging into FileNet Workplace XT, a java.lang.NullPointerException error is logged when bootstrapping the object store or when accessing Site Preferences/Access Role.\n\nHere's the error stack,\n\nError Stack Trace extracted from the J2EE Application Server error log:\n\njava.lang.NullPointerException\n\nat org.apache.jasper.runtime.JspWriterImpl.write(JspWriterImpl.java:421)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRoleMembers(PrefAccessRolesInfoPage.java:254)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRole(PrefAccessRolesInfoPage.java:220)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.renderAdminRole(PrefBootstrapInfoPage.java:131)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.render(PrefBootstrapInfoPage.java:303)",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Does the BPM internal Document Store work with IBM DB2 pureScale? I use IBM DB2 pureScale with my BPM installation. During startup of the server and initialization of the internal document store I see hanging threads in the systemOut.log and the process will not finish. How can this be solved?",
+          "correctness": 0.7,
+          "faithfulness": 0.6,
+          "completeness": 0.5
+        },
+        {
+          "question": "Help with Security Bulletin: WMB and IIB are affected by 'Information Disclosure' vulnerability I need to understand details regarding Security Bulletin: WebSphere Message Broker and IBM Integration Bus are affected by 'Information Disclosure' vulnerability. Where can I find this information?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "Is transient user support available for SAML integration with WebSphere Portal 8.0? I am looking to leverage the SAML TAI provided by WebSphere Application Server for my WebSphere Portal 8.0 environment. Is transient user support available so that I do not have to maintain a local account in my Portal user registry for every external user which is verified and trusted by my identity provider?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Java.io.NotSerializableException in WAS We are experiencing the Java.io.NotSerializableException exception. I see this error: WTRN0047E:java.io.NotSerializableException. Anyone experienced this before?",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.85
+        },
+        {
+          "question": "Why does my JVMSERVER remain in a \"BEING DISABLED\"  state? When I try to disable a JVMSERVER it becomes hung and remains in a \"BEING DISABLED\" state. This also occurs when I shut down the CICS region. The CICS region ultimately has to be cancelled.",
+          "correctness": 0.8,
+          "faithfulness": 0.7,
+          "completeness": 0.8
+        },
+        {
+          "question": "Help with Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730) I need to understand details regarding \"Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730)\". Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "What are the files created in $TEMP on startup of IIB or WMB? What are the 0 byte files created in $TEMP/.com_ibm_tools_attach directory upon IBM Integration Bus (IIB) / WebSphere Message Broker (WMB) startup?\nFor example: The following files are created on UNIX / Windows if $TEMP is /tmp:\n/tmp/.com_ibm_tools_attach/_attachlock\n/tmp/.com_ibm_tools_attach/_master\n/tmp/.com_ibm_tools_attach/_notifier",
+          "correctness": 0.5,
+          "faithfulness": 0.6,
+          "completeness": 0.4
+        },
+        {
+          "question": "Help with Action required for IIB H.E. V9 & WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nThis is related to CVEID:\nCVE-2017-14739\nCVE-2017-14741\nCVE-2017-14989\nCVE-2017-15015\nCVE-2017-15016\nCVE-2017-15017\nCVE-2017-15032\nCVE-2017-15033\n\nWhere can I find this information?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Does IBM DataPower Gateway Appliance support the HTTP CONNECT method? Does IBM DataPower Gateway Appliance support the HTTP CONNECT method for SSL proxy requests?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Datacap on Citrix  Hi All,\n\nCan we operate Datacap thin clients on citrix?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.4
+        }
+      ]
+    },
+    "finqa": {
+      "answer_f1": 0.48731772989578803,
+      "context_coverage": 0.6388949648486977,
+      "correctness": 0.4061,
+      "faithfulness": 0.7531,
+      "completeness": 0.4714,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "what is the rate of return in cadence design systems inc . of an investment from 2010 to 2011?",
+          "correctness": 0.0,
+          "faithfulness": 0.5,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the ratio of the total american personnel to us airways personnel",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of total assets acquired of anios are intangible assets?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "what is the five year total return on the goldman sachs group inc.?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what is the percentage change in the total carrying amount of goodwill from 2016 to 2017?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the 2015 total return for the peer group?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the profit margin of printing papers in 2005",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what was the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage cumulative total shareholder return on disca common stock for the five year period ended december 31 , 2014?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage change in the cash dividends paid per common share from 2006 to 2007",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what is the after-tax share-based compensation cost in 2010?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the percentage change in total financial liabilities at fair value in 2012?",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.4
+        },
+        {
+          "question": "what are the net revenues in investment management in 2016 , in billions?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "was was the total amount spent on stock repurchases in december 2012?",
+          "correctness": 0.2,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "what was the net change in tax positions in 2014",
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what portion of the total noncancelable future lease commitments are due in fiscal year of 2019?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of the total restricted units will vest in 2011?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "what was the percent change in number of shares purchased by employees between 2010 and 2011",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percent of the total gains that was from the sales of land",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "what was the percentual decrease observed in the liabilities for accrued interest and penalties during 2012 and 2013?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of the total estimated purchase price is paid in cash?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "as a result of the sales of certain non-core towers and other assets what was the percent of the change in the recorded net losses from 2007 to 2008",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage rent increase between 2007 and 2008?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage change in the the research and development costs from 2014 to 2015",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the lowest effective tax rate in the three year period?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+          "correctness": 0.6,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "in 2018 what was the percent of the cib markets net interest income as part of the managed interest income",
+          "correctness": 0.8,
+          "faithfulness": 0.7,
+          "completeness": 0.9
+        },
+        {
+          "question": "what is the growth rate in net sales from 2009 to 2010?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what was the minimum amount of foreign currency translation loss , in millions?",
+          "correctness": 0.3,
+          "faithfulness": 0.6,
+          "completeness": 0.3
+        },
+        {
+          "question": "what are the average net unrealized investment gains for the period?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "did abiomed outperform the nasdaq composite index?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the increase in the unrecognized tax benefits observed during 2007 and 2008 , in millions of dollars?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "in billions , what was the total for 2015 and 2014 relating to commitments to invest in funds managed by the firm?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what was the percentage change in net earnings from continuing operations from 2014 to 2015?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "how many total shares were repurchase in the periods 11/01/04 2013 11/30/04 and \\\\n12/01/04 2013 12/31/04?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the money pool activity use of operating cash flows as a percentage of receivables from the money pool in 2003?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "without employee severance costs in 2004 and 2005 , what would have been the increase in net income in millions?\\\\n\\\\n",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.4
+        },
+        {
+          "question": "what is the borrowing under the term loan facility as a percentage of the total contractual maturities of long-term debt obligations due subsequent to december 31 , 2016?",
+          "correctness": 0.0,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "what is the total exposure to government related derivatives , in millions?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the sales growth rate from 2017 to 2018?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "by what percentage did average borrowings decrease from 2016 to 2017?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what is the maximum depreciation rate that can be used for furniture fixtures and equipment?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of the total 2015 restructuring programs is related to termination benefits?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage change in the earnings from service operations increased from 2000 to 2001",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "in 2004 what was the percent of the change in the employee liability for employee separations",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what portion of anios' purchasing price is related to goodwill?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.2
+        },
+        {
+          "question": "as of december 31 , 2010 what was the par value of the debt outstanding for the fixed rate notes due february 2014 compared to term loan due 2011",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        }
+      ]
+    }
+  },
+  "llamaindex": {
+    "covidqa": {
+      "answer_f1": 0.4083334468456225,
+      "context_coverage": 0.7255960396264398,
+      "correctness": 0.576,
+      "faithfulness": 0.813,
+      "completeness": 0.483,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "When was the first case of COVID-19 identified?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "What is the structure of Hantaan virus?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "Which viruses may not cause prolonged inflammation due to strong induction of antiviral clearance?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "How many people did SARS-CoV infect?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What was the focus of the study?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What contributed to a large part of mammalian genomic sequence?",
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "What is severe MARS noted for?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What does Clade A contain?",
+          "correctness": 0.2,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What is  an example of anti-viral defense in bats?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "What are exhibited in the two phases?",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.1
+        },
+        {
+          "question": "How was HFRS  first brought to the attention of western medicine ?",
+          "correctness": 0.4,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "What could be novel candidates as potent inhibitors of papain like cysteine proteases in resistant microorganisms?",
+          "correctness": 0.3,
+          "faithfulness": 0.5,
+          "completeness": 0.2
+        },
+        {
+          "question": "What has been the application of phage display technology?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "In how many cases the symptoms at diagnosis were consistent with the case definition for acute respiratory infection?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "Which may be an occupational group with significantly higher incidence of seropositivity to MERS-CoV ?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Is there an Influenza vaccine?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "What is a future potential of filamentous phage?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What does LAIV rely on?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the treatment for MERS-COV?",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "What percentage of population was affected?",
+          "correctness": 0.4,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "How many people have persistent hepatitis C virus?",
+          "correctness": 0.2,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "What was the main finding in the study?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "What statistical tests were used to compare categorical variables?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What is this disease  characterized by ?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "How do these exact processes ultimately restrict viral infectivity?",
+          "correctness": 0.3,
+          "faithfulness": 0.9,
+          "completeness": 0.2
+        },
+        {
+          "question": "What are the ages of the patients in this study?",
+          "correctness": 0.5,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "What types of viruses can be diagnosed through serological testing?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What was used to measure the performance of the NINA heaters?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "How does COVID19 get spread?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Why does the claim lack any scientific  basis?",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.85
+        },
+        {
+          "question": "What is the likely period of under-reporting?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "hen did Asian genotype emerge?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What conditions are considered lower respiratory tract infections?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "What was the prevalence of Coronavirus OC 229 E/NL63 in clinical subjects in Ilorin, Nigeria?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the  relation between the new2019-nCOV and the conserved orf8?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the effect of chronic airway inflammatory disease  in patients?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "What is neo-virology?",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.8
+        },
+        {
+          "question": "What has this focus on mammalian defences and pathologies sidelined?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "How do some respiratory viruses spread?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "What's the recommended procedure to disinfect at CT scanner after a COVID-19 exposure?",
+          "correctness": 0.6,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "What is a lockdown?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What genotype causes truncation of the IFITM3 protein?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the conclusion of this study?",
+          "correctness": 0.2,
+          "faithfulness": 0.1,
+          "completeness": 0.3
+        },
+        {
+          "question": "Among whom are the coronaviruses distributed?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "What is the transmission of MERS-CoV is defined as?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        }
+      ]
+    },
+    "techqa": {
+      "answer_f1": 0.48527295680121924,
+      "context_coverage": 0.7463951785886045,
+      "correctness": 0.701,
+      "faithfulness": 0.743,
+      "completeness": 0.626,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree, while importing cobol copybooks. Is there any format for copybooks(specifically to be used in wtx), that we need to follow?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10? When will WebSphere Transformation Extender (WTX) be supported for IBM Integration Bus V10?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Microsoft Edge is supported with ICC?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031? What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS modeller trial version (18.1) (64 bit) and trying to install the same. I get the following error 1152: Error extracting modelerClient64.msi to the temporary location",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.8
+        },
+        {
+          "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more information about WebSphere Message Broker (WMB) Fix Pack 8.0.0.5?",
+          "correctness": 0.6,
+          "faithfulness": 0.4,
+          "completeness": 0.5
+        },
+        {
+          "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I see this exception in WebSphere Application Server J2c and RRA traces:\n\nWSRdbManagedC > preTestConnection Entry WSRdbManagedConnectionImpl@51a507f2 query: SELECT 1 FROM DUAL WSRdbManagedC 3 Exception java.sql.SQLException: ORA-02396: exceeded maximum idle time, please connect again DSRA0010E: SQL State = 61000, Error Code = 2,396 at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:440) at \n...\nEntry java.sql.SQLException: ORA-01012: not logged on ..... OracleDataSto < findMappingClass return Exit class com.ibm.websphere.ce.cm.StaleConnectionException",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adapter? The following WebSphere MQ Resource Adapter hung thread can prevent an application server from starting...\n\nWSVR0605W: Thread \"WMQJCAResourceAdapter : 6\" (0000001b) has been active for 698530 milliseconds and may be hung. There is 1 thread(s) in total in the server that may be hung. at java.lang.Object.wait(Native Method) at java.lang.Object.wait(Object.java:167) at com.ibm.ejs.container.MessageEndpointFactoryImpl.createEndpoint(MessageEndpointFactoryImpl.java:498) at com.ibm.mq.connector.inbound.WorkImpl.run(WorkImpl.java:149)",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SPSS 24 license to a new machine. I have only used my activation code on one computer so far, and that computer was found to be defective which has led me to get a new computer. I was able to download SPSS 24 Gradpack onto the new computer, but every time I put in the activation code, the program gives me an error message saying that I am not allowed to generate any new licenses.",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I export a private key from DataPower Gateway appliance?",
+          "correctness": 0.95,
+          "faithfulness": 1.0,
+          "completeness": 0.95
+        },
+        {
+          "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ version 7.0 introduced a new feature, conversation sharing. Are there any special values on DataPower when configuring conversation sharing?",
+          "correctness": 0.8,
+          "faithfulness": 0.75,
+          "completeness": 0.8
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971) I need to understand details regarding Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971). Where can I find this information?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ) I need to understand details regarding Security Bulletin: IBM Integration Bus is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ). Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.5,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593) I need to understand details regarding \"Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593)\" Where can I find this information?",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one computer and another on this one. This computer crashed and I was forced to reformat the hard drive. Subsequently, I lost SPSS in the process.  I am now reinstalling with the single user copy option.\n\nThe error it gave me now when I attempted to authorize the program with the original authorization number I received was:\n\nAuthorization in progress ... (removed) Authorization failed.: You are not allowed to generate any more new licenses. End Of Transaction. All permitted authorizations for the provided authorization code(s) have been utilized. No additional authorizations are permitted on this code. If you think this is an error, please contact IBM Corp. Customer Service at spssls@us.ibm.com ( http://www-01.ibm.com/software/analytics/spss ) with your product and purchase details. Click \"Finish\" to exit.",
+          "correctness": 0.9,
+          "faithfulness": 0.8,
+          "completeness": 0.9
+        },
+        {
+          "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How to download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 (GA) using the Passport Advantage Web site?.",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nWhere can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612) I need to understand details regarding Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612).",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.3
+        },
+        {
+          "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX 7.1\n\nCognos Disclosure Management 10.2.4 What's the procedure to drop an user in Cognos Disclosure Management",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.3
+        },
+        {
+          "question": "What things are important to consider when installing a fix pack for IIB running on a multi-instance environment? I am planning to apply a fix pack to my current version of IBM Integration Bus (IIB) using multi-instance brokers and I am looking for any important information regarding the process.\n\nFor example:\n\n \n\n- installation and verification tasks\n \n\n- is it possible to back out this fix pack in case there are issues\n \n\n- any specific tasks for multi instance configuration",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter is created with the browser language set to Japanese. This issue occurs in WebGUI 8.1 Fix Pack 11.",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.1
+        },
+        {
+          "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication System. (CVE-2015-1920) I need to understand details regarding \"Security Bulletin: Security Vulnerability in IBM PureApplication System (CVE-2015-1920)\". Where can I find this information?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Launching IBM Rational Software Architect application results in Error: Java was started but returned exit code = -1 At times when you launch Rational Software Architect (RSA) application, you might encounter the following error: Error: Java was started but returned exit code = -1",
+          "correctness": 0.5,
+          "faithfulness": 0.4,
+          "completeness": 0.5
+        },
+        {
+          "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just completed an upgrade to Cognos Analytics 11.0.3. When running existing reports in HTML, the images are displayed but when I try to run them in PDF/Excel they are not.",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.9
+        },
+        {
+          "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How to configure the machines hosting the WebSphere Operational Decision Management modules with regard to HTTPS when executing scenario suites ?\nHow to avoid the exception below while requesting from Decision Center the execution of a scenario suite on Scenario Service Provider (SSP) over HTTPS ?\n Exception caught while contacting RES ilog.rules.res.util.http.IlrConnectionException: IO error when contacting \"/res/repositoryService\"\n ....\n Caused by: javax.net.ssl.SSLHandshakeException: com.ibm.jsse2.util.g: PKIX path building failed: java.security.cert.CertPathBuilderException: unable to find valid certification path to requested target",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "How to install Packaging utility? How to install Packaging utility?",
+          "correctness": 0.7,
+          "faithfulness": 0.5,
+          "completeness": 0.6
+        },
+        {
+          "question": "Is there a support's guide to the CORBA Probes? Where can I download the support's guide to the IBM CORBA probes?",
+          "correctness": 0.8,
+          "faithfulness": 0.7,
+          "completeness": 0.6
+        },
+        {
+          "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS using Oracle 12c are supported?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "TEP to TEPS communication issues with different Java versions Recent Java updates have caused connection problems when logging into the TEPS via the TEP client (Browser or Java Web Start). Is there an updated list of known issues?",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to configure ITCAM J2EE v7.1.1 Tomcat DC to run as a Windows Service but it fails. Is this type of configuration supported? If so, what is the right procedure to do that?",
+          "correctness": 0.3,
+          "faithfulness": 0.6,
+          "completeness": 0.2
+        },
+        {
+          "question": "Why is the file db2jcc.jar missing after an upgrade to BPM V8.5.7 CF2016.12? After upgrading to IBM Business Process Manager V8.5.7 Cumulative Fix 2016.12, I have encountered several JDBC related exceptions during my process application development. It seems that the file db2jcc.jar was removed during the installation of the cumulative fix pack. What happened?",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.3
+        },
+        {
+          "question": "Traffic across domains seems unexpected \n\nI have two Multi-Protocol Gateways (MPGWs) configured, each in their own domain:\n\n     Domain A\n     MPGW_A\n     FSH_A (1.2.3.4:443)\n     Domain B\n     MPGW_B\n     FSH_B (0.0.0.0:443)\n\nThe FSH_B is disabled, thus MPGW_B cannot take traffic. However, if I modify the config for MPGW_B (i.e. just change a Stylesheet parameter) the traffic goes to MPGW_B somehow. How is this happening? FSH_B is still disabled.",
+          "correctness": 0.3,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "Why do I get error when I try to save application in APMUI? I am using APMUI 7.7 IF1. Following error occurs when I try to save application:\n\n \n\nCTGAZ0001E: The application cannot be saved because the application repository is not available.\nmessages.log of scr server shows that it is listening at 17310 port:\n\n \n\nA CWWKT0016I: Web application available (default_host): http://apmhost:17310/SCRCLUSTER_SCR_oslc.html\nBut apmui is referring to this URL with port 8080 (APM_UI.log):\n\n \n\nhttp://apmhost:8080/SCRCLUSTER_SCR_oslc/scr/gettime",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699) I need to understand details regarding Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699). Where can I find this information?",
+          "correctness": 0.6,
+          "faithfulness": 0.5,
+          "completeness": 0.6
+        },
+        {
+          "question": "Additional steps to apply fix pack to Decision Center \n\nWe are upgrading ODM 8.8.1 Decision Center to the latest 8.8.1.3.\n\nAre there any additional steps to apply the fixpack to Decision Center after we install the fixpack with Installation Manager?",
+          "correctness": 0.4,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "Installing fixpacks with Installation Manager - when did it change from using updateInstaller,  starting in which version of WebSphere I was using updateInstaller to install fixpacks, and there was a separate fixpack for WebSphere and separate for the JDK, independent of each other. Now I understand that with Installation Manager there is a single package containing both the WebSphere App server fixpack as well as the JDK. When did this occur, starting with which version of WebSphere ?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WMB and IIB I need to understand details regarding Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WebSphere Message Broker and IBM Integration Bus. Where can I find this information?",
+          "correctness": 0.9,
+          "faithfulness": 0.8,
+          "completeness": 0.9
+        },
+        {
+          "question": "Port number error starting 9.0 Launcher \n\nI'm attempting to start up v9.0 for the first time with one .msl file on a Windows server and get the following error.  I also have v8.4 on this server and it starts fine.  I do not have v8.4 running when I attempt to start v9.0.\n\nCannot recognize if the system RecordChangeSystem.msl; has started. Reason: Server is unable to get the status of the system on port number 6,002.\n\nI have the port range set to 7000/8000.  Why am I seeing this?",
+          "correctness": 0.5,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "DFHAP1203I and DFHSR0601 with 0C1 in EQA10OSM after upgrading to CICS TS 5.2 Why is my CICS region failing during startup with message DFHAP1203I followed by DFHSR0601 after I upgraded to CICS Transaction Server for z/OS (CICS TS) V5.2? A system dump shows an abend 0C1 occurring in the Debug Tool for z/OS module EQA10OSM. \nI receive the following messages:\nDFHAP1203I Language Environment is being initialized. \nDFHSR0601 Program interrupt occurred with system task III in control.",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "We got a NullPointerException when bootstrapping the object store or accessing Site Preferences/Access Role on WorkplaceXT \n\nAfter logging into FileNet Workplace XT, a java.lang.NullPointerException error is logged when bootstrapping the object store or when accessing Site Preferences/Access Role.\n\nHere's the error stack,\n\nError Stack Trace extracted from the J2EE Application Server error log:\n\njava.lang.NullPointerException\n\nat org.apache.jasper.runtime.JspWriterImpl.write(JspWriterImpl.java:421)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRoleMembers(PrefAccessRolesInfoPage.java:254)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRole(PrefAccessRolesInfoPage.java:220)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.renderAdminRole(PrefBootstrapInfoPage.java:131)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.render(PrefBootstrapInfoPage.java:303)",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Does the BPM internal Document Store work with IBM DB2 pureScale? I use IBM DB2 pureScale with my BPM installation. During startup of the server and initialization of the internal document store I see hanging threads in the systemOut.log and the process will not finish. How can this be solved?",
+          "correctness": 0.8,
+          "faithfulness": 0.6,
+          "completeness": 0.6
+        },
+        {
+          "question": "Is transient user support available for SAML integration with WebSphere Portal 8.0? I am looking to leverage the SAML TAI provided by WebSphere Application Server for my WebSphere Portal 8.0 environment. Is transient user support available so that I do not have to maintain a local account in my Portal user registry for every external user which is verified and trusted by my identity provider?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "Help with Security Bulletin: WMB and IIB are affected by 'Information Disclosure' vulnerability I need to understand details regarding Security Bulletin: WebSphere Message Broker and IBM Integration Bus are affected by 'Information Disclosure' vulnerability. Where can I find this information?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Java.io.NotSerializableException in WAS We are experiencing the Java.io.NotSerializableException exception. I see this error: WTRN0047E:java.io.NotSerializableException. Anyone experienced this before?",
+          "correctness": 0.9,
+          "faithfulness": 0.95,
+          "completeness": 0.85
+        },
+        {
+          "question": "Why does my JVMSERVER remain in a \"BEING DISABLED\"  state? When I try to disable a JVMSERVER it becomes hung and remains in a \"BEING DISABLED\" state. This also occurs when I shut down the CICS region. The CICS region ultimately has to be cancelled.",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Help with Action required for IIB H.E. V9 & WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nThis is related to CVEID:\nCVE-2017-14739\nCVE-2017-14741\nCVE-2017-14989\nCVE-2017-15015\nCVE-2017-15016\nCVE-2017-15017\nCVE-2017-15032\nCVE-2017-15033\n\nWhere can I find this information?",
+          "correctness": 0.8,
+          "faithfulness": 0.7,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730) I need to understand details regarding \"Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730)\". Where can I find this information?",
+          "correctness": 0.6,
+          "faithfulness": 0.8,
+          "completeness": 0.5
+        },
+        {
+          "question": "Does IBM DataPower Gateway Appliance support the HTTP CONNECT method? Does IBM DataPower Gateway Appliance support the HTTP CONNECT method for SSL proxy requests?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What are the files created in $TEMP on startup of IIB or WMB? What are the 0 byte files created in $TEMP/.com_ibm_tools_attach directory upon IBM Integration Bus (IIB) / WebSphere Message Broker (WMB) startup?\nFor example: The following files are created on UNIX / Windows if $TEMP is /tmp:\n/tmp/.com_ibm_tools_attach/_attachlock\n/tmp/.com_ibm_tools_attach/_master\n/tmp/.com_ibm_tools_attach/_notifier",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "Datacap on Citrix  Hi All,\n\nCan we operate Datacap thin clients on citrix?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        }
+      ]
+    },
+    "finqa": {
+      "answer_f1": 0.43069249582646757,
+      "context_coverage": 0.6523803964946293,
+      "correctness": 0.276,
+      "faithfulness": 0.544,
+      "completeness": 0.316,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "what is the rate of return in cadence design systems inc . of an investment from 2010 to 2011?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.5
+        },
+        {
+          "question": "what is the ratio of the total american personnel to us airways personnel",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.5
+        },
+        {
+          "question": "what portion of total assets acquired of anios are intangible assets?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the five year total return on the goldman sachs group inc.?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "what was the 2015 total return for the peer group?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+          "correctness": 0.2,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "what was the profit margin of printing papers in 2005",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "what was the percentage cumulative total shareholder return on disca common stock for the five year period ended december 31 , 2014?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage change in the cash dividends paid per common share from 2006 to 2007",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "what is the after-tax share-based compensation cost in 2010?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what are the net revenues in investment management in 2016 , in billions?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the percentage change in total financial liabilities at fair value in 2012?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the average for \"other\" loans held in 2012 and 2011?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "was was the total amount spent on stock repurchases in december 2012?",
+          "correctness": 0.0,
+          "faithfulness": 0.5,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the net change in tax positions in 2014",
+          "correctness": 0.3,
+          "faithfulness": 0.5,
+          "completeness": 0.4
+        },
+        {
+          "question": "what portion of the total noncancelable future lease commitments are due in fiscal year of 2019?",
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+          "correctness": 0.5,
+          "faithfulness": 0.5,
+          "completeness": 0.5
+        },
+        {
+          "question": "what was the percent change in number of shares purchased by employees between 2010 and 2011",
+          "correctness": 0.2,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "what portion of the total restricted units will vest in 2011?",
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "completeness": 0.1
+        },
+        {
+          "question": "what was the percent of the total gains that was from the sales of land",
+          "correctness": 0.0,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "what was the percentual decrease observed in the liabilities for accrued interest and penalties during 2012 and 2013?",
+          "correctness": 0.1,
+          "faithfulness": 0.1,
+          "completeness": 0.1
+        },
+        {
+          "question": "what portion of the total estimated purchase price is paid in cash?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "as a result of the sales of certain non-core towers and other assets what was the percent of the change in the recorded net losses from 2007 to 2008",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage rent increase between 2007 and 2008?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "what was the percentage change in the the research and development costs from 2014 to 2015",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what was the lowest effective tax rate in the three year period?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "in 2018 what was the percent of the cib markets net interest income as part of the managed interest income",
+          "correctness": 0.6,
+          "faithfulness": 0.9,
+          "completeness": 0.8
+        },
+        {
+          "question": "what is the growth rate in net sales from 2009 to 2010?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "what was the increase in the unrecognized tax benefits observed during 2007 and 2008 , in millions of dollars?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "what was the minimum amount of foreign currency translation loss , in millions?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what are the average net unrealized investment gains for the period?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "in billions , what was the total for 2015 and 2014 relating to commitments to invest in funds managed by the firm?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "did abiomed outperform the nasdaq composite index?",
+          "correctness": 0.3,
+          "faithfulness": 0.8,
+          "completeness": 0.4
+        },
+        {
+          "question": "what was the percentage change in net earnings from continuing operations from 2014 to 2015?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "what is the percentage change in the total carrying amount of goodwill from 2016 to 2017?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "how many total shares were repurchase in the periods 11/01/04 2013 11/30/04 and \\\\n12/01/04 2013 12/31/04?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the money pool activity use of operating cash flows as a percentage of receivables from the money pool in 2003?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the borrowing under the term loan facility as a percentage of the total contractual maturities of long-term debt obligations due subsequent to december 31 , 2016?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "without employee severance costs in 2004 and 2005 , what would have been the increase in net income in millions?\\\\n\\\\n",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.1
+        },
+        {
+          "question": "what is the sales growth rate from 2017 to 2018?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the total exposure to government related derivatives , in millions?",
+          "correctness": 0.0,
+          "faithfulness": 0.3,
+          "completeness": 0.0
+        },
+        {
+          "question": "by what percentage did average borrowings decrease from 2016 to 2017?",
+          "correctness": 0.6,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what is the maximum depreciation rate that can be used for furniture fixtures and equipment?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.2
+        },
+        {
+          "question": "what portion of the total 2015 restructuring programs is related to termination benefits?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the percentage change in the earnings from service operations increased from 2000 to 2001",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "in 2004 what was the percent of the change in the employee liability for employee separations",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what portion of anios' purchasing price is related to goodwill?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "as of december 31 , 2010 what was the par value of the debt outstanding for the fixed rate notes due february 2014 compared to term loan due 2011",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        }
+      ]
+    }
+  },
+  "dspy": {
+    "covidqa": {
+      "answer_f1": 0.4733845245386007,
+      "context_coverage": 0.7294697413489943,
+      "correctness": 0.559,
+      "faithfulness": 0.798,
+      "completeness": 0.46,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "How many antigens could be detected by Liew's multiplex ELISA test?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "When was the first case of COVID-19 identified?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "How many people did SARS-CoV infect?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Which viruses may not cause prolonged inflammation due to strong induction of antiviral clearance?",
+          "correctness": 0.2,
+          "faithfulness": 0.9,
+          "completeness": 0.3
+        },
+        {
+          "question": "What was the focus of the study?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What contributed to a large part of mammalian genomic sequence?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "What is the structure of Hantaan virus?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "What is severe MARS noted for?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What animal models exist for both the asymptomatic carriage of PUUV and SNV?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What is  an example of anti-viral defense in bats?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "What does Clade A contain?",
+          "correctness": 0.2,
+          "faithfulness": 0.5,
+          "completeness": 0.3
+        },
+        {
+          "question": "What has been the application of phage display technology?",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.5
+        },
+        {
+          "question": "How was HFRS  first brought to the attention of western medicine ?",
+          "correctness": 0.8,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "What could be novel candidates as potent inhibitors of papain like cysteine proteases in resistant microorganisms?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Are the modern day Influenza viruses related to the 1918 Spanish Influenza virus?",
+          "correctness": 0.7,
+          "faithfulness": 0.6,
+          "completeness": 0.5
+        },
+        {
+          "question": "Which may be an occupational group with significantly higher incidence of seropositivity to MERS-CoV ?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "Is there an Influenza vaccine?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.6
+        },
+        {
+          "question": "In how many cases the symptoms at diagnosis were consistent with the case definition for acute respiratory infection?",
+          "correctness": 0.3,
+          "faithfulness": 0.6,
+          "completeness": 0.2
+        },
+        {
+          "question": "What is a future potential of filamentous phage?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "What does LAIV rely on?",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.5
+        },
+        {
+          "question": "What is the treatment for MERS-COV?",
+          "correctness": 0.6,
+          "faithfulness": 0.9,
+          "completeness": 0.4
+        },
+        {
+          "question": "Is oral swab for detecting 2019-nCOV infection, sufficient?",
+          "correctness": 0.2,
+          "faithfulness": 0.4,
+          "completeness": 0.1
+        },
+        {
+          "question": "What percentage of population was affected?",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.3
+        },
+        {
+          "question": "What CNS functions are changed by mutations in the KATNAL1 gene?",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "How many people have persistent hepatitis C virus?",
+          "correctness": 0.6,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "What statistical tests were used to compare categorical variables?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "What is this disease  characterized by ?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "What was the main finding in the study?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "How do these exact processes ultimately restrict viral infectivity?",
+          "correctness": 0.4,
+          "faithfulness": 0.9,
+          "completeness": 0.2
+        },
+        {
+          "question": "What types of viruses can be diagnosed through serological testing?",
+          "correctness": 0.75,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "What was used to measure the performance of the NINA heaters?",
+          "correctness": 0.6,
+          "faithfulness": 0.8,
+          "completeness": 0.5
+        },
+        {
+          "question": "What are the ages of the patients in this study?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "Why does the claim lack any scientific  basis?",
+          "correctness": 1.0,
+          "faithfulness": 0.9,
+          "completeness": 0.9
+        },
+        {
+          "question": "What is the likely period of under-reporting?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "How does COVID19 get spread?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.8
+        },
+        {
+          "question": "hen did Asian genotype emerge?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What conditions are considered lower respiratory tract infections?",
+          "correctness": 0.5,
+          "faithfulness": 0.9,
+          "completeness": 0.4
+        },
+        {
+          "question": "What was the prevalence of Coronavirus OC 229 E/NL63 in clinical subjects in Ilorin, Nigeria?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "What is neo-virology?",
+          "correctness": 0.9,
+          "faithfulness": 0.9,
+          "completeness": 0.8
+        },
+        {
+          "question": "What is the effect of chronic airway inflammatory disease  in patients?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "What has this focus on mammalian defences and pathologies sidelined?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.7
+        },
+        {
+          "question": "What's the recommended procedure to disinfect at CT scanner after a COVID-19 exposure?",
+          "correctness": 0.3,
+          "faithfulness": 0.6,
+          "completeness": 0.2
+        },
+        {
+          "question": "How do some respiratory viruses spread?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "What genotype causes truncation of the IFITM3 protein?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "What is the conclusion of this study?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Among whom are the coronaviruses distributed?",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "What is a lockdown?",
+          "correctness": 0.2,
+          "faithfulness": 1.0,
+          "completeness": 0.3
+        },
+        {
+          "question": "What is the transmission of MERS-CoV is defined as?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What is the  relation between the new2019-nCOV and the conserved orf8?",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "What are exhibited in the two phases?",
+          "correctness": 0.2,
+          "faithfulness": 0.1,
+          "completeness": 0.1
+        }
+      ]
+    },
+    "techqa": {
+      "answer_f1": 0.45855790950759306,
+      "context_coverage": 0.7485432502927339,
+      "correctness": 0.6092,
+      "faithfulness": 0.6163,
+      "completeness": 0.5194,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "Using cobol copybooks Sometimes, there will be errors/fields missing in typetree, while importing cobol copybooks. Is there any format for copybooks(specifically to be used in wtx), that we need to follow?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.2
+        },
+        {
+          "question": "Want to find out if Microsoft Edge is supported with ICC? Want to find out Microsoft Edge is supported with ICC?",
+          "correctness": 0.5,
+          "faithfulness": 0.9,
+          "completeness": 0.3
+        },
+        {
+          "question": "What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031? What IBM Business Process Manager version is affected by the Apache Commons FileUpload vulnerability CVE-2016-1000031?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "Error while installing SpSS modeler trial version I have downloaded the SPSS modeller trial version (18.1) (64 bit) and trying to install the same. I get the following error 1152: Error extracting modelerClient64.msi to the temporary location",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "Is WebSphere Transformation Extender (WTX) supported for IBM Integration Bus V10? When will WebSphere Transformation Extender (WTX) be supported for IBM Integration Bus V10?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "Where can I find more details about WMB Fix Pack 8.0.0.5? Where can find more information about WebSphere Message Broker (WMB) Fix Pack 8.0.0.5?",
+          "correctness": 0.7,
+          "faithfulness": 0.5,
+          "completeness": 0.6
+        },
+        {
+          "question": "How to resolve the StaleConnectionException in WebSphere Application Server? I see this exception in WebSphere Application Server J2c and RRA traces:\n\nWSRdbManagedC > preTestConnection Entry WSRdbManagedConnectionImpl@51a507f2 query: SELECT 1 FROM DUAL WSRdbManagedC 3 Exception java.sql.SQLException: ORA-02396: exceeded maximum idle time, please connect again DSRA0010E: SQL State = 61000, Error Code = 2,396 at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:440) at \n...\nEntry java.sql.SQLException: ORA-01012: not logged on ..... OracleDataSto < findMappingClass return Exit class com.ibm.websphere.ce.cm.StaleConnectionException",
+          "correctness": 0.4,
+          "faithfulness": 0.3,
+          "completeness": 0.3
+        },
+        {
+          "question": "How do I resolve a WSVR0605W hung thread issue in the WebSphere MQ Resource Adapter? The following WebSphere MQ Resource Adapter hung thread can prevent an application server from starting...\n\nWSVR0605W: Thread \"WMQJCAResourceAdapter : 6\" (0000001b) has been active for 698530 milliseconds and may be hung. There is 1 thread(s) in total in the server that may be hung. at java.lang.Object.wait(Native Method) at java.lang.Object.wait(Object.java:167) at com.ibm.ejs.container.MessageEndpointFactoryImpl.createEndpoint(MessageEndpointFactoryImpl.java:498) at com.ibm.mq.connector.inbound.WorkImpl.run(WorkImpl.java:149)",
+          "correctness": 0.5,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "How can I export a private key from DataPower Gateway Appliance? \n\nHow can I export a private key from DataPower Gateway appliance?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "I need to transfer my SPSS 24 licence to a new computer I need to transfer my SPSS 24 license to a new machine. I have only used my activation code on one computer so far, and that computer was found to be defective which has led me to get a new computer. I was able to download SPSS 24 Gradpack onto the new computer, but every time I put in the activation code, the program gives me an error message saying that I am not allowed to generate any new licenses.",
+          "correctness": 0.6,
+          "faithfulness": 0.5,
+          "completeness": 0.4
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971) I need to understand details regarding Security Bulletin: IBM WebSphere MQ Administration command could cause denial of service (CVE-2016-8971). Where can I find this information?",
+          "correctness": 0.3,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "Help with Security Bulletin: IIB is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ) I need to understand details regarding Security Bulletin: IBM Integration Bus is affected by Node.js security vulnerability ( CVE-2017-1000381 and CVE-2017-11499 ). Where can I find this information?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593) I need to understand details regarding \"Security Bulletin: Multiple vulnerabilities in IBM Java SDK affect IBM OS Images for Red Hat Linux Systems and AIX (CVE-2015-0410 and CVE-2014-6593)\" Where can I find this information?",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "When should I use conversation sharing in DataPower MQ queue managers? MQ version 7.0 introduced a new feature, conversation sharing. Are there any special values on DataPower when configuring conversation sharing?",
+          "correctness": 0.5,
+          "faithfulness": 0.4,
+          "completeness": 0.3
+        },
+        {
+          "question": "Error #2070 I purchased the SPSS grad pack and put one of the licenses on one computer and another on this one. This computer crashed and I was forced to reformat the hard drive. Subsequently, I lost SPSS in the process.  I am now reinstalling with the single user copy option.\n\nThe error it gave me now when I attempted to authorize the program with the original authorization number I received was:\n\nAuthorization in progress ... (removed) Authorization failed.: You are not allowed to generate any more new licenses. End Of Transaction. All permitted authorizations for the provided authorization code(s) have been utilized. No additional authorizations are permitted on this code. If you think this is an error, please contact IBM Corp. Customer Service at spssls@us.ibm.com ( http://www-01.ibm.com/software/analytics/spss ) with your product and purchase details. Click \"Finish\" to exit.",
+          "correctness": 1.0,
+          "faithfulness": 0.5,
+          "completeness": 0.9
+        },
+        {
+          "question": "Where I can get ITNM 4.2.0.1 GA version download details with Part number?. How to download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 (GA) using the Passport Advantage Web site?.",
+          "correctness": 0.7,
+          "faithfulness": 0.5,
+          "completeness": 0.6
+        },
+        {
+          "question": "Help with Action required for IIB H.E.V9 and WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nWhere can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "What's the procedure to drop an user in Cognos Disclosure Management? \n\nO.S AIX 7.1\n\nCognos Disclosure Management 10.2.4 What's the procedure to drop an user in Cognos Disclosure Management",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.1
+        },
+        {
+          "question": "Event Dashboard breaks with Japanese filter Event Dashboard breaks when a filter is created with the browser language set to Japanese. This issue occurs in WebGUI 8.1 Fix Pack 11.",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "Help with Security Bulletin: Security Vulnerability in IBM PureApplication System. (CVE-2015-1920) I need to understand details regarding \"Security Bulletin: Security Vulnerability in IBM PureApplication System (CVE-2015-1920)\". Where can I find this information?",
+          "correctness": 0.3,
+          "faithfulness": 0.2,
+          "completeness": 0.4
+        },
+        {
+          "question": "Launching IBM Rational Software Architect application results in Error: Java was started but returned exit code = -1 At times when you launch Rational Software Architect (RSA) application, you might encounter the following error: Error: Java was started but returned exit code = -1",
+          "correctness": 0.7,
+          "faithfulness": 0.6,
+          "completeness": 0.7
+        },
+        {
+          "question": "Cognos Analytics - Images not displayed in PDF/Excel, working in HTML I've just completed an upgrade to Cognos Analytics 11.0.3. When running existing reports in HTML, the images are displayed but when I try to run them in PDF/Excel they are not.",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "Executing a scenario suite with a Scenario Service Provider (SSP) over HTTPS How to configure the machines hosting the WebSphere Operational Decision Management modules with regard to HTTPS when executing scenario suites ?\nHow to avoid the exception below while requesting from Decision Center the execution of a scenario suite on Scenario Service Provider (SSP) over HTTPS ?\n Exception caught while contacting RES ilog.rules.res.util.http.IlrConnectionException: IO error when contacting \"/res/repositoryService\"\n ....\n Caused by: javax.net.ssl.SSLHandshakeException: com.ibm.jsse2.util.g: PKIX path building failed: java.security.cert.CertPathBuilderException: unable to find valid certification path to requested target",
+          "correctness": 0.7,
+          "faithfulness": 0.9,
+          "completeness": 0.6
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612) I need to understand details regarding Security Bulletin: IBM WebSphere MQ is affected by a privilege escalation vulnerability (CVE-2017-1612).",
+          "correctness": 0.9,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "How to install Packaging utility? How to install Packaging utility?",
+          "correctness": 0.6,
+          "faithfulness": 0.5,
+          "completeness": 0.4
+        },
+        {
+          "question": "Is there a support's guide to the CORBA Probes? Where can I download the support's guide to the IBM CORBA probes?",
+          "correctness": 0.5,
+          "faithfulness": 0.3,
+          "completeness": 0.4
+        },
+        {
+          "question": "What versions of WSAS using Oracle 12c are supported? What versions of WSAS using Oracle 12c are supported?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "TEP to TEPS communication issues with different Java versions Recent Java updates have caused connection problems when logging into the TEPS via the TEP client (Browser or Java Web Start). Is there an updated list of known issues?",
+          "correctness": 0.5,
+          "faithfulness": 0.7,
+          "completeness": 0.4
+        },
+        {
+          "question": "Why is the file db2jcc.jar missing after an upgrade to BPM V8.5.7 CF2016.12? After upgrading to IBM Business Process Manager V8.5.7 Cumulative Fix 2016.12, I have encountered several JDBC related exceptions during my process application development. It seems that the file db2jcc.jar was removed during the installation of the cumulative fix pack. What happened?",
+          "correctness": 0.3,
+          "faithfulness": 0.7,
+          "completeness": 0.2
+        },
+        {
+          "question": "Traffic across domains seems unexpected \n\nI have two Multi-Protocol Gateways (MPGWs) configured, each in their own domain:\n\n     Domain A\n     MPGW_A\n     FSH_A (1.2.3.4:443)\n     Domain B\n     MPGW_B\n     FSH_B (0.0.0.0:443)\n\nThe FSH_B is disabled, thus MPGW_B cannot take traffic. However, if I modify the config for MPGW_B (i.e. just change a Stylesheet parameter) the traffic goes to MPGW_B somehow. How is this happening? FSH_B is still disabled.",
+          "correctness": 0.4,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "Additional steps to apply fix pack to Decision Center \n\nWe are upgrading ODM 8.8.1 Decision Center to the latest 8.8.1.3.\n\nAre there any additional steps to apply the fixpack to Decision Center after we install the fixpack with Installation Manager?",
+          "correctness": 0.6,
+          "faithfulness": 0.7,
+          "completeness": 0.5
+        },
+        {
+          "question": "Installing fixpacks with Installation Manager - when did it change from using updateInstaller,  starting in which version of WebSphere I was using updateInstaller to install fixpacks, and there was a separate fixpack for WebSphere and separate for the JDK, independent of each other. Now I understand that with Installation Manager there is a single package containing both the WebSphere App server fixpack as well as the JDK. When did this occur, starting with which version of WebSphere ?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.3
+        },
+        {
+          "question": "Help with Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WMB and IIB I need to understand details regarding Security Bulletin: Multiple vulnerabilities in IBM Java Runtime affect WebSphere Message Broker and IBM Integration Bus. Where can I find this information?",
+          "correctness": 0.6,
+          "faithfulness": 0.5,
+          "completeness": 0.5
+        },
+        {
+          "question": "How can I configure J2EE Tomcat DC to run as Windows Service? I'm trying to configure ITCAM J2EE v7.1.1 Tomcat DC to run as a Windows Service but it fails. Is this type of configuration supported? If so, what is the right procedure to do that?",
+          "correctness": 0.3,
+          "faithfulness": 0.6,
+          "completeness": 0.2
+        },
+        {
+          "question": "Help with Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699) I need to understand details regarding Security Bulletin: IBM WebSphere MQ and IBM MQ Managed File Transfer is affected by an undefined behavior because of insecure file permission vulnerability (CVE-2017-1699). Where can I find this information?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "Why do I get error when I try to save application in APMUI? I am using APMUI 7.7 IF1. Following error occurs when I try to save application:\n\n \n\nCTGAZ0001E: The application cannot be saved because the application repository is not available.\nmessages.log of scr server shows that it is listening at 17310 port:\n\n \n\nA CWWKT0016I: Web application available (default_host): http://apmhost:17310/SCRCLUSTER_SCR_oslc.html\nBut apmui is referring to this URL with port 8080 (APM_UI.log):\n\n \n\nhttp://apmhost:8080/SCRCLUSTER_SCR_oslc/scr/gettime",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "What things are important to consider when installing a fix pack for IIB running on a multi-instance environment? I am planning to apply a fix pack to my current version of IBM Integration Bus (IIB) using multi-instance brokers and I am looking for any important information regarding the process.\n\nFor example:\n\n \n\n- installation and verification tasks\n \n\n- is it possible to back out this fix pack in case there are issues\n \n\n- any specific tasks for multi instance configuration",
+          "correctness": 0.8,
+          "faithfulness": 0.3,
+          "completeness": 0.7
+        },
+        {
+          "question": "Port number error starting 9.0 Launcher \n\nI'm attempting to start up v9.0 for the first time with one .msl file on a Windows server and get the following error.  I also have v8.4 on this server and it starts fine.  I do not have v8.4 running when I attempt to start v9.0.\n\nCannot recognize if the system RecordChangeSystem.msl; has started. Reason: Server is unable to get the status of the system on port number 6,002.\n\nI have the port range set to 7000/8000.  Why am I seeing this?",
+          "correctness": 0.6,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "We got a NullPointerException when bootstrapping the object store or accessing Site Preferences/Access Role on WorkplaceXT \n\nAfter logging into FileNet Workplace XT, a java.lang.NullPointerException error is logged when bootstrapping the object store or when accessing Site Preferences/Access Role.\n\nHere's the error stack,\n\nError Stack Trace extracted from the J2EE Application Server error log:\n\njava.lang.NullPointerException\n\nat org.apache.jasper.runtime.JspWriterImpl.write(JspWriterImpl.java:421)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRoleMembers(PrefAccessRolesInfoPage.java:254)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefAccessRolesInfoPage.renderRole(PrefAccessRolesInfoPage.java:220)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.renderAdminRole(PrefBootstrapInfoPage.java:131)\n\nat com.filenet.wcm.apps.server.ui.info.prefs.PrefBootstrapInfoPage.render(PrefBootstrapInfoPage.java:303)",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "DFHAP1203I and DFHSR0601 with 0C1 in EQA10OSM after upgrading to CICS TS 5.2 Why is my CICS region failing during startup with message DFHAP1203I followed by DFHSR0601 after I upgraded to CICS Transaction Server for z/OS (CICS TS) V5.2? A system dump shows an abend 0C1 occurring in the Debug Tool for z/OS module EQA10OSM. \nI receive the following messages:\nDFHAP1203I Language Environment is being initialized. \nDFHSR0601 Program interrupt occurred with system task III in control.",
+          "correctness": 0.7,
+          "faithfulness": 0.8,
+          "completeness": 0.6
+        },
+        {
+          "question": "Does the BPM internal Document Store work with IBM DB2 pureScale? I use IBM DB2 pureScale with my BPM installation. During startup of the server and initialization of the internal document store I see hanging threads in the systemOut.log and the process will not finish. How can this be solved?",
+          "correctness": 0.6,
+          "faithfulness": 0.4,
+          "completeness": 0.5
+        },
+        {
+          "question": "Java.io.NotSerializableException in WAS We are experiencing the Java.io.NotSerializableException exception. I see this error: WTRN0047E:java.io.NotSerializableException. Anyone experienced this before?",
+          "correctness": 0.9,
+          "faithfulness": 0.6,
+          "completeness": 0.7
+        },
+        {
+          "question": "Help with Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730) I need to understand details regarding \"Security Bulletin: TLS padding vulnerability affects IBM PureApplication System (CVE-2014-8730)\". Where can I find this information?",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "Why does my JVMSERVER remain in a \"BEING DISABLED\"  state? When I try to disable a JVMSERVER it becomes hung and remains in a \"BEING DISABLED\" state. This also occurs when I shut down the CICS region. The CICS region ultimately has to be cancelled.",
+          "correctness": 0.9,
+          "faithfulness": 0.85,
+          "completeness": 0.85
+        },
+        {
+          "question": "Help with Action required for IIB H.E. V9 & WMB H.E. V8 for security vulnerabilities in Red Hat Linux \n\nI need to understand details regarding Action required for IBM Integration Bus Hypervisor Edition V9.0 and WebSphere Message Broker Hypervisor Edition V8.0 for security vulnerabilities in Red Hat Linux.\n\nThis is related to CVEID:\nCVE-2017-14739\nCVE-2017-14741\nCVE-2017-14989\nCVE-2017-15015\nCVE-2017-15016\nCVE-2017-15017\nCVE-2017-15032\nCVE-2017-15033\n\nWhere can I find this information?",
+          "correctness": 0.8,
+          "faithfulness": 0.9,
+          "completeness": 0.7
+        },
+        {
+          "question": "Datacap on Citrix  Hi All,\n\nCan we operate Datacap thin clients on citrix?",
+          "correctness": 0.75,
+          "faithfulness": 0.85,
+          "completeness": 0.7
+        },
+        {
+          "question": "Does IBM DataPower Gateway Appliance support the HTTP CONNECT method? Does IBM DataPower Gateway Appliance support the HTTP CONNECT method for SSL proxy requests?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "What are the files created in $TEMP on startup of IIB or WMB? What are the 0 byte files created in $TEMP/.com_ibm_tools_attach directory upon IBM Integration Bus (IIB) / WebSphere Message Broker (WMB) startup?\nFor example: The following files are created on UNIX / Windows if $TEMP is /tmp:\n/tmp/.com_ibm_tools_attach/_attachlock\n/tmp/.com_ibm_tools_attach/_master\n/tmp/.com_ibm_tools_attach/_notifier",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 0.8
+        },
+        {
+          "question": "Is transient user support available for SAML integration with WebSphere Portal 8.0? I am looking to leverage the SAML TAI provided by WebSphere Application Server for my WebSphere Portal 8.0 environment. Is transient user support available so that I do not have to maintain a local account in my Portal user registry for every external user which is verified and trusted by my identity provider?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        }
+      ]
+    },
+    "finqa": {
+      "answer_f1": 0.5673220201692996,
+      "context_coverage": 0.6543488679386356,
+      "correctness": 0.2267,
+      "faithfulness": 0.4933,
+      "completeness": 0.2444,
+      "correctness_std": 0.0,
+      "faithfulness_std": 0.0,
+      "completeness_std": 0.0,
+      "errors": 0,
+      "judge_model": "Qwen/Qwen3-14B",
+      "n_runs": 1,
+      "per_question": [
+        {
+          "question": "what is the rate of return in cadence design systems inc . of an investment from 2010 to 2011?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the ratio of the total american personnel to us airways personnel",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of total assets acquired of anios are intangible assets?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the five year total return on the goldman sachs group inc.?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the percentage change in the total carrying amount of goodwill from 2016 to 2017?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the net change in net revenue during 2015 for entergy corporation?",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.2
+        },
+        {
+          "question": "what was the percent change in the aggregate net asset values of the direct lending collateral pools between 2007 and 2008?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the 2015 total return for the peer group?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage change in the cash dividends paid per common share from 2006 to 2007",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage cumulative total shareholder return on disca common stock for the five year period ended december 31 , 2014?",
+          "correctness": 0.0,
+          "faithfulness": 0.8,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the after-tax share-based compensation cost in 2010?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 0.9
+        },
+        {
+          "question": "what was the profit margin of printing papers in 2005",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the percentage change in total financial liabilities at fair value in 2012?",
+          "correctness": 0.8,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what are the net revenues in investment management in 2016 , in billions?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the net change in tax positions in 2014",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "was was the total amount spent on stock repurchases in december 2012?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "in millions for 2012 and 2011 , what was the maximum tier 2 capital?",
+          "correctness": 0.5,
+          "faithfulness": 1.0,
+          "completeness": 0.5
+        },
+        {
+          "question": "what portion of the total noncancelable future lease commitments are due in fiscal year of 2019?",
+          "correctness": 0.0,
+          "faithfulness": 0.3,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percent change in number of shares purchased by employees between 2010 and 2011",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of the total restricted units will vest in 2011?",
+          "correctness": 0.3,
+          "faithfulness": 1.0,
+          "completeness": 0.2
+        },
+        {
+          "question": "what was the percent of the total gains that was from the sales of land",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what portion of the total estimated purchase price is paid in cash?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "as a result of the sales of certain non-core towers and other assets what was the percent of the change in the recorded net losses from 2007 to 2008",
+          "correctness": 0.2,
+          "faithfulness": 0.3,
+          "completeness": 0.1
+        },
+        {
+          "question": "what was the percentage rent increase between 2007 and 2008?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage change in the the research and development costs from 2014 to 2015",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the lowest effective tax rate in the three year period?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage growth in the dividend yield from 2007 to 2008",
+          "correctness": 0.4,
+          "faithfulness": 0.6,
+          "completeness": 0.3
+        },
+        {
+          "question": "in 2018 what was the percent of the cib markets net interest income as part of the managed interest income",
+          "correctness": 0.7,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what was the increase in the unrecognized tax benefits observed during 2007 and 2008 , in millions of dollars?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the growth rate in net sales from 2009 to 2010?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the minimum amount of foreign currency translation loss , in millions?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what are the average net unrealized investment gains for the period?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage change in net earnings from continuing operations from 2014 to 2015?",
+          "correctness": 0.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "in billions , what was the total for 2015 and 2014 relating to commitments to invest in funds managed by the firm?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "did abiomed outperform the nasdaq composite index?",
+          "correctness": 0.6,
+          "faithfulness": 0.8,
+          "completeness": 0.5
+        },
+        {
+          "question": "how many total shares were repurchase in the periods 11/01/04 2013 11/30/04 and \\\\n12/01/04 2013 12/31/04?",
+          "correctness": 0.0,
+          "faithfulness": 0.3,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the borrowing under the term loan facility as a percentage of the total contractual maturities of long-term debt obligations due subsequent to december 31 , 2016?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what is the sales growth rate from 2017 to 2018?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "by what percentage did average borrowings decrease from 2016 to 2017?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what portion of the total 2015 restructuring programs is related to termination benefits?",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what is the money pool activity use of operating cash flows as a percentage of receivables from the money pool in 2003?",
+          "correctness": 0.5,
+          "faithfulness": 0.8,
+          "completeness": 0.3
+        },
+        {
+          "question": "what is the maximum depreciation rate that can be used for furniture fixtures and equipment?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "what was the percentage change in the earnings from service operations increased from 2000 to 2001",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        },
+        {
+          "question": "in 2004 what was the percent of the change in the employee liability for employee separations",
+          "correctness": 1.0,
+          "faithfulness": 1.0,
+          "completeness": 1.0
+        },
+        {
+          "question": "what portion of anios' purchasing price is related to goodwill?",
+          "correctness": 0.0,
+          "faithfulness": 0.0,
+          "completeness": 0.0
+        }
+      ]
+    }
+  }
+}
