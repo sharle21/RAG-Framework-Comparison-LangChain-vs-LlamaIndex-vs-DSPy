@@ -1,0 +1,68 @@
+{
+  "langchain": {
+    "overall": {
+      "bertscore_precision": 0.8225,
+      "bertscore_recall": 0.8434,
+      "bertscore_f1": 0.8311
+    },
+    "covidqa": {
+      "bertscore_precision": 0.8114,
+      "bertscore_recall": 0.8342,
+      "bertscore_f1": 0.8208
+    },
+    "techqa": {
+      "bertscore_precision": 0.8259,
+      "bertscore_recall": 0.8382,
+      "bertscore_f1": 0.8309
+    },
+    "finqa": {
+      "bertscore_precision": 0.8305,
+      "bertscore_recall": 0.8582,
+      "bertscore_f1": 0.8418
+    }
+  },
+  "llamaindex": {
+    "overall": {
+      "bertscore_precision": 0.8386,
+      "bertscore_recall": 0.8344,
+      "bertscore_f1": 0.8344
+    },
+    "covidqa": {
+      "bertscore_precision": 0.8575,
+      "bertscore_recall": 0.8237,
+      "bertscore_f1": 0.8392
+    },
+    "techqa": {
+      "bertscore_precision": 0.8401,
+      "bertscore_recall": 0.8475,
+      "bertscore_f1": 0.8426
+    },
+    "finqa": {
+      "bertscore_precision": 0.8182,
+      "bertscore_recall": 0.832,
+      "bertscore_f1": 0.8215
+    }
+  },
+  "dspy": {
+    "overall": {
+      "bertscore_precision": 0.8626,
+      "bertscore_recall": 0.8293,
+      "bertscore_f1": 0.8437
+    },
+    "covidqa": {
+      "bertscore_precision": 0.8797,
+      "bertscore_recall": 0.835,
+      "bertscore_f1": 0.8555
+    },
+    "techqa": {
+      "bertscore_precision": 0.8291,
+      "bertscore_recall": 0.833,
+      "bertscore_f1": 0.8297
+    },
+    "finqa": {
+      "bertscore_precision": 0.8802,
+      "bertscore_recall": 0.819,
+      "bertscore_f1": 0.8458
+    }
+  }
+}

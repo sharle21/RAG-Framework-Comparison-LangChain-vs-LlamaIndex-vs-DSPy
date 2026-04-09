@@ -73,7 +73,15 @@ def make_app(args: argparse.Namespace) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         global _rag
+        _tracing_shutdown = None
         try:
+            if getattr(args, "tracing", False):
+                from src.evaluation.tracing import init_tracing
+                _tracing_shutdown = init_tracing(
+                    phoenix_endpoint=args.phoenix_endpoint,
+                    service_name=f"rag-benchmark-{args.framework}",
+                )
+
             documents = _load_documents()
             print(f"[{args.framework}] Loaded {len(documents)} documents")
             print(f"[{args.framework}] Building index (model={args.model}, local_embeddings={args.local_embeddings})...")
@@ -88,6 +96,8 @@ def make_app(args: argparse.Namespace) -> FastAPI:
             raise
         yield
         print(f"[{args.framework}] Shutting down.")
+        if _tracing_shutdown:
+            _tracing_shutdown()
 
     return FastAPI(lifespan=lifespan)
 
@@ -123,6 +133,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", default="gpt-4o-mini")
     parser.add_argument("--base-url", default=None, help="vLLM base URL, e.g. http://localhost:8000/v1")
     parser.add_argument("--local-embeddings", action="store_true", help="Use bge-m3 instead of OpenAI embeddings")
+    parser.add_argument("--tracing", action="store_true", help="Enable Arize Phoenix tracing (requires Phoenix on :4317)")
+    parser.add_argument("--phoenix-endpoint", default="http://localhost:4317", help="Phoenix OTLP gRPC endpoint")
     return parser.parse_args()
 
 

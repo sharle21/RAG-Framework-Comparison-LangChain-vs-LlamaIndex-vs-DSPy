@@ -26,6 +26,13 @@ RPS="${RPS:-20}"
 PER_DOMAIN="${PER_DOMAIN:-50}"
 
 MODEL="${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+TRACING="${TRACING:-0}"
+PHOENIX_ENDPOINT="${PHOENIX_ENDPOINT:-http://localhost:4317}"
+
+TRACING_FLAG=""
+if [ "$TRACING" = "1" ]; then
+    TRACING_FLAG="--tracing --phoenix-endpoint $PHOENIX_ENDPOINT"
+fi
 
 echo "=================================================="
 echo "  RAG Server Stack"
@@ -35,6 +42,7 @@ echo "  Model:       $MODEL"
 echo "  Workers:     $WORKERS goroutines"
 echo "  RPS:         $RPS"
 echo "  Per domain:  $PER_DOMAIN QA pairs"
+echo "  Tracing:     ${TRACING:-off} (set TRACING=1 to enable Phoenix)"
 echo "=================================================="
 
 # ── 1. Generate queries.json ──────────────────────────────────────────────────
@@ -49,7 +57,7 @@ python orchestrator/generate_queries.py --per-domain "$PER_DOMAIN"
 echo ""
 echo "[2/4] Starting RAG servers (sequential index build to avoid OOM)..."
 
-COMMON_ARGS="--base-url $VLLM_URL --model $MODEL --local-embeddings"
+COMMON_ARGS="--base-url $VLLM_URL --model $MODEL --local-embeddings $TRACING_FLAG"
 
 wait_ready() {
     local name=$1 url=$2 logfile=$3
