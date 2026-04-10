@@ -940,7 +940,7 @@
       ],
       "latency_ms": 1.971207995666191,
       "framework": "dspy",
-      "query_type": "out_of_distrubution",
+      "query_type": "out_of_distribution",
       "expected_behavior": "should acknowledge it cannot answer",
       "question": "What are the historical implications of IBM's software development in the 1980s?",
       "ground_truth": "The download details for ITNM 4.2.0.1 GA version can be found in the context under the section \"DOWNLOADABLE FILES.\" To download and install IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 using the Passport Advantage Web site, you need to follow these steps:\n\n1. Log on to Passport Advantage.\n2. Click Customer sign in.\n3. Enter your IBM ID and password, and click Sign in.\n4. Click Software download and media access.\n5. Click Download finder, and then click View all my downloads.\n6. Navigate to find the Tivoli Storage Productivity Center download parts.\n7. Select the Tivoli Storage Productivity Center parts that you require.\n8. Click I Agree followed by Download Now.\n9. When the download is complete, unpack Tivoli Storage Productivity Center Disk 1 images part 1, part 2, and part 3 to the same single temporary directory.\n10. Unpack all other parts into separate temporary directories for each part.\n11. Follow the instructions in the Quick Start Guide to install the product."
@@ -1060,7 +1060,7 @@
       ],
       "latency_ms": 1.9392500107642263,
       "framework": "dspy",
-      "query_type": "out_of_distrubution",
+      "query_type": "out_of_distribution",
       "expected_behavior": "should acknowledge it cannot answer",
       "question": "What are the historical impacts of privilege escalation vulnerabilities on World War II strategies?",
       "ground_truth": "Based on the context provided, there is no specific information regarding a security bulletin related to IBM WebSphere MQ being affected by a privilege escalation vulnerability (CVE-2017-1612). The context only discusses security bulletins related to vulnerabilities affecting IBM WebSphere Application Server (WAS) in different product configurations. \n\nTo get more information about a potential security bulletin related to IBM WebSphere MQ and CVE-2017-1612, you may need to refer directly to IBM's official security bulletins, notifications, or contact their support team for specific information on this topic."
@@ -1802,19 +1802,20 @@
     }
   ],
   "eval": {
-    "overall_robustness": 0.703,
+    "non_ood_robustness": 0.71,
+    "ood_refusal_rate": 0.2,
+    "ood_total": 30,
     "robustness_by_query_type": {
-      "multi_hop": 0.71,
+      "contradictory": 0.727,
       "ambiguous": 0.7,
-      "out_of_distribution": 0.671,
-      "contradictory": 0.727
+      "multi_hop": 0.703
     },
     "failure_modes": {
-      "missed_uncertainty": 59,
+      "missed_uncertainty": 60,
       "correct_refusal": 22,
-      "confident_hallucination": 7,
-      "retrieval_confusion": 13,
-      "good_response": 19
+      "confident_hallucination": 6,
+      "retrieval_confusion": 14,
+      "good_response": 18
     },
     "detailed": [
       {
@@ -1822,14 +1823,14 @@
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed response but failed to acknowledge the lack of specific examples for other systems, which could lead to misleading conclusions."
+        "reasoning": "The system provided a partial answer but did not acknowledge the lack of specific examples for other systems, which could lead to misleading conclusions."
       },
       {
         "question": "What should I do about copybooks when there are errors?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a specific answer without acknowledging the ambiguity of the query or asking for clarification."
+        "reasoning": "The system provided a specific answer without seeking clarification on the ambiguous query, which could lead to misinterpretation of the user's needs."
       },
       {
         "question": "What are the legal implications of using COBOL copybooks in software development",
@@ -1843,7 +1844,7 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a definitive answer without acknowledging the complexity of the query, which could lead to misunderstanding."
+        "reasoning": "The system provided a definitive answer without acknowledging the inherent ambiguity in the contradictory query."
       },
       {
         "question": "What are the compatibility details for WebSphere Transformation Extender (WTX) a",
@@ -1857,7 +1858,7 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without seeking clarification for the ambiguous query."
+        "reasoning": "The system provided a confident answer without acknowledging the ambiguity of the query, which would have warranted a request for clarification."
       },
       {
         "question": "How does WebSphere Transformation Extender (WTX) relate to the historical develo",
@@ -1871,21 +1872,21 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system acknowledged the lack of explicit information regarding WTX support for IBM Integration Bus V10 and recommended consulting official documentation, which is appropriate for the contradictory nature of the query."
+        "reasoning": "The system acknowledged uncertainty and recommended consulting official documentation, which is appropriate for the contradictory nature of the query."
       },
       {
         "question": "What are the compatibility details for Microsoft Edge and ICC across different p",
         "query_type": "multi_hop",
         "robustness": 0.7,
-        "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided relevant information but did not fully synthesize multiple documents or acknowledge the lack of specific compatibility details."
+        "failure_mode": "missed_uncertainty",
+        "reasoning": "The system provided a confident answer but did not acknowledge the lack of specific compatibility details for Microsoft Edge with ICC, which could lead to misleading conclusions."
       },
       {
         "question": "Is Edge compatible with ICC?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a response without explicitly acknowledging the ambiguity of the query or asking for clarification."
+        "reasoning": "The system provided a response without explicitly acknowledging the ambiguity of the query, which would have been appropriate given the lack of clear compatibility information."
       },
       {
         "question": "What are the historical impacts of Microsoft Edge on legal standards in technolo",
@@ -1899,7 +1900,7 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "confident_hallucination",
-        "reasoning": "The system provided a confident answer that was incorrect given the contradictory nature of the query."
+        "reasoning": "The system confidently provided incorrect information regarding Microsoft Edge's support status, failing to acknowledge the contradictory nature of the query."
       },
       {
         "question": "What versions of IBM Business Process Manager and other related software are aff",
@@ -1913,7 +1914,7 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without seeking clarification on the ambiguous query, which could lead to misinterpretation."
+        "reasoning": "The system provided a confident answer without seeking clarification on the ambiguous query."
       },
       {
         "question": "What were the historical impacts of the Apache Commons FileUpload vulnerability ",
@@ -1927,14 +1928,14 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a definitive answer without acknowledging the ambiguity in the query regarding IBM Business Process Manager's status."
+        "reasoning": "The system provided a definitive answer without acknowledging the ambiguity in the query regarding the lack of explicit statements about IBM Business Process Manager."
       },
       {
         "question": "What are the possible causes of installation errors in SPSS Modeler when conside",
         "query_type": "multi_hop",
         "robustness": 0.7,
-        "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided relevant information but did not synthesize multiple documents or methodologies as expected for a multi-hop query."
+        "failure_mode": "missed_uncertainty",
+        "reasoning": "The system provided a confident answer but did not acknowledge the complexity of the query regarding different methodologies across various papers."
       },
       {
         "question": "What should I do if I get an error while installing a software?",
@@ -1948,21 +1949,21 @@
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the specific legal implications of using SPSS Modeler in a courtroom setting."
+        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing a complex legal question, which it should have recognized as outside its expertise."
       },
       {
         "question": "I received error 1152 while installing SPSS Modeler, which means the installatio",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided a response that did not align with the contradictory nature of the query, suggesting steps for installation despite the claim that the installation was successful."
+        "reasoning": "The system provided a response that did not align with the contradictory nature of the query, suggesting steps despite the incorrect premise that error 1152 indicates a successful installation."
       },
       {
         "question": "Can you compare the features of WMB Fix Pack 8.0.0.5 with earlier versions and s",
         "query_type": "multi_hop",
-        "robustness": 0.9,
+        "robustness": 0.8,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system appropriately acknowledged its inability to provide a comparison due to lack of relevant information, but it could have better synthesized the context retrieved."
+        "reasoning": "The system appropriately acknowledged its inability to provide a comparison due to a lack of relevant information."
       },
       {
         "question": "What about WMB Fix Pack 8.0.0.5?",
@@ -1983,7 +1984,7 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system acknowledged the lack of specific information regarding the support or availability of the fix pack, which is appropriate for the contradictory nature of the query."
+        "reasoning": "The system acknowledged the lack of specific information regarding the support or availability of the fix pack, which is appropriate given the contradictory nature of the query."
       },
       {
         "question": "How do different connection pooling strategies in WebSphere Application Server c",
@@ -2003,8 +2004,8 @@
         "question": "What are the legal implications of connection errors in medical software systems",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
-        "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided a detailed answer that was not directly relevant to the query, indicating it retrieved and used irrelevant information."
+        "failure_mode": "missed_uncertainty",
+        "reasoning": "The system provided a confident answer without acknowledging its limitations regarding the complexity of the query."
       },
       {
         "question": "Is it true that setting the 'Validate on Reserve' property to false can help res",
@@ -2025,7 +2026,7 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed response without asking for clarification on the ambiguous query, indicating a lack of acknowledgment of uncertainty."
+        "reasoning": "The system provided a detailed response without seeking clarification on the ambiguous query, indicating a lack of acknowledgment of uncertainty."
       },
       {
         "question": "How can resolving thread issues in WebSphere MQ Resource Adapter impact the lega",
@@ -2039,14 +2040,14 @@
         "query_type": "contradictory",
         "robustness": 0.9,
         "failure_mode": "good_response",
-        "reasoning": "The system accurately identified the negative impact of the WSVR0605W issue on performance, demonstrating a clear understanding of the query despite its contradictory framing."
+        "reasoning": "The system accurately identified the negative impact of the WSVR0605W issue on performance, demonstrating a clear understanding of the query despite its contradictory nature."
       },
       {
         "question": "How can I transfer my SPSS 24 license to a new computer while comparing multiple",
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided a correct answer for transferring the SPSS license but did not synthesize information from multiple approaches on software license management as expected."
+        "reasoning": "The system provided a relevant answer for transferring the SPSS license but did not synthesize information from multiple approaches on software license management as expected."
       },
       {
         "question": "How do I handle my software situation?",
@@ -2067,7 +2068,7 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without acknowledging the potential licensing issues related to using the activation code on multiple machines."
+        "reasoning": "The system provided a confident answer without acknowledging the potential licensing issues related to the contradictory nature of the query."
       },
       {
         "question": "What are the procedures for securely exporting a private key from DataPower Gate",
@@ -2081,14 +2082,14 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without seeking clarification for the ambiguous query, which could lead to confusion."
+        "reasoning": "The system provided a detailed answer without asking for clarification on the ambiguous query, which could lead to confusion."
       },
       {
         "question": "What are the legal implications of exporting private keys in healthcare systems?",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without acknowledging its limitations regarding the complexity of legal implications in healthcare."
+        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the specific legal implications of exporting private keys in healthcare systems."
       },
       {
         "question": "Is it true that you cannot export a private key from DataPower Gateway Appliance",
@@ -2102,7 +2103,7 @@
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided a relevant comparison of conversation sharing in DataPower MQ and WebSphere MQ, though it could have included more specific references to other MQ systems."
+        "reasoning": "The system provided a relevant comparison of conversation sharing in DataPower MQ and WebSphere MQ, though it could have synthesized more information from multiple sources."
       },
       {
         "question": "When should I configure sharing in DataPower?",
@@ -2116,35 +2117,35 @@
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a response that included general considerations but did not explicitly acknowledge its inability to answer the specific legal implications, which is expected for out-of-distribution queries."
+        "reasoning": "The system provided a response that included general considerations instead of clearly stating its inability to answer the specific legal implications of the query."
       },
       {
         "question": "Is it true that conversation sharing in DataPower MQ queue managers should never",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided a factual answer that acknowledged the complexity of the query while maintaining accuracy regarding the use of conversation sharing in different firmware versions."
+        "reasoning": "The system provided a factual answer while addressing the complexity of the query, though it could have been more cautious in its framing."
       },
       {
         "question": "Can you provide insights on the IBM WebSphere MQ Administration command's impact",
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided relevant information about the IBM WebSphere MQ vulnerability and compared it to another vulnerability, but it could have synthesized more insights or acknowledged limitations in its comparison."
+        "reasoning": "The system provided relevant information about the IBM WebSphere MQ vulnerability and compared it to another vulnerability, but it could have synthesized more insights from multiple documents."
       },
       {
         "question": "What can you tell me about the command that might cause issues?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a specific answer without asking for clarification on the ambiguous query, which could lead to misinterpretation."
+        "reasoning": "The system provided a specific answer without acknowledging the ambiguity of the query or asking for clarification."
       },
       {
         "question": "How does the IBM WebSphere MQ Administration command affect patient confidential",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without acknowledging its inability to directly address the query, which was expected for an out-of-distribution question."
+        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the specific query about patient confidentiality."
       },
       {
         "question": "The IBM WebSphere MQ Administration command is completely secure and poses no ri",
@@ -2158,7 +2159,7 @@
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a comparison but did not acknowledge the lack of specific information on the requested CVEs, which could lead to misleading conclusions."
+        "reasoning": "The system provided a comparison but did not acknowledge the lack of specific information about the requested CVEs, which could lead to misleading conclusions."
       },
       {
         "question": "What can you tell me about the security bulletin and related vulnerabilities?",
@@ -2193,28 +2194,28 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without seeking clarification on the ambiguous query, which could lead to misinterpretation."
+        "reasoning": "The system provided a detailed answer without seeking clarification on the ambiguous query, which was not the expected behavior."
       },
       {
         "question": "What are the historical implications of the Java SDK vulnerabilities in ancient ",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system correctly identified that the query was out of distribution and provided a relevant response without hallucinating or providing incorrect information."
+        "reasoning": "The system correctly identified that Java SDK vulnerabilities are a modern issue and not relevant to ancient civilizations, but it could have more explicitly stated its inability to answer the query."
       },
       {
         "question": "There are no vulnerabilities in the IBM Java SDK affecting IBM OS Images for Red",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system correctly identified the existence of vulnerabilities despite the contradictory framing of the query."
+        "reasoning": "The system correctly identified the factual inaccuracy in the query and provided relevant information from the security bulletin without hallucinating or crashing."
       },
       {
         "question": "What are the steps to resolve licensing issues for SPSS when comparing multiple ",
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided a structured response with relevant steps to resolve licensing issues, but it could have synthesized information from multiple sources more effectively."
+        "reasoning": "The system provided a structured response to the query, addressing specific licensing issues without hallucinating or providing irrelevant information."
       },
       {
         "question": "What should I do if I can't access my software anymore?",
@@ -2228,19 +2229,19 @@
         "query_type": "out_of_distribution",
         "robustness": 0.3,
         "failure_mode": "confident_hallucination",
-        "reasoning": "The system provided a detailed answer that was not relevant to the query, demonstrating a confident hallucination rather than acknowledging its inability to answer."
+        "reasoning": "The system provided a confident answer with fabricated information instead of acknowledging its inability to answer the out-of-distribution query."
       },
       {
         "question": "The error message indicates that you have unlimited authorizations for your auth",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided a response that was somewhat relevant but did not directly address the contradictory nature of the query, leading to potential confusion."
+        "reasoning": "The system provided a response that was somewhat relevant but did not directly address the contradictory nature of the query, leading to confusion."
       },
       {
         "question": "What are the steps to download ITNM 4.2.0.1 GA version and what are the key diff",
         "query_type": "multi_hop",
-        "robustness": 0.8,
+        "robustness": 0.7,
         "failure_mode": "correct_refusal",
         "reasoning": "The system appropriately acknowledged its inability to provide the requested information, which is suitable for the complexity of the query."
       },
@@ -2253,17 +2254,17 @@
       },
       {
         "question": "What are the historical implications of IBM's software development in the 1980s?",
-        "query_type": "out_of_distrubution",
+        "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer despite the query being out of distribution, indicating a lack of acknowledgment of its limitations."
+        "reasoning": "The system provided a detailed answer instead of acknowledging its inability to answer the out-of-distribution query."
       },
       {
         "question": "Is it true that IBM Tivoli Network Manager IP Edition Version 4.2 Fix Pack 1 is ",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system acknowledged uncertainty and did not provide incorrect information, but it could have been more explicit about the lack of information regarding the specific version in question."
+        "reasoning": "The system acknowledged uncertainty and did not provide incorrect information, but it could have been more explicit about the lack of relevant context."
       },
       {
         "question": "What actions are required for security vulnerabilities in IBM Integration Bus Hy",
@@ -2309,7 +2310,7 @@
       },
       {
         "question": "What are the historical impacts of privilege escalation vulnerabilities on World",
-        "query_type": "out_of_distrubution",
+        "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
         "reasoning": "The system correctly identified that privilege escalation vulnerabilities are not relevant to World War II strategies, but it could have more explicitly acknowledged its inability to provide a relevant answer."
@@ -2319,14 +2320,14 @@
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system correctly identified the security concerns related to IBM WebSphere MQ and provided a factual response without hallucinating or misrepresenting information."
+        "reasoning": "The system correctly identified the inaccuracy in the query while providing relevant context about vulnerabilities, demonstrating a solid understanding of the topic."
       },
       {
         "question": "What are the procedures to manage user roles in Cognos Disclosure Management and",
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system appropriately acknowledged its inability to provide the requested information and suggested consulting official documentation, which is a suitable response given the lack of relevant context."
+        "reasoning": "The system appropriately acknowledged its inability to provide the requested information and recommended consulting official documentation."
       },
       {
         "question": "How do you drop a user in Cognos?",
@@ -2368,7 +2369,7 @@
         "query_type": "out_of_distribution",
         "robustness": 0.3,
         "failure_mode": "confident_hallucination",
-        "reasoning": "The system provided a confident answer that was irrelevant and fabricated, failing to acknowledge the impossibility of the query."
+        "reasoning": "The system provided a confident but irrelevant answer, failing to acknowledge the impossibility of applying modern software concepts to ancient civilizations."
       },
       {
         "question": "Is it unnecessary to consider installation and verification tasks when applying ",
@@ -2381,15 +2382,15 @@
         "question": "What are the implications of the Event Dashboard breaking with the Japanese filt",
         "query_type": "multi_hop",
         "robustness": 0.7,
-        "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer but did not acknowledge the complexity of the query or the potential for uncertainty in synthesizing information from multiple documents."
+        "failure_mode": "retrieval_confusion",
+        "reasoning": "The system provided a relevant but incomplete answer based on the retrieved context, indicating some confusion in synthesizing information across multiple documents."
       },
       {
         "question": "What happens when a filter is created with a specific language?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system acknowledged its limitations and indicated that additional information was needed to provide an accurate answer."
+        "reasoning": "The system acknowledged its limitations in providing an answer due to insufficient context, which is appropriate for the ambiguous query."
       },
       {
         "question": "How does the Event Dashboard issue relate to historical events in Japanese techn",
@@ -2410,14 +2411,14 @@
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided relevant information about the vulnerability and its implications, while also comparing it to other vulnerabilities, but could have synthesized more detailed insights from multiple sources."
+        "reasoning": "The system provided relevant information about the vulnerability and its implications, but could have synthesized more details from multiple sources."
       },
       {
         "question": "What do you have on the security issues related to IBM systems? I need more info",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided specific information without seeking clarification on the ambiguous query, which was not the expected behavior."
+        "reasoning": "The system provided specific information without seeking clarification on the ambiguous query, which was not aligned with the expected behavior."
       },
       {
         "question": "What were the historical implications of the IBM PureApplication System security",
@@ -2445,42 +2446,42 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without seeking clarification for the ambiguous query, which could lead to misinterpretation."
+        "reasoning": "The system provided a detailed answer without asking for clarification on the ambiguous query."
       },
       {
         "question": "What are the legal implications of launching software that returns an error code",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the complex legal implications of the query."
+        "reasoning": "The system provided a detailed answer without acknowledging its limitations or uncertainty regarding the legal implications of the query."
       },
       {
         "question": "Is it true that launching IBM Rational Software Architect always results in a su",
         "query_type": "contradictory",
         "robustness": 0.9,
         "failure_mode": "good_response",
-        "reasoning": "The system accurately addressed the contradictory query by providing factual information about potential errors when launching IBM Rational Software Architect."
+        "reasoning": "The system accurately addressed the contradictory query by providing factual information about potential errors when launching the software."
       },
       {
         "question": "What are the potential reasons for images not displaying in PDF/Excel formats in",
         "query_type": "multi_hop",
         "robustness": 0.7,
-        "failure_mode": "good_response",
-        "reasoning": "The system provided relevant information and synthesized multiple potential reasons for the issue, but could have included more context or citations from the retrieved documents."
+        "failure_mode": "missed_uncertainty",
+        "reasoning": "The system provided a confident answer but did not acknowledge the complexity of comparing reasons across different papers."
       },
       {
         "question": "Why are images sometimes not visible in certain formats after an upgrade?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without asking for clarification, which was necessary given the ambiguity of the query."
+        "reasoning": "The system provided a detailed answer without asking for clarification on the ambiguous query."
       },
       {
         "question": "What are the legal implications of displaying images in digital reports in the c",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
-        "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer without acknowledging its limitations regarding the complexity of the legal implications in healthcare."
+        "failure_mode": "retrieval_confusion",
+        "reasoning": "The system provided a detailed answer that was not directly relevant to the query, indicating it retrieved and used irrelevant information."
       },
       {
         "question": "I found that images are displayed correctly in PDF/Excel after upgrading to Cogn",
@@ -2508,21 +2509,21 @@
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the specific query type."
+        "reasoning": "The system provided a detailed answer instead of acknowledging its inability to address the out-of-distribution query."
       },
       {
         "question": "Is it correct that configuring HTTPS for the WebSphere Operational Decision Mana",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "good_response",
-        "reasoning": "The system provided a factual and relevant answer, addressing the importance of HTTPS despite the contradictory framing of the query."
+        "reasoning": "The system provided a factual and relevant answer, addressing the query's contradictory nature without hallucinating or providing incorrect information."
       },
       {
         "question": "What are the different methods for installing Packaging Utility across different",
         "query_type": "multi_hop",
         "robustness": 0.7,
-        "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a confident answer but did not acknowledge the potential variability in effectiveness among the methods."
+        "failure_mode": "retrieval_confusion",
+        "reasoning": "The system provided a structured response but included some irrelevant details from the retrieved context that did not directly address the comparison of installation methods."
       },
       {
         "question": "How do you install it?",
@@ -2534,23 +2535,23 @@
       {
         "question": "What are the historical implications of packaging utilities in the development o",
         "query_type": "out_of_distribution",
-        "robustness": 0.3,
-        "failure_mode": "confident_hallucination",
-        "reasoning": "The system provided a confident answer that was not relevant to the query, failing to acknowledge its inability to answer the out-of-distribution question."
+        "robustness": 0.5,
+        "failure_mode": "retrieval_confusion",
+        "reasoning": "The system provided a detailed answer based on irrelevant retrieved context, failing to acknowledge its inability to answer the out-of-distribution query."
       },
       {
         "question": "What are the steps to uninstall Packaging Utility?",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided a relevant answer to the uninstall query but did not address the contradictory nature of the question, indicating a misunderstanding of the query's intent."
+        "reasoning": "The system provided a relevant answer but did not address the contradictory nature of the query, leading to potential confusion."
       },
       {
         "question": "What are the key features of the IBM CORBA probes and how do they compare to oth",
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "retrieval_confusion",
-        "reasoning": "The system provided relevant information about IBM CORBA probes but did not adequately compare them to other technologies, leading to a lack of synthesis and potential confusion."
+        "reasoning": "The system provided relevant information about IBM CORBA probes but did not adequately compare them to other technologies, leading to a lack of synthesis and clarity."
       },
       {
         "question": "Is there a guide available for something related to CORBA probes?",
@@ -2585,14 +2586,14 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system acknowledged its inability to provide a specific answer, which is appropriate given the ambiguity of the query."
+        "reasoning": "The system acknowledged its inability to provide a direct answer due to the ambiguity of the query, which is appropriate behavior."
       },
       {
         "question": "What are the historical impacts of Oracle 12c on the development of ancient civi",
         "query_type": "out_of_distribution",
         "robustness": 0.9,
         "failure_mode": "correct_refusal",
-        "reasoning": "The system correctly acknowledged that Oracle 12c has no historical impacts on ancient civilizations, demonstrating appropriate behavior for an out-of-distribution query."
+        "reasoning": "The system correctly acknowledged that Oracle 12c has no historical impacts on ancient civilizations, demonstrating appropriate behavior for the out-of-distribution query."
       },
       {
         "question": "Are there any versions of WSAS using Oracle 12c that are explicitly unsupported?",
@@ -2606,14 +2607,14 @@
         "query_type": "multi_hop",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer but did not acknowledge any uncertainty regarding the completeness of the information or the variability in the papers reviewed."
+        "reasoning": "The system provided a detailed answer but did not acknowledge any uncertainty regarding the completeness or accuracy of the information retrieved."
       },
       {
         "question": "What issues are there with communication?",
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without seeking clarification, which was inappropriate for the ambiguous query."
+        "reasoning": "The system provided a detailed answer without asking for clarification, which was inappropriate given the ambiguous nature of the query."
       },
       {
         "question": "What are the effects of Java updates on TEP to TEPS communication in the context",
@@ -2641,21 +2642,21 @@
         "query_type": "ambiguous",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed response without asking for clarification on the ambiguous query, which could lead to misinterpretation of the user's specific issues."
+        "reasoning": "The system provided a detailed response without asking for clarification on the ambiguous query, indicating a lack of acknowledgment of uncertainty."
       },
       {
         "question": "What are the legal implications of configuring software like J2EE Tomcat as a Wi",
         "query_type": "out_of_distribution",
         "robustness": 0.7,
         "failure_mode": "missed_uncertainty",
-        "reasoning": "The system provided a detailed answer without acknowledging its limitations in addressing the specific legal implications of the query."
+        "reasoning": "The system provided a detailed answer instead of acknowledging its inability to answer the complex legal implications of the query."
       },
       {
         "question": "Is it true that the J2EE Tomcat DC can successfully run as a Windows Service wit",
         "query_type": "contradictory",
         "robustness": 0.7,
         "failure_mode": "confident_hallucination",
-        "reasoning": "The system provided a confident answer that was incorrect due to the contradictory nature of the query, failing to acknowledge the potential for confusion."
+        "reasoning": "The system provided a confident answer that was incorrect, as the J2EE Tomcat Data Collector does not exist in the context provided."
       }
     ]
   }
