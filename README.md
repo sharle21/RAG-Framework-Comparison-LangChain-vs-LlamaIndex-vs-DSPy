@@ -61,6 +61,16 @@ Observability stack (docker-compose):
 | finqa correctness | 0.406 | 0.276 | 0.227 | LangChain (all collapse) |
 | finqa Token F1 | 0.487 | 0.431 | **0.567** | DSPy |
 
+### Adversarial Robustness
+
+| Framework | Non-OOD Robustness | OOD Refusal Rate | Multi-hop | Contradictory |
+|-----------|-------------------|-----------------|-----------|---------------|
+| LangChain | **0.730** | **0.867** | 0.717 | **0.773** |
+| LlamaIndex | 0.709 | 0.600 | 0.700 | 0.727 |
+| DSPy | 0.710 | 0.200 | 0.703 | 0.727 |
+
+OOD refusal rate = fraction of out-of-distribution questions where the framework correctly refused to answer instead of hallucinating.
+
 ### DSPy MIPROv2 Prompt Optimization
 
 | Metric | Baseline | Optimized | Delta |
@@ -89,7 +99,10 @@ Correctness of 0.701 — the highest single-domain score in the benchmark. Llama
 **5. MIPROv2 prompt optimization made DSPy worse**
 All judge metrics dropped after optimization (correctness -0.039, faithfulness -0.065). Prompt optimization overfit to the training distribution and degraded on the test set. Automated prompt optimization doesn't always generalize.
 
-**6. Cross-family judging matters**
+**6. DSPy hallucinates on 80% of out-of-distribution questions**
+OOD refusal rate: LangChain=0.867, LlamaIndex=0.600, DSPy=0.200. ChainOfThought reasoning makes DSPy confidently answer questions it shouldn't. LangChain's conservative retrieval makes it refuse when context is absent. For production systems where hallucination is costly, DSPy is the highest-risk choice.
+
+**7. Cross-family judging matters**
 Qwen3-14B (Alibaba) judges Llama-3.1-8B (Meta) outputs — different training lineage eliminates same-family favoritism. Both run locally on vLLM; evaluation costs near zero after instance startup.
 
 ---
