@@ -1,0 +1,76 @@
+{
+  "scores": {
+    "Token F1": {
+      "langchain": 0.454833612421023,
+      "llamaindex": 0.44143296649110314,
+      "dspy": 0.49769482430847617
+    },
+    "ROUGE-1": {
+      "langchain": 0.425,
+      "llamaindex": 0.414,
+      "dspy": 0.4527
+    },
+    "ROUGE-L": {
+      "langchain": 0.3427,
+      "llamaindex": 0.3277,
+      "dspy": 0.3841
+    },
+    "BERTScore": {
+      "langchain": 0.8311,
+      "llamaindex": 0.8344,
+      "dspy": 0.8437
+    },
+    "Correctness": {
+      "langchain": 0.5443,
+      "llamaindex": 0.5063,
+      "dspy": 0.4556
+    },
+    "Faithfulness": {
+      "langchain": 0.8334,
+      "llamaindex": 0.696,
+      "dspy": 0.6444
+    },
+    "Completeness": {
+      "langchain": 0.5135,
+      "llamaindex": 0.474,
+      "dspy": 0.424
+    }
+  },
+  "rankings": {
+    "Token F1": {
+      "langchain": 2,
+      "llamaindex": 3,
+      "dspy": 1
+    },
+    "ROUGE-1": {
+      "langchain": 2,
+      "llamaindex": 3,
+      "dspy": 1
+    },
+    "ROUGE-L": {
+      "langchain": 2,
+      "llamaindex": 3,
+      "dspy": 1
+    },
+    "BERTScore": {
+      "langchain": 3,
+      "llamaindex": 2,
+      "dspy": 1
+    },
+    "Correctness": {
+      "langchain": 1,
+      "llamaindex": 2,
+      "dspy": 3
+    },
+    "Faithfulness": {
+      "langchain": 1,
+      "llamaindex": 2,
+      "dspy": 3
+    },
+    "Completeness": {
+      "langchain": 1,
+      "llamaindex": 2,
+      "dspy": 3
+    }
+  }
+}
