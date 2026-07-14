@@ -18,30 +18,63 @@ depending on which metric you use?
 
 import re
 import json
+import random
 import statistics
 from typing import Any
 
-from ragas import evaluate, EvaluationDataset
-from ragas.dataset_schema import SingleTurnSample
-from ragas.metrics import (
-    faithfulness,
-    answer_relevancy,
-    context_precision,
-    context_recall,
-)
-from ragas.llms import LangchainLLMWrapper
-from ragas.embeddings import LangchainEmbeddingsWrapper
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_mistralai import ChatMistralAI
-from dotenv import load_dotenv
+RANDOM_SEED = 42
 
-load_dotenv()
+# ─────────────────────────────────────────
+# Statistical helpers
+# ─────────────────────────────────────────
+
+def compute_bootstrap_ci(
+    scores: list[float],
+    n_bootstrap: int = 1000,
+    ci: float = 0.95,
+    seed: int = RANDOM_SEED,
+) -> tuple[float, float]:
+    rng = random.Random(seed)
+    n = len(scores)
+    if n < 2:
+        v = scores[0] if scores else 0.0
+        return v, v
+    means = sorted(
+        sum(rng.choices(scores, k=n)) / n for _ in range(n_bootstrap)
+    )
+    lo = int((1 - ci) / 2 * n_bootstrap)
+    hi = int((1 + ci) / 2 * n_bootstrap)
+    return means[lo], means[hi]
+
+
+def compute_stats(scores: list[float]) -> dict:
+    """Mean, std, n, analytical 95% CI, bootstrap 95% CI."""
+    n = len(scores)
+    if n == 0:
+        return {"mean": 0.0, "std": 0.0, "n": 0,
+                "ci95_lower": 0.0, "ci95_upper": 0.0,
+                "boot_ci95_lower": 0.0, "boot_ci95_upper": 0.0}
+    mean = sum(scores) / n
+    std = statistics.stdev(scores) if n > 1 else 0.0
+    margin = 1.96 * std / (n ** 0.5)
+    boot_lo, boot_hi = compute_bootstrap_ci(scores)
+    return {
+        "mean": round(mean, 4),
+        "std": round(std, 4),
+        "n": n,
+        "ci95_lower": round(mean - margin, 4),
+        "ci95_upper": round(mean + margin, 4),
+        "boot_ci95_lower": round(boot_lo, 4),
+        "boot_ci95_upper": round(boot_hi, 4),
+    }
+
 
 # Cross-family judge — lazy-initialized so we don't pay API init cost if overridden
 _default_judge = None
 
 
 def _get_default_judge():
+    from langchain_mistralai import ChatMistralAI
     global _default_judge
     if _default_judge is None:
         _default_judge = ChatMistralAI(model="mistral-large-latest", temperature=0)
@@ -54,6 +87,7 @@ def make_vllm_judge(base_url: str, model: str = "Qwen/Qwen3-14B"):
     Use this instead of Mistral when running on Lambda with local models.
     Different model family from Llama worker = no same-family bias.
     """
+    from langchain_openai import ChatOpenAI
     return ChatOpenAI(model=model, base_url=base_url, api_key="none", temperature=0)
 
 
@@ -101,9 +135,16 @@ def evaluate_string_overlap(results: list[dict]) -> dict:
         answer_f1s.append(f1_score(r["answer"], r["ground_truth"]))
         ctx_coverages.append(context_coverage(r.get("contexts", []), r["ground_truth"]))
 
+    f1_stats = compute_stats(answer_f1s)
+    ctx_stats = compute_stats(ctx_coverages)
     return {
-        "answer_f1": sum(answer_f1s) / len(answer_f1s) if answer_f1s else 0.0,
-        "context_coverage": sum(ctx_coverages) / len(ctx_coverages) if ctx_coverages else 0.0,
+        "answer_f1": f1_stats["mean"],
+        "answer_f1_std": f1_stats["std"],
+        "answer_f1_n": f1_stats["n"],
+        "answer_f1_ci95": [f1_stats["ci95_lower"], f1_stats["ci95_upper"]],
+        "answer_f1_boot_ci95": [f1_stats["boot_ci95_lower"], f1_stats["boot_ci95_upper"]],
+        "context_coverage": ctx_stats["mean"],
+        "context_coverage_ci95": [ctx_stats["ci95_lower"], ctx_stats["ci95_upper"]],
     }
 
 
@@ -226,10 +267,14 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
                 q_scores[dim] = 0.0
         per_question_scores.append(q_scores)
 
-    result = {k: round(sum(v) / len(v), 4) if v else 0.0 for k, v in per_question_means.items()}
+    result = {}
     for dim in dims:
-        std_vals = per_question_stds[dim]
-        result[f"{dim}_std"] = round(sum(std_vals) / len(std_vals), 4) if std_vals else 0.0
+        s = compute_stats(per_question_means[dim])
+        result[dim] = s["mean"]
+        result[f"{dim}_std"] = s["std"]
+        result[f"{dim}_ci95"] = [s["ci95_lower"], s["ci95_upper"]]
+        result[f"{dim}_boot_ci95"] = [s["boot_ci95_lower"], s["boot_ci95_upper"]]
+        result[f"{dim}_n"] = s["n"]
     result["errors"] = errors
     result["judge_model"] = judge_model_name
     result["n_runs"] = n_runs
@@ -242,6 +287,13 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
 # ─────────────────────────────────────────
 
 def evaluate_ragas(results: list[dict]) -> dict:
+    from ragas import evaluate, EvaluationDataset
+    from ragas.dataset_schema import SingleTurnSample
+    from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
+    from ragas.llms import LangchainLLMWrapper
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+    from langchain_openai import OpenAIEmbeddings
+
     # 1. Clean data to ensure no weird characters remain
     valid = []
     for r in results:
