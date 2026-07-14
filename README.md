@@ -34,13 +34,17 @@ Observability stack (docker-compose):
 
 ## Results
 
-### Latency (single-query, no queue pressure)
+### Latency (150 queries per framework, concurrent benchmark)
 
-| Framework | Retrieval | Generation |
-|-----------|-----------|------------|
-| LangChain | ~137ms | ~5,387ms |
-| LlamaIndex | ~443ms | ~5,683ms |
-| DSPy | ~135ms | ~14,240ms (ChainOfThought generates longer reasoning) |
+| Framework | Retrieval median | Retrieval p95 | Generation median | Generation p95 |
+|-----------|-----------------|---------------|-------------------|----------------|
+| LangChain | 117ms | 197ms | 1,635ms | 12,096ms |
+| LlamaIndex | 387ms | 567ms | **1,130ms** | 19,105ms |
+| DSPy | 119ms | 192ms | 3,580ms | 60,262ms |
+
+**Use median, not mean.** A few GPU queue spikes (p99 > 170s) drag the mean to 5–14s and make LlamaIndex appear slowest. At median, LlamaIndex generation is actually fastest. Mean numbers are in `results/stats_with_ci.json` for reference but should not be cited.
+
+**Caveat:** Generation times measured under concurrent load — all 3 frameworks share one vLLM endpoint. Queue wait is included in generation_ms. A serial single-framework benchmark (Lambda TODO L6) is needed for clean isolation. DSPy's higher median is real (ChainOfThought generates 3–4× more tokens) but the absolute numbers will change with serial measurement. ms/token normalization pending Lambda rerun (TODO L4).
 
 ### Quality (450 queries, 150 per framework)
 
