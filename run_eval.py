@@ -1,5 +1,8 @@
 import json
+import random
 import sys
+
+random.seed(42)
 
 sys.path.insert(0, "/home/ubuntu/rag-bench")
 from src.evaluation.metrics import evaluate_string_overlap, evaluate_llm_judge, make_vllm_judge

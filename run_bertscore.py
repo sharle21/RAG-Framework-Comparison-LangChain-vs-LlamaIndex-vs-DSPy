@@ -1,5 +1,9 @@
 import json
+import random
 import sys
+
+random.seed(42)
+
 sys.path.insert(0, ".")
 from src.evaluation.metrics import evaluate_bertscore
 
