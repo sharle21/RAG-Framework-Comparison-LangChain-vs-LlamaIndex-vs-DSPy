@@ -1,0 +1,89 @@
+{
+  "langchain": {
+    "token_f1": {
+      "mean": 0.4548,
+      "std": 0.1856,
+      "n": 149,
+      "ci95_lower": 0.425,
+      "ci95_upper": 0.4846,
+      "boot_ci95_lower": 0.427,
+      "boot_ci95_upper": 0.4881
+    },
+    "retrieval_latency_ms": {
+      "mean": 136.7779,
+      "std": 36.6469,
+      "n": 149,
+      "ci95_lower": 130.8935,
+      "ci95_upper": 142.6622,
+      "boot_ci95_lower": 131.277,
+      "boot_ci95_upper": 143.1884
+    },
+    "generation_latency_ms": {
+      "mean": 5387.0539,
+      "std": 21562.9002,
+      "n": 149,
+      "ci95_lower": 1924.7107,
+      "ci95_upper": 8849.3971,
+      "boot_ci95_lower": 2449.6606,
+      "boot_ci95_upper": 9255.3454
+    }
+  },
+  "llamaindex": {
+    "token_f1": {
+      "mean": 0.4414,
+      "std": 0.1709,
+      "n": 150,
+      "ci95_lower": 0.4141,
+      "ci95_upper": 0.4688,
+      "boot_ci95_lower": 0.4145,
+      "boot_ci95_upper": 0.4723
+    },
+    "retrieval_latency_ms": {
+      "mean": 443.2366,
+      "std": 156.3526,
+      "n": 150,
+      "ci95_lower": 418.215,
+      "ci95_upper": 468.2582,
+      "boot_ci95_lower": 422.6631,
+      "boot_ci95_upper": 467.967
+    },
+    "generation_latency_ms": {
+      "mean": 5683.3219,
+      "std": 22964.7025,
+      "n": 150,
+      "ci95_lower": 2008.2041,
+      "ci95_upper": 9358.4397,
+      "boot_ci95_lower": 2701.1348,
+      "boot_ci95_upper": 10182.1883
+    }
+  },
+  "dspy": {
+    "token_f1": {
+      "mean": 0.4977,
+      "std": 0.1813,
+      "n": 144,
+      "ci95_lower": 0.4681,
+      "ci95_upper": 0.5273,
+      "boot_ci95_lower": 0.468,
+      "boot_ci95_upper": 0.5284
+    },
+    "retrieval_latency_ms": {
+      "mean": 134.9776,
+      "std": 30.0717,
+      "n": 144,
+      "ci95_lower": 130.0659,
+      "ci95_upper": 139.8893,
+      "boot_ci95_lower": 130.3558,
+      "boot_ci95_upper": 140.108
+    },
+    "generation_latency_ms": {
+      "mean": 14239.7135,
+      "std": 38564.7303,
+      "n": 144,
+      "ci95_lower": 7940.8075,
+      "ci95_upper": 20538.6194,
+      "boot_ci95_lower": 8380.2299,
+      "boot_ci95_upper": 21243.8508
+    }
+  }
+}
