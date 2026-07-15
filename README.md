@@ -1,10 +1,10 @@
 # RAG Framework Benchmark: LangChain vs LlamaIndex vs DSPy
 
-A high-performance benchmarking platform comparing three production RAG frameworks across **450 queries**, evaluated with string metrics, BERTScore, and a cross-family LLM judge (Qwen3-14B judging Llama-3.1-8B outputs).
+A high-performance benchmarking platform comparing three production RAG frameworks across **450 queries**, evaluated with Token F1, ROUGE, BERTScore, and a cross-family LLM judge (Qwen3-14B judging Llama-3.1-8B outputs). All quality differences reported with 95% bootstrap confidence intervals and Mann-Whitney significance tests.
 
 The central question: **does framework choice matter, and does it matter differently depending on the domain?**
 
-It does — dramatically.
+It does — but which framework "wins" depends entirely on which metric you trust.
 
 ---
 
@@ -48,13 +48,17 @@ Observability stack (docker-compose):
 
 ### Quality (450 queries, 150 per framework)
 
-| Metric | LangChain | LlamaIndex | DSPy |
-|--------|-----------|------------|------|
-| Token F1 | 0.455 | 0.441 | **0.498** |
-| BERTScore F1 | 0.831 | 0.834 | **0.844** |
-| Correctness (Qwen judge) | **0.544** | 0.506 | 0.456 |
-| Faithfulness (Qwen judge) | **0.833** | 0.696 | 0.644 |
-| Completeness (Qwen judge) | **0.513** | 0.474 | 0.424 |
+| Metric | LangChain | LlamaIndex | DSPy | Significant? |
+|--------|-----------|------------|------|-------------|
+| Token F1 | 0.455 [0.425, 0.485] | 0.441 [0.414, 0.469] | **0.498** [0.468, 0.527] | DSPy > others (p<0.05) |
+| ROUGE-1 | 0.425 [0.395, 0.460] | 0.414 [0.384, 0.446] | **0.453** [0.422, 0.484] | — |
+| ROUGE-L | 0.343 [0.315, 0.376] | 0.328 [0.302, 0.357] | **0.384** [0.353, 0.416] | — |
+| BERTScore F1 | 0.831 | 0.834 | **0.844** | — |
+| Correctness (Qwen judge) | **0.541** [0.482, 0.599] | 0.506 [0.449, 0.564] | 0.456 [0.394, 0.517] | LangChain > DSPy (p<0.05); LC vs LI: ns |
+| Faithfulness (Qwen judge) | **0.828** [0.782, 0.874] | 0.696 [0.640, 0.752] | 0.644 [0.583, 0.706] | LangChain > both (p<0.001) |
+| Completeness (Qwen judge) | **0.510** [0.454, 0.567] | 0.474 [0.420, 0.528] | 0.424 [0.367, 0.481] | LangChain > DSPy (p<0.05); rest: ns |
+
+CIs are 95% bootstrap (seed=42, n=1000). Significance: Mann-Whitney U + permutation test, both p<0.05 required. `ns` = not significant.
 
 ### Per-Domain Breakdown — Where Rankings Flip
 
@@ -88,40 +92,47 @@ OOD refusal rate = fraction of out-of-distribution questions where the framework
 
 ## Key Findings
 
-**1. LangChain wins overall quality**
-Highest correctness (0.544), faithfulness (0.833), and completeness (0.513). Conservative retrieval avoids fabrication. Best default choice for production RAG where accuracy matters.
+**1. String metrics and LLM judge point in opposite directions**
+Every string metric (Token F1, ROUGE-1, ROUGE-L, BERTScore) ranks DSPy #1. Every judge metric (correctness, faithfulness, completeness) ranks LangChain #1. Spearman correlation between string and judge metrics: -0.5 to -1.0. They are measuring different things. Which metric you trust determines which framework you ship.
 
-**2. finqa breaks everything**
+**2. LangChain faithfulness is the only statistically solid claim**
+After Mann-Whitney U + permutation testing: LangChain faithfulness beats both LlamaIndex and DSPy at p<0.001. All other pairwise correctness differences are either marginal (p<0.05 with small effect) or not significant. LangChain vs LlamaIndex on correctness: p=0.42, not significant.
+
+**3. finqa breaks everything**
 Financial reasoning collapses across all frameworks — LlamaIndex correctness drops to 0.276, DSPy to 0.227. Financial QA requires precise numerical facts; verbose or approximate answers fail hard. Aggregate benchmarks hide this.
 
-**3. Token F1 ≠ Quality**
-DSPy has the highest token F1 (0.498) and BERTScore (0.844) but the lowest judge correctness (0.456). ChainOfThought generates verbose answers that hit keywords but are imprecise. String metrics systematically overrate verbose frameworks — making LLM-as-judge essential.
+**4. LlamaIndex generation is fastest (at median)**
+At median, LlamaIndex generation is 1,130ms vs LangChain 1,635ms vs DSPy 3,580ms. The mean (5,683ms) was an artifact of GPU queue spikes — a few p99 outliers (>170s) dominated. Always report median for latency under concurrent load.
 
-**4. LlamaIndex dominates techqa**
+**5. LlamaIndex dominates techqa**
 Correctness of 0.701 — the highest single-domain score in the benchmark. LlamaIndex's retrieval strategy suits structured technical documentation.
 
-**5. MIPROv2 prompt optimization made DSPy worse**
+**6. MIPROv2 prompt optimization made DSPy worse**
 All judge metrics dropped after optimization (correctness -0.039, faithfulness -0.065). Prompt optimization overfit to the training distribution and degraded on the test set. Automated prompt optimization doesn't always generalize.
 
-**6. DSPy hallucinates on 80% of out-of-distribution questions**
-OOD refusal rate: LangChain=0.867, LlamaIndex=0.600, DSPy=0.200. ChainOfThought reasoning makes DSPy confidently answer questions it shouldn't. LangChain's conservative retrieval makes it refuse when context is absent. For production systems where hallucination is costly, DSPy is the highest-risk choice.
+**7. DSPy hallucinates on OOD questions (caveat: n=30)**
+OOD refusal rate: LangChain=0.867, LlamaIndex=0.600, DSPy=0.200. ChainOfThought reasoning makes DSPy confidently answer questions it shouldn't. Caveat: 30 examples per framework gives ±14% CI — directionally real but not precise. Expanding to n=150 is in progress.
 
-**7. Cross-family judging matters**
+**8. Cross-family judging matters**
 Qwen3-14B (Alibaba) judges Llama-3.1-8B (Meta) outputs — different training lineage eliminates same-family favoritism. Both run locally on vLLM; evaluation costs near zero after instance startup.
 
 ---
 
 ## Evaluation Design
 
-### Three complementary metrics
+### Five complementary metrics
 
-| Method | What it measures | Limitation |
-|--------|-----------------|------------|
-| Token F1 | Exact word overlap with ground truth | Penalizes correct paraphrases |
-| BERTScore | Semantic similarity (distilbert-base) | Rewards verbose answers |
-| Qwen3-14B judge | Correctness, faithfulness, completeness | Slower, LLM bias |
+| Method | What it measures | Limitation | DSPy rank | LangChain rank |
+|--------|-----------------|------------|-----------|----------------|
+| Token F1 | Exact word overlap | Rewards verbosity | **1** | 2 |
+| ROUGE-1/L | N-gram overlap | Rewards verbosity | **1** | 2 |
+| BERTScore | Semantic similarity (distilbert-base) | Rewards verbosity | **1** | 3 |
+| Qwen3-14B judge correctness | Factual accuracy vs ground truth | LLM bias, slow | 3 | **1** |
+| Qwen3-14B judge faithfulness | Grounded in retrieved context | LLM bias, slow | 3 | **1** |
 
-Running all three on the same 450 outputs reveals where they agree and where they disagree. The disagreement is itself a finding.
+String metrics consistently rank DSPy #1. Judge metrics consistently rank LangChain #1. The ranking reversal is the central finding. Running all five on the same outputs makes the disagreement visible and measurable.
+
+All pairwise differences tested with Mann-Whitney U + permutation test (n=10,000). 95% bootstrap CIs on all means (seed=42).
 
 ### Adversarial robustness
 Four hard query types generated from the test set:
@@ -155,6 +166,10 @@ Four hard query types generated from the test set:
 ├── run_eval.py                        # String + Qwen judge on results
 ├── run_eval_domains.py               # Per-domain eval (covidqa/techqa/finqa)
 ├── run_bertscore.py                  # BERTScore eval (local, no GPU)
+├── run_rouge.py                      # ROUGE-1/2/L eval (local, no GPU)
+├── run_statistical_tests.py          # Mann-Whitney + permutation tests (local)
+├── run_metric_comparison.py          # Cross-metric ranking + correlation (local)
+├── compute_stats_local.py            # Bootstrap CIs + latency percentiles (local)
 ├── run_dspy_optimized.py             # MIPROv2 baseline vs optimized comparison
 └── setup_lambda.sh                   # Lambda Cloud GPU instance setup
 ```
