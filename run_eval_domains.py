@@ -25,7 +25,7 @@ for fw in frameworks:
         scores = evaluate_string_overlap(rows)
         print(f"  F1={scores['answer_f1']:.3f}  ctx_coverage={scores['context_coverage']:.3f}")
         print("  Running Qwen judge...")
-        j = evaluate_llm_judge(rows, n_runs=1, judge=judge)
+        j = evaluate_llm_judge(rows, n_runs=5, judge=judge)
         scores.update(j)
         print(f"  correctness={j['correctness']:.3f}  faithfulness={j['faithfulness']:.3f}  completeness={j['completeness']:.3f}")
         out[fw][domain] = scores

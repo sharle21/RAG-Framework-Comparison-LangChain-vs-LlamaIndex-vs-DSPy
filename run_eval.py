@@ -17,7 +17,7 @@ for fw in ["langchain", "llamaindex", "dspy"]:
     out[fw] = evaluate_string_overlap(rows)
     print(f"  F1={out[fw]['answer_f1']:.3f}  ctx_coverage={out[fw]['context_coverage']:.3f}")
     print("  Running LLM judge (Qwen)...")
-    judge_scores = evaluate_llm_judge(rows, n_runs=1, judge=judge)
+    judge_scores = evaluate_llm_judge(rows, n_runs=5, judge=judge)
     out[fw].update(judge_scores)
     print(f"  correctness={judge_scores['correctness']:.3f}  faithfulness={judge_scores['faithfulness']:.3f}  completeness={judge_scores['completeness']:.3f}")
 
