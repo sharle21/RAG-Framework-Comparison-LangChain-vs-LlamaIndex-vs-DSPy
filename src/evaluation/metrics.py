@@ -198,9 +198,29 @@ Score the generated answer on these dimensions (each 0.0 to 1.0):
 - correctness: Is the answer factually correct compared to ground truth?
 - faithfulness: Is the answer grounded in the retrieved context (no hallucination)?
 - completeness: Does the answer cover the key points from the ground truth?
+- confidence: How confident are you in your correctness score? (0.0=very uncertain, 1.0=very certain)
 
 Respond ONLY with a JSON object like:
-{{"correctness": 0.8, "faithfulness": 0.9, "completeness": 0.7, "reasoning": "brief explanation"}}"""
+{{"correctness": 0.8, "faithfulness": 0.9, "completeness": 0.7, "confidence": 0.85, "reasoning": "brief explanation"}}"""
+
+
+def compute_ece(confidences: list[float], correctness: list[float], n_bins: int = 10) -> float:
+    """Expected Calibration Error — how well judge confidence predicts correctness."""
+    if not confidences or len(confidences) != len(correctness):
+        return 0.0
+    bins = [[] for _ in range(n_bins)]
+    for conf, corr in zip(confidences, correctness):
+        b = min(int(conf * n_bins), n_bins - 1)
+        bins[b].append((conf, corr))
+    n = len(confidences)
+    ece = 0.0
+    for bin_items in bins:
+        if not bin_items:
+            continue
+        mean_conf = sum(c for c, _ in bin_items) / len(bin_items)
+        mean_corr = sum(r for _, r in bin_items) / len(bin_items)
+        ece += (len(bin_items) / n) * abs(mean_conf - mean_corr)
+    return round(ece, 4)
 
 
 def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict:
@@ -210,6 +230,7 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
 
     Runs the judge n_runs times per question and averages the scores.
     Reports std dev to flag high-variance / unreliable judgements.
+    Also captures judge confidence for ECE (Expected Calibration Error) computation.
     """
     if judge is None:
         judge = _get_default_judge()
@@ -219,6 +240,7 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
     per_question_means = {d: [] for d in dims}
     per_question_stds = {d: [] for d in dims}
     per_question_scores = []  # one entry per question, used for conflict detection
+    confidence_scores = []    # per-question mean confidence, for ECE
     errors = 0
 
     for r in results:
@@ -235,6 +257,7 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
         )
 
         run_scores = {d: [] for d in dims}
+        run_confidences = []
         for _ in range(n_runs):
             try:
                 response = judge.invoke(prompt)
@@ -250,6 +273,8 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
                 for dim in dims:
                     if dim in parsed:
                         run_scores[dim].append(float(parsed[dim]))
+                if "confidence" in parsed:
+                    run_confidences.append(float(parsed["confidence"]))
             except Exception as e:
                 errors += 1
                 print(f"  Judge error: {e}")
@@ -265,6 +290,9 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
                     per_question_stds[dim].append(statistics.stdev(vals))
             else:
                 q_scores[dim] = 0.0
+        if run_confidences:
+            q_scores["confidence"] = round(sum(run_confidences) / len(run_confidences), 4)
+            confidence_scores.append(q_scores["confidence"])
         per_question_scores.append(q_scores)
 
     result = {}
@@ -275,6 +303,12 @@ def evaluate_llm_judge(results: list[dict], n_runs: int = 3, judge=None) -> dict
         result[f"{dim}_ci95"] = [s["ci95_lower"], s["ci95_upper"]]
         result[f"{dim}_boot_ci95"] = [s["boot_ci95_lower"], s["boot_ci95_upper"]]
         result[f"{dim}_n"] = s["n"]
+
+    # ECE: compare judge confidence to actual correctness scores
+    if confidence_scores and per_question_means["correctness"]:
+        result["ece"] = compute_ece(confidence_scores, per_question_means["correctness"])
+        result["mean_confidence"] = round(sum(confidence_scores) / len(confidence_scores), 4)
+
     result["errors"] = errors
     result["judge_model"] = judge_model_name
     result["n_runs"] = n_runs
@@ -371,11 +405,14 @@ def evaluate_ragas(results: list[dict]) -> dict:
 # ─────────────────────────────────────────
 
 FAILURE_CATEGORIES = {
-    "wrong_context": "Right question, wrong documents retrieved",
-    "hallucination": "Right context retrieved but answer not grounded in it",
-    "too_vague": "Answer is technically correct but too generic to be useful",
-    "incomplete": "Answer misses key points present in ground truth",
-    "correct": "Answer is good",
+    "unsupported_claim": "Answer contains a claim not present in retrieved context",
+    "wrong_retrieval": "Retrieved documents are off-topic or irrelevant to the question",
+    "no_retrieval": "No useful context was retrieved; answer is pure hallucination",
+    "prompt_failure": "Model misread or ignored the question",
+    "reasoning_failure": "Context was relevant but model reasoning was incorrect",
+    "formatting_failure": "Answer format is wrong (wrong units, wrong structure, truncated)",
+    "partial_answer": "Correct but misses key information from ground truth",
+    "missing_citation": "Answer is plausible but not grounded in any retrieved passage",
 }
 
 FAILURE_CLASSIFIER_PROMPT = """You are analyzing why an AI RAG system answer is wrong or suboptimal.
@@ -387,11 +424,17 @@ Generated answer: {answer}
 Retrieved context: {context}
 
 Classify this answer into EXACTLY ONE failure category:
-- wrong_context: The retrieved context didn't contain relevant information
-- hallucination: The answer contains claims not supported by the retrieved context
-- too_vague: The answer is too generic or non-committal to be useful
-- incomplete: The answer is partially correct but misses important information
-- correct: The answer is good quality
+- unsupported_claim: Answer asserts something not in the retrieved context
+- wrong_retrieval: Retrieved documents are off-topic or don't address the question
+- no_retrieval: No useful context retrieved; answer appears entirely fabricated
+- prompt_failure: Model misread, ignored, or answered a different question
+- reasoning_failure: Context was relevant but the reasoning chain was wrong
+- formatting_failure: Answer is wrong format, wrong units, or truncated mid-thought
+- partial_answer: Answer is correct but misses key points from the ground truth
+- missing_citation: Answer is plausible-sounding but has no grounding in retrieved passages
+
+Note: use "partial_answer" if the answer is mostly correct. Use "unsupported_claim" only if there's
+an active wrong claim (not just missing info). Use "correct" if the answer is good (add as fallback).
 
 Respond ONLY with a JSON object:
 {{"category": "<category>", "reasoning": "<one sentence>"}}"""
@@ -412,7 +455,7 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -
 
     for r in sample:
         if not r.get("answer"):
-            categories["wrong_context"] += 1
+            categories["no_retrieval"] += 1
             continue
 
         context_str = "\n".join(r.get("contexts", []))[:1500]
@@ -432,9 +475,9 @@ def analyze_failure_modes(results: list[dict], sample_n: int = 15, judge=None) -
             if m:
                 raw = m.group(0)
             parsed = json.loads(raw, strict=False)
-            cat = parsed.get("category", "incomplete")
+            cat = parsed.get("category", "partial_answer")
             if cat not in categories:
-                cat = "incomplete"
+                cat = "partial_answer"
             categories[cat] += 1
             detailed.append({
                 "question": r["question"],  # full question for conflict detection
