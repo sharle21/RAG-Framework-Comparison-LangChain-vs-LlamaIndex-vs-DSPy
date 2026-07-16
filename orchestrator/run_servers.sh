@@ -103,6 +103,22 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# ── 2.5. Warmup — fire 10 concurrent throwaway queries per framework ──────────
+# First query always slower (model JIT / KV cache cold). Warmup stabilizes numbers.
+echo ""
+echo "[2.5/4] Warming up RAG servers (10 queries per framework)..."
+WARMUP_Q='{"question":"What is machine learning?","domain":"techqa","ground_truth":""}'
+for port in 8100 8101 8102; do
+    for i in $(seq 1 10); do
+        curl -s -X POST "http://localhost:$port/query" \
+            -H "Content-Type: application/json" \
+            -d "$WARMUP_Q" > /dev/null &
+    done
+    wait
+    echo "  Port $port: warmup done"
+done
+echo "  Warmup complete."
+
 # ── 3. Build Go orchestrator binary ──────────────────────────────────────────
 echo ""
 echo "[3/4] Building Go orchestrator..."
