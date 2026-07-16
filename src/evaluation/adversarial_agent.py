@@ -59,7 +59,7 @@ Respond ONLY with a JSON array of objects:
 
 def generate_adversarial_queries(
     qa_pairs: list[dict],
-    n_source_questions: int = 10,
+    n_source_questions: int = 38,
     model: str = "gpt-4o-mini",
 ) -> list[dict]:
     """
@@ -235,7 +235,7 @@ def evaluate_adversarial_results(results: list[dict], model: str = "gpt-4o-mini"
 # Main runner
 # ─────────────────────────────────────────
 
-def run_adversarial_benchmark(frameworks: dict, qa_pairs: list[dict],n_source_questions: int = 10) -> dict:
+def run_adversarial_benchmark(frameworks: dict, qa_pairs: list[dict], n_source_questions: int = 38) -> dict:
     """
     Full adversarial benchmark:
     1. Generate hard queries
