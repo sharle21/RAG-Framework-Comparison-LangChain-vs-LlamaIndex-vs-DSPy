@@ -1,0 +1,32 @@
+{
+  "dspy": {
+    "mean": 0.8225,
+    "median": 0.8501,
+    "n": 128,
+    "by_domain": {
+      "covidqa": 0.7889,
+      "finqa": 0.8509,
+      "techqa": 0.8321
+    }
+  },
+  "langchain": {
+    "mean": 0.83,
+    "median": 0.8506,
+    "n": 148,
+    "by_domain": {
+      "covidqa": 0.7761,
+      "finqa": 0.8679,
+      "techqa": 0.8474
+    }
+  },
+  "llamaindex": {
+    "mean": 0.8164,
+    "median": 0.8489,
+    "n": 135,
+    "by_domain": {
+      "covidqa": 0.7552,
+      "finqa": 0.8488,
+      "techqa": 0.8574
+    }
+  }
+}
