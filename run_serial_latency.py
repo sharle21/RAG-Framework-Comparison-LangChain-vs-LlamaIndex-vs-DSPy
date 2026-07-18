@@ -44,7 +44,7 @@ def main():
             }
             t0 = time.perf_counter()
             try:
-                resp = requests.post(url, json=payload, timeout=120)
+                resp = requests.post(url, json=payload, timeout=300)
                 resp.raise_for_status()
                 data = resp.json()
                 data["wall_ms"] = (time.perf_counter() - t0) * 1000
