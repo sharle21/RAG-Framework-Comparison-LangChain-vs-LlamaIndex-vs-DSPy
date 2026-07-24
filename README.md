@@ -27,6 +27,47 @@ All three frameworks use the **same base LLM** (Llama-3.1-8B-Instruct via vLLM),
 
 ## 2. Benchmark Pipeline
 
+```mermaid
+flowchart TB
+    GO["Go Orchestrator<br/>rate limiter, concurrent dispatch<br/>Prometheus :9091"]
+
+    subgraph RAG["RAG servers (FastAPI, one per framework)"]
+        LC["LangChain :8100<br/>Chroma + bge-m3<br/>chunk_size=1000"]
+        LI["LlamaIndex :8101<br/>in-memory + bge-m3<br/>chunk_size=2000"]
+        DS["DSPy :8102<br/>FAISS + bge-m3<br/>ChainOfThought, no chunking"]
+    end
+
+    subgraph VLLM["vLLM inference tier"]
+        WORKER["Worker :8000<br/>Llama-3.1-8B-Instruct<br/>generates answers"]
+        JUDGE["Judge :8001<br/>Qwen3-14B<br/>cross-family scoring"]
+    end
+
+    subgraph OBS["Observability (docker-compose)"]
+        PROM["Prometheus :9090"]
+        GRAF["Grafana :3000"]
+        PHX["Arize Phoenix :6006<br/>OTel traces"]
+    end
+
+    RESULTS[("results/go_results_*.json<br/>question, answer, contexts,<br/>retrieval_ms, generation_ms")]
+    EVAL["run_eval_unified.py<br/>(offline, post-hoc)"]
+
+    GO -->|concurrent requests| LC
+    GO -->|concurrent requests| LI
+    GO -->|concurrent requests| DS
+    LC -->|generation| WORKER
+    LI -->|generation| WORKER
+    DS -->|generation| WORKER
+    LC -.->|traces, optional| PHX
+    LI -.->|traces, optional| PHX
+    DS -.->|traces, optional| PHX
+    GO -->|scraped by| PROM
+    WORKER -->|scraped by| PROM
+    PROM --> GRAF
+    GO -->|writes| RESULTS
+    RESULTS --> EVAL
+    EVAL -->|scores each answer| JUDGE
+```
+
 ```
 vLLM (port 8000) — Llama-3.1-8B-Instruct     (worker / answer generation)
 vLLM (port 8001) — Qwen/Qwen3-14B             (judge / cross-family to reduce same-model self-preference)
