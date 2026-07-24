@@ -145,7 +145,7 @@ Not Recall@k/NDCG (no ranking signal, approximate text matching rather than exac
 | Faithfulness | 0.693 | 0.628 | **-0.065** |
 | Completeness | 0.475 | 0.434 | **-0.041** |
 
-All judge metrics dropped after MIPROv2 optimization. Automated prompt optimization overfit to the training distribution.
+All judge metrics dropped after MIPROv2 optimization. The optimizer's search metric was token-F1 (fast, no LLM cost) — which the error analysis shows can reward a wrong number over a right one — so optimizing for it while judge quality drops is mechanistically expected, not a mystery. Trained on the first 20 DSPy benchmark answers, tested on the remaining ~124-130 (no train/test overlap). One caveat on precision: rerunning the same *unoptimized* pipeline back-to-back produced different answers on 73% of questions (vLLM isn't fully deterministic under continuous batching even at `temperature=0`), with ~0.02 aggregate F1 drift between two identical runs — so while all three judge metrics dropping together is consistent with a real regression, the exact size of the drop is uncertain against that noise floor.
 
 ---
 
