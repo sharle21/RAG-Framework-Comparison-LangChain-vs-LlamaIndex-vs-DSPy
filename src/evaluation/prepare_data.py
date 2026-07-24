@@ -63,7 +63,6 @@ def load_ragbench_subset(subset: str, n: int) -> tuple[list[dict], list[dict]]:
 
     documents = []
     qa_pairs = []
-    seen = set()
 
     for i, row in enumerate(rows):
         if i >= n:
@@ -76,30 +75,36 @@ def load_ragbench_subset(subset: str, n: int) -> tuple[list[dict], list[dict]]:
         if not question or not response or not passages:
             continue
 
-        # Each passage in 'documents' becomes a retrievable document
+        # Each passage in 'documents' becomes a retrievable document.
+        # No cross-question dedup: RAGBench passages are frequently shared as
+        # supporting context across multiple different questions (e.g. ~50% of
+        # techqa passages recur), and qa_pairs.relevant_doc_ids is keyed per
+        # (question_idx, passage_idx) — deduping content would silently break
+        # that ID mapping for every question whose passage got dropped as a
+        # "duplicate" of an earlier question's passage.
+        row_doc_ids = []
         for j, passage in enumerate(passages):
             if not passage or len(passage) < 50:
                 continue
-            key = passage[:80]
-            if key in seen:
-                continue
-            seen.add(key)
+            doc_id = f"{subset}_{i}_{j}"
             documents.append({
-                "id": f"{subset}_{i}_{j}",
+                "id": doc_id,
                 "title": f"{subset.upper()} | Q{i} passage {j}",
                 "content": passage,
                 "domain": subset,
                 "source_question_idx": i,
             })
+            row_doc_ids.append(doc_id)
+
+        if not row_doc_ids:
+            continue
 
         qa_pairs.append({
             "question": question,
             "ground_truth": response,
             "domain": subset,
             "source": "ragbench",
-            "relevant_doc_ids": [
-                f"{subset}_{i}_{j}" for j in range(len(passages))
-            ],
+            "relevant_doc_ids": row_doc_ids,
         })
 
     print(f"  → {len(documents)} passages, {len(qa_pairs)} QA pairs")
