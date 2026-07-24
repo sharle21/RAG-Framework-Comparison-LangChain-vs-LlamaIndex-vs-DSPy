@@ -10,7 +10,7 @@ It does — but which framework "wins" depends entirely on which metric you trus
 
 ## 1. Framework Comparison
 
-All three frameworks use the **same base LLM** (Llama-3.1-8B-Instruct via vLLM), the **same embedding model** (bge-m3, 1024-dim), and the **same 450-question test set**. The only variable is the RAG framework.
+All three frameworks use the **same base LLM** (Llama-3.1-8B-Instruct via vLLM), the **same embedding model** (bge-m3, 1024-dim), and the **same 450-question test set**. The RAG framework is the intended variable — but each pipeline was built idiomatically, not execution-graph-controlled, so retrieval *granularity* also differs: LangChain splits documents into ~1000-char chunks (`chunk_overlap=200`), LlamaIndex into ~2000-char chunks, and DSPy indexes each source passage whole with no splitter (median 3081 chars, up to ~51k chars). Same corpus, three different retrieval units — worth keeping in mind when comparing retrieval-quality numbers across frameworks.
 
 | | LangChain | LlamaIndex | DSPy |
 |-|-----------|------------|------|
@@ -29,7 +29,7 @@ All three frameworks use the **same base LLM** (Llama-3.1-8B-Instruct via vLLM),
 
 ```
 vLLM (port 8000) — Llama-3.1-8B-Instruct     (worker / answer generation)
-vLLM (port 8001) — Qwen/Qwen3-14B             (judge / cross-family to avoid bias)
+vLLM (port 8001) — Qwen/Qwen3-14B             (judge / cross-family to reduce same-model self-preference)
 
 Python RAG servers (FastAPI, one per framework):
   port 8100 — LangChain   (Chroma + bge-m3)
@@ -124,6 +124,18 @@ DSPy finqa correctness (0.840) is the highest single-domain score in the benchma
 
 OOD refusal rate = fraction of out-of-distribution questions correctly refused rather than hallucinated. DSPy's chain fabricates reasoning steps when no context is available (0.200 vs LangChain 0.867).
 
+### Reference-Document Overlap Rate (`run_retrieval_overlap.py`, local, no GPU)
+
+Distinct from **Context Coverage** above (which checks retrieved text against the *ground-truth answer*). This checks retrieved text against the *labeled relevant source documents* from RAGBench (`qa_pairs.json`'s `relevant_doc_ids`) — a closer approximation of retrieval recall, without needing doc IDs persisted at benchmark time. Match = word-containment ratio ≥0.6 in either direction (retrieved chunk mostly inside the relevant doc, or vice versa — needed because chunk sizes differ across frameworks, see above).
+
+| Framework | Overall | covidqa | finqa | techqa |
+|-----------|---------|---------|-------|--------|
+| LangChain | 0.827 | 0.880 | 0.760 | 0.840 |
+| LlamaIndex | 0.820 | 0.860 | 0.720 | 0.880 |
+| DSPy | 0.780 | 0.860 | 0.640 | 0.840 |
+
+Not Recall@k/NDCG (no ranking signal, approximate text matching rather than exact ID lookup) — reported as a directional retrieval-quality proxy. All three frameworks land in a similar 0.78-0.83 band; no framework shows a clear retrieval-recall advantage at this resolution.
+
 ### DSPy MIPROv2 Prompt Optimization
 
 | Metric | Baseline | Optimized | Delta |
@@ -187,7 +199,7 @@ The string metrics rank DSPy first because ChainOfThought generates longer answe
 
 ### Cross-family judging
 
-Qwen3-14B (Alibaba) judges Llama-3.1-8B (Meta) outputs. Different training lineage, different RLHF, different company — eliminates same-family favoritism. Both run locally on vLLM; evaluation cost is near zero after instance startup.
+Qwen3-14B (Alibaba) judges Llama-3.1-8B (Meta) outputs. Different training lineage, different RLHF, different company — reduces same-model self-preference bias, though it doesn't rule out other judge biases (rubric bias, verbosity bias, position bias). Both run locally on vLLM; evaluation cost is near zero after instance startup.
 
 ### Adversarial evaluation
 
@@ -295,6 +307,7 @@ python compute_stats_local.py
 | OOM on server startup | All three servers embedding corpus simultaneously | Sequential startup in `run_servers.sh` |
 | vLLM CUDA error 802 on fresh instance | CUDA system not initialized at driver level | Verify: `python -c "import ctypes; c=ctypes.CDLL('libcuda.so.1'); print(c.cuInit(0))"` — if 802, terminate and get new instance |
 | Double judge calls for domain eval | `run_eval.py` + `run_eval_domains.py` each called judge on same 450 responses | Replaced with `run_eval_unified.py`: judge once, compute domain stats from same per-question rows |
+| `qa_pairs.json` relevant_doc_ids pointing at documents that don't exist | `prepare_data.py` deduped passages by content, but ~51% of techqa passages (and similarly finqa) are reused verbatim across different questions — dedup silently dropped documents that later questions' IDs still referenced. Broke 312/450 queries' retrieval-recall lookups | Removed the dedup entirely — every `(question_idx, passage_idx)` is saved even if content repeats; corpus grew from 5,704 to 56,072 passages, all IDs now resolve |
 
 ---
 
@@ -305,3 +318,4 @@ python compute_stats_local.py
 - [vLLM](https://github.com/vllm-project/vllm) — PagedAttention inference
 - [MIPROv2](https://arxiv.org/abs/2406.11695) — Automatic prompt optimization
 - [Arize Phoenix](https://github.com/Arize-ai/phoenix) — LLM observability
+
