@@ -14,7 +14,9 @@ sys.path.insert(0, ".")
 from src.evaluation.metrics import f1_score, compute_stats
 
 RESULTS_FILE = "results/go_results_20260408_013644.json"
-EVAL_SCORES_FILE = "results/eval_scores.json"
+EVAL_SCORES_FILE = "results/eval_unified.json"  # NOT eval_scores.json — that's the stale
+# pre-fix file from the double-judge-call bug (see README Bugs Found). eval_unified.json
+# is what the published README numbers actually come from.
 BERTSCORE_FILE = "results/bertscore_results.json"
 DOMAIN_SCORES_FILE = "results/eval_scores_by_domain.json"
 
@@ -98,9 +100,10 @@ def main():
     print_latency_table("RETRIEVAL LATENCY ms  (median is correct metric)", per_fw_lat, "retrieval")
     print_latency_table("GENERATION LATENCY ms  (median is correct metric, ms/token pending Lambda rerun)", per_fw_lat, "generation")
 
-    # LLM judge scores from saved eval_scores.json
+    # LLM judge scores from saved eval_unified.json (matches published README numbers)
     try:
-        eval_scores = json.load(open(EVAL_SCORES_FILE))
+        eval_unified = json.load(open(EVAL_SCORES_FILE))
+        eval_scores = eval_unified.get("overall", eval_unified)  # tolerate flat legacy shape
         dims = ["correctness", "faithfulness", "completeness"]
         for dim in dims:
             rows = []
@@ -116,9 +119,9 @@ def main():
                     rows.append((fw, {"mean": mean, "std": 0.0, "n": 0,
                                       "ci95_lower": 0.0, "ci95_upper": 0.0,
                                       "boot_ci95_lower": 0.0, "boot_ci95_upper": 0.0}))
-            print_metric_table(f"JUDGE {dim.upper()} (from saved eval_scores.json)", rows)
+            print_metric_table(f"JUDGE {dim.upper()} (from saved eval_unified.json)", rows)
     except FileNotFoundError:
-        print("\n  eval_scores.json not found — skipping judge CI table")
+        print(f"\n  {EVAL_SCORES_FILE} not found — skipping judge CI table")
 
     # BERTScore from saved bertscore_results.json
     try:
