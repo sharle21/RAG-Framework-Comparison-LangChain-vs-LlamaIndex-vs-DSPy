@@ -289,12 +289,10 @@ TRACING=1 RPS=5 WORKERS=8 bash orchestrator/run_servers.sh
 
 ```bash
 pip install bert-score rouge-score scipy
-python run_bertscore.py
-python run_rouge.py
-python run_statistical_tests.py
-python run_metric_comparison.py
-python compute_stats_local.py
+python reproduce.py
 ```
+
+Runs ROUGE, BERTScore, bootstrap CIs, cross-metric ranking, significance tests, and retrieval-overlap rate in one command from the committed `results/*.json` — no vLLM, no GPU, no LLM API calls. Reproduces every locally-computable number in this README; doesn't rerun the LLM judge pass or the original benchmark itself (those need the Lambda GPU setup above). Individual scripts (`run_bertscore.py`, `run_rouge.py`, etc.) still run standalone if you only want one piece.
 
 ---
 
@@ -310,6 +308,7 @@ python compute_stats_local.py
 | vLLM CUDA error 802 on fresh instance | CUDA system not initialized at driver level | Verify: `python -c "import ctypes; c=ctypes.CDLL('libcuda.so.1'); print(c.cuInit(0))"` — if 802, terminate and get new instance |
 | Double judge calls for domain eval | `run_eval.py` + `run_eval_domains.py` each called judge on same 450 responses | Replaced with `run_eval_unified.py`: judge once, compute domain stats from same per-question rows |
 | `qa_pairs.json` relevant_doc_ids pointing at documents that don't exist | `prepare_data.py` deduped passages by content, but ~51% of techqa passages (and similarly finqa) are reused verbatim across different questions — dedup silently dropped documents that later questions' IDs still referenced. Broke 312/450 queries' retrieval-recall lookups | Removed the dedup entirely — every `(question_idx, passage_idx)` is saved even if content repeats; corpus grew from 5,704 to 56,072 passages, all IDs now resolve |
+| `compute_stats_local.py` judge scores didn't match published README numbers | It read `results/eval_scores.json` — the stale pre-fix file from the double-judge-call bug above, not the current `eval_unified.json` | Repointed at `results/eval_unified.json`; local reproduction now within rounding of published table |
 
 ---
 
