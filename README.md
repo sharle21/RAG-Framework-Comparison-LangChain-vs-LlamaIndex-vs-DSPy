@@ -151,8 +151,10 @@ All judge metrics dropped after MIPROv2 optimization. Automated prompt optimizat
 
 ## 4. Key Findings
 
+See [`ERROR_ANALYSIS.md`](ERROR_ANALYSIS.md) for 18 manually reviewed real cases (concrete examples behind the findings below, plus a likely ground-truth label error and a retrieval-metric artifact caught and fixed during review).
+
 **1. String metrics and LLM judge point in opposite directions**
-Every string metric ranks DSPy #1. Every judge metric ranks LangChain #1. Pairwise preference confirms the judge direction. Spearman correlation between string and judge metrics: -0.5 to -1.0. Which metric you trust determines which framework you ship.
+Every string metric ranks DSPy #1. Every judge metric ranks LangChain #1. Pairwise preference confirms the judge direction. Spearman correlation between string and judge metrics: -0.5 to -1.0. Which metric you trust determines which framework you ship. Concretely: token-F1 on numeric finqa answers can reward a wrong number with a near-matching sentence template and punish a right number wrapped in extra words — see `ERROR_ANALYSIS.md` for two real examples where this is the entire explanation for a "DSPy win."
 
 **2. LangChain faithfulness is the only statistically solid claim**
 LangChain faithfulness beats both LlamaIndex and DSPy at p<0.001 (gaps of 0.113 and 0.177). All other pairwise differences are marginal (p<0.05, small effect) or not significant. LangChain generates more grounded answers despite retrieving *less* context (0.646 vs DSPy 0.734).
