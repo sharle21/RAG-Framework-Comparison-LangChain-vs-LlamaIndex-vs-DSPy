@@ -193,6 +193,14 @@ No single metric captures answer quality. Running all six on the same outputs ma
 
 The string metrics rank DSPy first because ChainOfThought generates longer answers with higher token overlap chance. The judge penalizes the same verbosity when answers drift from the retrieved context. Running both makes this tradeoff explicit.
 
+### Question sampling
+
+450 benchmark queries = 150 questions (50 per domain × 3 domains) × 3 frameworks. Sampling is **deterministic, not random** — no seed involved because there isn't any randomness to seed: `orchestrator/generate_queries.py` takes the first 50 QA pairs per domain from `data/qa_pairs.json`, in file order (`by_domain[domain][:50]`). No shuffling.
+
+That file order comes from `src/evaluation/prepare_data.py`, which concatenates each RAGBench HuggingFace subset's `test` split followed by `train` split, in the order `load_dataset` returns rows. Each domain's `test` split alone has more than 50 usable rows (techqa 314, finqa 2,294, covidqa 246), so **the benchmarked 150 questions are drawn entirely from each domain's held-out test split** — the `train` split is never touched by the actual benchmark, only by the (separate, optional) MIPROv2 training slice described above. This wasn't a deliberate stratified-sampling design — it's a byproduct of always taking the first N rows — but it does mean the benchmark isn't testing on train-split content.
+
+Reproducibility check: regenerating `data/qa_pairs.json` from scratch (done this session, fixing an unrelated dedup bug) reproduced the exact same 150-per-domain question set as the original benchmark — verified by set-intersection against `results/go_results_20260408_013644.json`. Re-running `generate_queries.py` today would sample identically as long as `prepare_data.py`'s HuggingFace row order stays stable upstream.
+
 ### Statistical approach
 
 - **Bootstrap CIs across questions** (n=1000, seed=42): captures question-sampling variance — "would results change with a different set of benchmark questions?"
