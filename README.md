@@ -1,268 +1,102 @@
 # RAG Framework Benchmark: LangChain vs LlamaIndex vs DSPy
 
-Benchmarking three production RAG frameworks across **450 queries** on three domains (covidqa, techqa, finqa). Evaluated with Token F1, ROUGE, BERTScore, semantic similarity, pairwise preference, and a cross-family LLM judge. All quality differences reported with 95% bootstrap confidence intervals and Mann-Whitney significance tests.
+## TL;DR
 
-The central question: **does framework choice matter, and does it matter differently depending on the domain?**
+Benchmarking three production RAG frameworks — LangChain, LlamaIndex, DSPy — on the same LLM, same embedding model, and the same 450 real questions across three domains (covidqa, techqa, finqa). Scored six independent ways: word-overlap metrics, semantic similarity, an LLM judge, and pairwise preference.
 
-It does — but which framework "wins" depends entirely on which metric you trust.
-
----
-
-## 1. Framework Comparison
-
-All three frameworks use the **same base LLM** (Llama-3.1-8B-Instruct via vLLM), the **same embedding model** (bge-m3, 1024-dim), and the **same 450-question test set**. The RAG framework is the intended variable — but each pipeline was built idiomatically, not execution-graph-controlled, so retrieval *granularity* also differs: LangChain splits documents into ~1000-char chunks (`chunk_overlap=200`), LlamaIndex into ~2000-char chunks, and DSPy indexes each source passage whole with no splitter (median 3081 chars, up to ~51k chars). Same corpus, three different retrieval units — worth keeping in mind when comparing retrieval-quality numbers across frameworks.
-
-| | LangChain | LlamaIndex | DSPy |
-|-|-----------|------------|------|
-| **Vector store** | Chroma (persistent SQLite) | In-memory VectorStoreIndex | FAISS |
-| **Retrieval** | Similarity search, top-k | Similarity search, top-k | Similarity search, top-k |
-| **Reasoning** | Standard RAG — retrieve then generate | Standard RAG — retrieve then generate | ChainOfThought — explicit reasoning chain before answer |
-| **Prompt control** | LCEL chain, manual prompt | Query engine, internal prompt | DSPy signature + optimizer |
-| **Index persistence** | Disk (survives restart) | In-memory (rebuilds on restart) | FAISS file + corpus JSON |
-| **Token output** | Concise | Concise | Verbose (CoT adds reasoning tokens) |
-
-**What ChainOfThought changes:** DSPy generates a reasoning chain before the final answer. This produces longer outputs, higher token F1 (more overlap chance), but also more hallucination risk on OOD questions where the chain fabricates steps.
+**Does framework choice matter?** Yes — but which framework "wins" depends entirely on which metric you trust. Every word-overlap metric ranks DSPy first. The LLM judge and pairwise preference both rank LangChain first. Full details in [`docs/DETAILS.md`](docs/DETAILS.md).
 
 ---
 
-## 2. Benchmark Pipeline
+## Architecture
 
-```mermaid
-flowchart TB
-    GO["Go Orchestrator<br/>rate limiter, concurrent dispatch<br/>Prometheus :9091"]
+![Architecture](images/architecture.png)
 
-    subgraph RAG["RAG servers (FastAPI, one per framework)"]
-        LC["LangChain :8100<br/>Chroma + bge-m3<br/>chunk_size=1000"]
-        LI["LlamaIndex :8101<br/>in-memory + bge-m3<br/>chunk_size=2000"]
-        DS["DSPy :8102<br/>FAISS + bge-m3<br/>ChainOfThought, no chunking"]
-    end
+Go orchestrator dispatches rate-limited, concurrent requests to three FastAPI RAG servers (LangChain/Chroma, LlamaIndex/in-memory, DSPy/FAISS), all generating through one shared vLLM-served Llama-3.1-8B. Scoring happens offline, afterward, by a cross-family judge (Qwen3-14B) reading the stored results — never in the live request path.
 
-    subgraph VLLM["vLLM inference tier"]
-        WORKER["Worker :8000<br/>Llama-3.1-8B-Instruct<br/>generates answers"]
-        JUDGE["Judge :8001<br/>Qwen3-14B<br/>cross-family scoring"]
-    end
+![Evaluation pipeline](images/evaluation_pipeline.png)
 
-    subgraph OBS["Observability (docker-compose)"]
-        PROM["Prometheus :9090"]
-        GRAF["Grafana :3000"]
-        PHX["Arize Phoenix :6006<br/>OTel traces"]
-    end
-
-    RESULTS[("results/go_results_*.json<br/>question, answer, contexts,<br/>retrieval_ms, generation_ms")]
-    EVAL["run_eval_unified.py<br/>(offline, post-hoc)"]
-
-    GO -->|concurrent requests| LC
-    GO -->|concurrent requests| LI
-    GO -->|concurrent requests| DS
-    LC -->|generation| WORKER
-    LI -->|generation| WORKER
-    DS -->|generation| WORKER
-    LC -.->|traces, optional| PHX
-    LI -.->|traces, optional| PHX
-    DS -.->|traces, optional| PHX
-    GO -->|scraped by| PROM
-    WORKER -->|scraped by| PROM
-    PROM --> GRAF
-    GO -->|writes| RESULTS
-    RESULTS --> EVAL
-    EVAL -->|scores each answer| JUDGE
-```
-
-```
-vLLM (port 8000) — Llama-3.1-8B-Instruct     (worker / answer generation)
-vLLM (port 8001) — Qwen/Qwen3-14B             (judge / cross-family to reduce same-model self-preference)
-
-Python RAG servers (FastAPI, one per framework):
-  port 8100 — LangChain   (Chroma + bge-m3)
-  port 8101 — LlamaIndex  (in-memory + bge-m3)
-  port 8102 — DSPy        (FAISS + bge-m3 + ChainOfThought)
-
-Go orchestrator — fires concurrent requests to all three servers simultaneously
-                  exposes Prometheus metrics on :9091
-
-Observability stack (docker-compose):
-  Prometheus  :9090  — scrapes vLLM + Go orchestrator metrics
-  Grafana     :3000  — latency, throughput, KV cache dashboards
-  Arize Phoenix :6006 — LLM quality traces via OpenTelemetry
-```
-
-**Why Go for orchestration?** Python's GIL prevents true concurrency. Goroutines dispatch queries to all three RAG servers simultaneously, keeping the GPU saturated. At RPS=5 with 3 servers, 15 requests are in-flight at peak.
-
-**What's controlled:** same LLM, same embeddings, same question set, same judge, same hardware.
-**What varies:** framework's retrieval implementation, vector store, and prompting strategy.
-
-**Latency caveat:** generation times measured under concurrent load — all 3 frameworks share one vLLM endpoint. Queue wait is included. DSPy's higher latency is real (more tokens), but absolute numbers are inflated by concurrent GPU pressure.
-
-### Latency (150 queries per framework, concurrent)
-
-| Framework | Retrieval median | Retrieval p95 | Generation median | Generation p95 |
-|-----------|-----------------|---------------|-------------------|----------------|
-| LangChain | 117ms | 197ms | 1,635ms | 12,096ms |
-| LlamaIndex | 387ms | 567ms | **1,130ms** | 19,105ms |
-| DSPy | **63ms** | — | 3,580ms | 60,262ms |
-
-At median, LlamaIndex generation is fastest. LangChain and DSPy have similar retrieval speed (Chroma and FAISS). LlamaIndex's slower retrieval reflects in-memory index rebuild on startup.
+Full pipeline breakdown, chunk-size differences between frameworks, and the reasoning behind each infra choice: [`docs/DETAILS.md §1-2`](docs/DETAILS.md#1-experimental-design).
 
 ---
 
-## 3. Results
+## Key Results
 
 ### Quality (450 queries, 150 per framework)
 
 | Metric | LangChain | LlamaIndex | DSPy | Winner |
 |--------|-----------|------------|------|--------|
 | Token F1 | 0.461 | 0.462 | **0.488** | DSPy |
-| ROUGE-1 | 0.425 [0.395, 0.460] | 0.414 [0.384, 0.446] | **0.453** [0.422, 0.484] | DSPy |
-| ROUGE-L | 0.343 [0.315, 0.376] | 0.328 [0.302, 0.357] | **0.384** [0.353, 0.416] | DSPy |
 | BERTScore F1 | 0.831 | 0.834 | **0.844** | DSPy |
-| Semantic Sim (bge-m3) | **0.830** | 0.816 | 0.823 | LangChain |
-| Context Coverage | 0.646 | 0.721 | **0.734** | DSPy |
-| Correctness (Qwen judge) | **0.592** [0.532, 0.650] | 0.559 [0.499, 0.620] | 0.488 [0.416, 0.560] | LangChain |
-| Faithfulness (Qwen judge) | **0.825** [0.778, 0.870] | 0.712 [0.652, 0.767] | 0.648 [0.578, 0.715] | LangChain (p<0.001) |
-| Completeness (Qwen judge) | **0.550** [0.485, 0.611] | 0.505 [0.447, 0.565] | 0.422 [0.362, 0.485] | LangChain |
-| Judge ECE (↓ better) | **0.318** | 0.332 | 0.413 | LangChain |
+| Correctness (Qwen judge) | **0.592** | 0.559 | 0.488 | LangChain |
+| Faithfulness (Qwen judge) | **0.825** | 0.712 | 0.648 | LangChain (p<0.001) |
+| Completeness (Qwen judge) | **0.550** | 0.505 | 0.422 | LangChain |
 
-CIs are 95% bootstrap (seed=42, n=1000). Significance: Mann-Whitney U + permutation test, both p<0.05.
+Only LangChain's faithfulness advantage clears both required significance tests (p<0.001) — everything else is marginal or domain-dependent. Full table with confidence intervals, ROUGE, semantic similarity, context coverage, and judge ECE: [`docs/DETAILS.md §3`](docs/DETAILS.md#3-statistical-analysis).
 
-- **Context Coverage** = fraction of ground-truth tokens in retrieved passages. DSPy/LlamaIndex retrieve more relevant content yet LangChain wins all judge metrics — generation quality from context matters more than raw coverage.
-- **Judge ECE** (Expected Calibration Error) = gap between Qwen's stated confidence and actual correctness. Lower = better calibrated.
+### Latency (median, concurrent load — see caveat in docs)
 
-### Pairwise Preference (143 questions, Qwen3-14B judge)
+| Framework | Retrieval | Generation |
+|-----------|-----------|------------|
+| LangChain | 117ms | 1,635ms |
+| LlamaIndex | 387ms | **1,130ms** |
+| DSPy | 119ms | 3,580ms |
 
-Judge picks the better answer directly without numeric scoring — avoids scale anchoring bias.
+![Latency](images/latency.png)
 
-| Matchup | Winner | Score |
-|---------|--------|-------|
-| LangChain vs LlamaIndex | **LangChain** | 87 – 51 |
-| LangChain vs DSPy | **LangChain** | 85 – 51 |
-| LlamaIndex vs DSPy | **LlamaIndex** | 82 – 52 |
+Full percentiles and the concurrency caveat: [`docs/DETAILS.md §4`](docs/DETAILS.md#4-latency-analysis).
 
-**Total wins:** LangChain 172, LlamaIndex 133, DSPy 103. LangChain wins every head-to-head (~63% win rate). Pairwise and absolute judge scores agree.
+### Pairwise preference — LangChain wins every head-to-head
 
-### Per-Domain Breakdown
+![Pairwise results](images/pairwise_results.png)
 
-| Domain | Metric | LangChain | LlamaIndex | DSPy |
-|--------|--------|-----------|------------|------|
-| **covidqa** | F1 | 0.397 | 0.413 | **0.454** |
-| | correctness | **0.721** | 0.649 | 0.681 |
-| | faithfulness | **0.920** | 0.835 | 0.887 |
-| **techqa** | F1 | 0.482 | **0.485** | 0.456 |
-| | correctness | **0.703** | 0.687 | 0.630 |
-| | faithfulness | **0.832** | 0.733 | 0.659 |
-| **finqa** | F1 | 0.504 | 0.490 | **0.553** |
-| | correctness | 0.696 | 0.690 | **0.840** |
-| | faithfulness | 0.843 | 0.833 | **0.839** |
+Total wins: LangChain 172, LlamaIndex 133, DSPy 103 (~63% LangChain win rate, 143 questions, Qwen3-14B judge). Per-matchup scores and per-domain breakdown (DSPy wins finqa by 14 points, collapses on techqa): [`docs/DETAILS.md §3`](docs/DETAILS.md#3-statistical-analysis).
 
-DSPy finqa correctness (0.840) is the highest single-domain score in the benchmark — 14 points above LangChain. DSPy collapses on techqa (0.630) where factual lookup doesn't benefit from chain-of-thought.
+### Observability
 
-### Adversarial Robustness (n=30 per framework)
+![Grafana Dashboard](images/grafana_dashboard.png)
+![Arize Phoenix Trace](images/phoenix_trace.png)
 
-| Framework | Non-OOD | OOD Refusal | Multi-hop | Contradictory |
-|-----------|---------|-------------|-----------|---------------|
-| LangChain | **0.730** | **0.867** | 0.717 | **0.773** |
-| LlamaIndex | 0.709 | 0.600 | 0.700 | 0.727 |
-| DSPy | 0.710 | 0.200 | 0.703 | 0.727 |
-
-OOD refusal rate = fraction of out-of-distribution questions correctly refused rather than hallucinated. DSPy's chain fabricates reasoning steps when no context is available (0.200 vs LangChain 0.867).
-
-### Reference-Document Overlap Rate (`run_retrieval_overlap.py`, local, no GPU)
-
-Distinct from **Context Coverage** above (which checks retrieved text against the *ground-truth answer*). This checks retrieved text against the *labeled relevant source documents* from RAGBench (`qa_pairs.json`'s `relevant_doc_ids`) — a closer approximation of retrieval recall, without needing doc IDs persisted at benchmark time. Match = word-containment ratio ≥0.6 in either direction (retrieved chunk mostly inside the relevant doc, or vice versa — needed because chunk sizes differ across frameworks, see above).
-
-| Framework | Overall | covidqa | finqa | techqa |
-|-----------|---------|---------|-------|--------|
-| LangChain | 0.827 | 0.880 | 0.760 | 0.840 |
-| LlamaIndex | 0.820 | 0.860 | 0.720 | 0.880 |
-| DSPy | 0.780 | 0.860 | 0.640 | 0.840 |
-
-Not Recall@k/NDCG (no ranking signal, approximate text matching rather than exact ID lookup) — reported as a directional retrieval-quality proxy. All three frameworks land in a similar 0.78-0.83 band; no framework shows a clear retrieval-recall advantage at this resolution.
-
-### DSPy MIPROv2 Prompt Optimization
-
-| Metric | Baseline | Optimized | Delta |
-|--------|----------|-----------|-------|
-| Token F1 | 0.483 | 0.483 | +0.001 |
-| Correctness | 0.551 | 0.512 | **-0.039** |
-| Faithfulness | 0.693 | 0.628 | **-0.065** |
-| Completeness | 0.475 | 0.434 | **-0.041** |
-
-All judge metrics dropped after MIPROv2 optimization. The optimizer's search metric was token-F1 (fast, no LLM cost) — which the error analysis shows can reward a wrong number over a right one — so optimizing for it while judge quality drops is mechanistically expected, not a mystery. Trained on the first 20 DSPy benchmark answers, tested on the remaining ~124-130 (no train/test overlap). One caveat on precision: rerunning the same *unoptimized* pipeline back-to-back produced different answers on 73% of questions (vLLM isn't fully deterministic under continuous batching even at `temperature=0`), with ~0.02 aggregate F1 drift between two identical runs — so while all three judge metrics dropping together is consistent with a real regression, the exact size of the drop is uncertain against that noise floor.
+Both pending a live Lambda GPU session — dashboard JSON and tracing code already exist, just not yet exercised end to end. Details: [`docs/DETAILS.md §7`](docs/DETAILS.md#7-design-decisions).
 
 ---
 
-## 4. Key Findings
+## Why This Matters
 
-See [`ERROR_ANALYSIS.md`](ERROR_ANALYSIS.md) for 18 manually reviewed real cases (concrete examples behind the findings below, plus a likely ground-truth label error and a retrieval-metric artifact caught and fixed during review).
-
-**1. String metrics and LLM judge point in opposite directions**
-Every string metric ranks DSPy #1. Every judge metric ranks LangChain #1. Pairwise preference confirms the judge direction. Spearman correlation between string and judge metrics: -0.5 to -1.0. Which metric you trust determines which framework you ship. Concretely: token-F1 on numeric finqa answers can reward a wrong number with a near-matching sentence template and punish a right number wrapped in extra words — see `ERROR_ANALYSIS.md` for two real examples where this is the entire explanation for a "DSPy win."
-
-**2. LangChain faithfulness is the only statistically solid claim**
-LangChain faithfulness beats both LlamaIndex and DSPy at p<0.001 (gaps of 0.113 and 0.177). All other pairwise differences are marginal (p<0.05, small effect) or not significant. LangChain generates more grounded answers despite retrieving *less* context (0.646 vs DSPy 0.734).
-
-**3. DSPy dominates financial reasoning**
-DSPy finqa correctness 0.840 — highest single-domain score in the benchmark. ChainOfThought's step-by-step reasoning fits financial QA's structured numerical problems. But reasoning overhead hurts on techqa (0.630) where direct lookup is faster.
-
-**4. Domain rankings diverge from aggregate**
-Aggregate: LangChain wins. Per-domain: DSPy wins finqa by 14 points, frameworks are competitive on covidqa, LangChain leads techqa narrowly. Aggregate benchmarks hide these reversals.
-
-**5. LangChain wins every pairwise head-to-head**
-87–51 vs LlamaIndex, 85–51 vs DSPy (Qwen3-14B judge, 143 questions). Pairwise and absolute scores agree — corroborating evidence across two evaluation protocols.
-
-**6. MIPROv2 prompt optimization made DSPy worse**
-Faithfulness dropped 0.065 after optimization. Automated prompt search overfit the training set and degraded on held-out test queries.
-
-**7. DSPy hallucinates on OOD questions**
-OOD refusal rate 0.200 vs LangChain 0.867. Chain-of-thought fabricates reasoning steps when the corpus has no answer, producing confident hallucinations.
+Picking a RAG framework is usually a vibes decision — whichever has the best docs or the loudest advocate on the team. This project isolates one variable at a time: same LLM, same embeddings, same 450 questions, only the framework changes. The finding that matters most isn't "DSPy vs LangChain" — it's that the answer depends more on *how you define quality* than on the framework itself, and that's a mistake worth avoiding before it costs a real production decision. See [`docs/DETAILS.md §6`](docs/DETAILS.md#6-error-analysis) for the exact mechanism behind that finding, with real examples.
 
 ---
 
-## 5. Evaluation Methodology
+## Quick Start
 
-### Why six metrics?
+### On Lambda Cloud (2x H100 recommended)
 
-No single metric captures answer quality. Running all six on the same outputs makes disagreements visible and measurable.
+```bash
+git clone https://github.com/sharle21/RAG-Framework-Comparison-LangChain-vs-LlamaIndex-vs-DSPy.git rag-bench
+cd rag-bench && bash setup_lambda.sh <hf-token>
+source ~/vllm_env/bin/activate
 
-| Method | What it measures | Known limitation | DSPy rank | LangChain rank |
-|--------|-----------------|-----------------|-----------|----------------|
-| Token F1 | Exact word overlap with ground truth | Rewards verbosity | **1** | 2 |
-| ROUGE-1/L | N-gram overlap | Rewards verbosity | **1** | 2 |
-| BERTScore (distilbert) | Contextual semantic similarity | Rewards verbosity | **1** | 3 |
-| Semantic sim (bge-m3) | Embedding similarity (same model as retrieval) | Rewards verbosity | 2 | **1** |
-| Qwen3-14B judge correctness | Factual accuracy vs ground truth | LLM position/length bias | 3 | **1** |
-| Qwen3-14B judge faithfulness | Grounded in retrieved context | LLM position/length bias | 3 | **1** |
+# Start worker (GPU 0) and judge (GPU 1) — see docs/DETAILS.md §7 for full commands
+CUDA_VISIBLE_DEVICES=0 nohup python -m vllm.entrypoints.openai.api_server --model meta-llama/Llama-3.1-8B-Instruct --port 8000 --gpu-memory-utilization 0.90 --max-model-len 8192 > /tmp/vllm_worker.log 2>&1 &
+CUDA_VISIBLE_DEVICES=1 nohup python -m vllm.entrypoints.openai.api_server --model Qwen/Qwen3-14B --port 8001 --gpu-memory-utilization 0.90 --max-model-len 8192 > /tmp/vllm_judge.log 2>&1 &
 
-The string metrics rank DSPy first because ChainOfThought generates longer answers with higher token overlap chance. The judge penalizes the same verbosity when answers drift from the retrieved context. Running both makes this tradeoff explicit.
+export PATH="/usr/local/go/bin:$PATH"
+RPS=5 WORKERS=8 bash orchestrator/run_servers.sh   # runs the benchmark
+python run_eval_unified.py                          # scores it
+```
 
-### Question sampling
+### Local evaluation (no GPU needed)
 
-450 benchmark queries = 150 questions (50 per domain × 3 domains) × 3 frameworks. Sampling is **deterministic, not random** — no seed involved because there isn't any randomness to seed: `orchestrator/generate_queries.py` takes the first 50 QA pairs per domain from `data/qa_pairs.json`, in file order (`by_domain[domain][:50]`). No shuffling.
+```bash
+pip install bert-score rouge-score scipy
+python reproduce.py
+```
 
-That file order comes from `src/evaluation/prepare_data.py`, which concatenates each RAGBench HuggingFace subset's `test` split followed by `train` split, in the order `load_dataset` returns rows. Each domain's `test` split alone has more than 50 usable rows (techqa 314, finqa 2,294, covidqa 246), so **the benchmarked 150 questions are drawn entirely from each domain's held-out test split** — the `train` split is never touched by the actual benchmark, only by the (separate, optional) MIPROv2 training slice described above. This wasn't a deliberate stratified-sampling design — it's a byproduct of always taking the first N rows — but it does mean the benchmark isn't testing on train-split content.
-
-Reproducibility check: regenerating `data/qa_pairs.json` from scratch (done this session, fixing an unrelated dedup bug) reproduced the exact same 150-per-domain question set as the original benchmark — verified by set-intersection against `results/go_results_20260408_013644.json`. Re-running `generate_queries.py` today would sample identically as long as `prepare_data.py`'s HuggingFace row order stays stable upstream.
-
-### Statistical approach
-
-- **Bootstrap CIs across questions** (n=1000, seed=42): captures question-sampling variance — "would results change with a different set of benchmark questions?"
-- **Mann-Whitney U + permutation test** (n=10,000): both must reach p<0.05 to claim significance. Controls false discovery from multiple comparisons.
-- **Pairwise preference**: direct A-vs-B comparison avoids scale anchoring; more robust than absolute numeric scores.
-
-### Cross-family judging
-
-Qwen3-14B (Alibaba) judges Llama-3.1-8B (Meta) outputs. Different training lineage, different RLHF, different company — reduces same-model self-preference bias, though it doesn't rule out other judge biases (rubric bias, verbosity bias, position bias). Both run locally on vLLM; evaluation cost is near zero after instance startup.
-
-### Adversarial evaluation
-
-Four hard query types probing failure modes beyond standard accuracy:
-- **Multi-hop** — requires connecting information across multiple documents
-- **Ambiguous** — underspecified, missing key context
-- **Out-of-distribution** — plausibly related but not in corpus; correct answer is refusal
-- **Contradictory** — frames question as if the ground truth is false
+Reproduces every locally-computable number in this README from the committed `results/*.json` — no vLLM, no GPU, no LLM API calls. Full explanation: [`docs/DETAILS.md §7`](docs/DETAILS.md#7-design-decisions).
 
 ---
 
-## Project Structure
+## Repository Structure
 
 ```
 ├── src/
@@ -277,87 +111,33 @@ Four hard query types probing failure modes beyond standard accuracy:
 ├── orchestrator/
 │   ├── main.go                        # Go orchestrator, rate limiter, Prometheus
 │   ├── run_servers.sh                 # Start all servers + run benchmark
-│   └── generate_queries.py           # Balanced query sampling (per domain)
+│   └── generate_queries.py            # Deterministic query sampling (per domain)
+├── docs/DETAILS.md                    # Full methodology, results, error analysis, bug diary
+├── images/                            # Architecture, latency, pairwise, dashboard visuals
 ├── docker-compose.yml                 # Prometheus + Grafana + Arize Phoenix
-├── run_eval_unified.py               # Single-pass eval: judge once, aggregate globally + by domain
-├── run_pairwise_eval.py              # Pairwise preference (Qwen judge picks A vs B)
-├── run_judge_stability.py            # Judge repeatability audit (stratified subset, 5 runs each)
-├── run_serial_latency.py             # Serial latency benchmark (no concurrent GPU pressure)
-├── run_semantic_sim.py               # bge-m3 cosine similarity
-├── run_bertscore.py                  # BERTScore (local, no GPU)
-├── run_rouge.py                      # ROUGE-1/2/L (local, no GPU)
-├── run_statistical_tests.py          # Mann-Whitney + permutation tests (local)
-├── run_metric_comparison.py          # Cross-metric ranking + Spearman correlation (local)
-├── compute_stats_local.py            # Bootstrap CIs + latency percentiles (local)
-├── run_dspy_optimized.py             # MIPROv2 baseline vs optimized comparison
-└── setup_lambda.sh                   # Lambda Cloud GPU instance setup
+├── run_eval_unified.py                # Single-pass eval: judge once, aggregate globally + by domain
+├── reproduce.py                       # Single-command local reproduction (no GPU)
+├── run_retrieval_overlap.py           # Reference-document overlap rate (local, no GPU)
+└── setup_lambda.sh                    # Lambda Cloud GPU instance setup
 ```
 
 ---
 
-## Running It
+## Key Findings
 
-### On Lambda Cloud (2x H100 recommended)
-
-```bash
-git clone https://github.com/sharle21/RAG-Framework-Comparison-LangChain-vs-LlamaIndex-vs-DSPy.git rag-bench
-cd rag-bench && bash setup_lambda.sh <hf-token>
-
-source ~/vllm_env/bin/activate
-export LD_LIBRARY_PATH=/home/ubuntu/vllm_env/lib/python3.10/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH
-
-# Start worker model on GPU 0, wait until ready, then start judge on GPU 1
-CUDA_VISIBLE_DEVICES=0 nohup python -m vllm.entrypoints.openai.api_server \
-  --model meta-llama/Llama-3.1-8B-Instruct --port 8000 \
-  --gpu-memory-utilization 0.90 --max-model-len 8192 > /tmp/vllm_worker.log 2>&1 &
-until curl -s http://localhost:8000/v1/models | grep -q "Llama"; do sleep 10; done
-
-CUDA_VISIBLE_DEVICES=1 nohup python -m vllm.entrypoints.openai.api_server \
-  --model Qwen/Qwen3-14B --port 8001 \
-  --gpu-memory-utilization 0.90 --max-model-len 8192 > /tmp/vllm_judge.log 2>&1 &
-
-# Run benchmark (starts RAG servers sequentially, then fires Go orchestrator)
-export PATH="/usr/local/go/bin:$PATH"
-RPS=5 WORKERS=8 bash orchestrator/run_servers.sh
-
-# Evaluate
-PYTHONUNBUFFERED=1 nohup python -u run_eval_unified.py > /tmp/eval.log 2>&1 &
-PYTHONUNBUFFERED=1 nohup python -u run_pairwise_eval.py > /tmp/pairwise.log 2>&1 &
-```
-
-### With observability stack
-
-```bash
-docker compose up -d phoenix prometheus grafana
-TRACING=1 RPS=5 WORKERS=8 bash orchestrator/run_servers.sh
-# Traces:  http://localhost:6006
-# Metrics: http://localhost:3000
-```
-
-### Local evaluation (no GPU needed)
-
-```bash
-pip install bert-score rouge-score scipy
-python reproduce.py
-```
-
-Runs ROUGE, BERTScore, bootstrap CIs, cross-metric ranking, significance tests, and retrieval-overlap rate in one command from the committed `results/*.json` — no vLLM, no GPU, no LLM API calls. Reproduces every locally-computable number in this README; doesn't rerun the LLM judge pass or the original benchmark itself (those need the Lambda GPU setup above). Individual scripts (`run_bertscore.py`, `run_rouge.py`, etc.) still run standalone if you only want one piece.
+1. **String metrics and LLM judge point in opposite directions.** Every word-overlap metric ranks DSPy #1; the judge and pairwise preference both rank LangChain #1. Concrete mechanism (a wrong number can outscore a right one on token-F1): [`docs/DETAILS.md §6`](docs/DETAILS.md#6-error-analysis).
+2. **LangChain faithfulness is the only statistically solid claim** — p<0.001 against both other frameworks. Everything else in the quality table is marginal or domain-dependent.
+3. **DSPy dominates financial reasoning** (finqa correctness 0.840, highest single-domain score in the benchmark) but collapses on techqa (0.630) — aggregate rankings hide this reversal.
+4. **LangChain wins every pairwise head-to-head** (~63% win rate, 143 questions) — corroborates the absolute judge scores across a second evaluation protocol.
+5. **MIPROv2 prompt optimization made DSPy worse**, not better — it optimized token-F1, a metric this project shows can reward incorrect answers.
+6. **DSPy hallucinates more under out-of-distribution pressure** (0.200 refusal rate vs LangChain's 0.867) — ChainOfThought fabricates plausible reasoning when the corpus has no answer.
+7. **The benchmark's own ground truth has at least one labeling error** — found because all three independently-built frameworks agreed with the source document, not the label.
 
 ---
 
-## Bugs Found and Fixed
+## More Detail
 
-| Bug | Root Cause | Fix |
-|-----|-----------|-----|
-| DSPy showing 4ms generation | LiteLLM disk cache active despite `cache=False` in `dspy.configure()` | Pass `cache=False` to `dspy.LM()` directly |
-| LangChain all queries failing | Chroma index built with OpenAI 1536-dim, queried with bge-m3 1024-dim | Delete stale index, rebuild; remove from git with `git rm --cached` |
-| LlamaIndex `ValueError: Unknown model` | `OpenAI` class rejects custom `base_url` | Switch to `OpenAILike` |
-| Qwen3 `<think>` blocks breaking JSON parse | Qwen3-14B outputs `<think>...</think>` before JSON | Strip with `re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)` |
-| OOM on server startup | All three servers embedding corpus simultaneously | Sequential startup in `run_servers.sh` |
-| vLLM CUDA error 802 on fresh instance | CUDA system not initialized at driver level | Verify: `python -c "import ctypes; c=ctypes.CDLL('libcuda.so.1'); print(c.cuInit(0))"` — if 802, terminate and get new instance |
-| Double judge calls for domain eval | `run_eval.py` + `run_eval_domains.py` each called judge on same 450 responses | Replaced with `run_eval_unified.py`: judge once, compute domain stats from same per-question rows |
-| `qa_pairs.json` relevant_doc_ids pointing at documents that don't exist | `prepare_data.py` deduped passages by content, but ~51% of techqa passages (and similarly finqa) are reused verbatim across different questions — dedup silently dropped documents that later questions' IDs still referenced. Broke 312/450 queries' retrieval-recall lookups | Removed the dedup entirely — every `(question_idx, passage_idx)` is saved even if content repeats; corpus grew from 5,704 to 56,072 passages, all IDs now resolve |
-| `compute_stats_local.py` judge scores didn't match published README numbers | It read `results/eval_scores.json` — the stale pre-fix file from the double-judge-call bug above, not the current `eval_unified.json` | Repointed at `results/eval_unified.json`; local reproduction now within rounding of published table |
+- [`docs/DETAILS.md`](docs/DETAILS.md) — full methodology, statistical analysis, latency breakdown, adversarial evaluation, error analysis (18 real cases), design decisions, and bug diary
 
 ---
 
