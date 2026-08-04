@@ -8,3 +8,15 @@ __pycache__/
 **/.DS_Store
 orchestrator/rag-orchestrator
 data/chroma_langchain/
+
+# Personal/working docs — not part of the public project docs (README.md + docs/DETAILS.md are)
+CLAUDE.md
+ERROR_ANALYSIS.md
+LESSONS_LEARNED.md
+PROJECT_BIBLE.md
+interview-notes.md
+mock-interview.md
+resume-bullets.md
+story-versions.md
+story-library.md
+changes.md
